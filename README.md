@@ -1,24 +1,13 @@
 SonarQube Java Properties Plugin
 ====================
 
-Project homepage:
-https://github.com/racodond/sonar-jproperties
+The plugin enables analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://sonarqube.org).
 
-Issue tracking:
-https://github.com/racodond/sonar-jproperties/issues
+## Useful Links
 
-CI builds:
-TODO
-
-Download:
-TODO
-
-## Description / Features
-The plugin enables analysis of Java Properties file within SonarQube.
+* [Homepage](https://github.com/racodond/sonar-jproperties-plugin)
+* [Issue tracking](https://github.com/racodond/sonar-jproperties-plugin/issues)
+* [Download](https://github.com/racodond/binaries)
 
 ## Usage
-### Run an Analysis with the SonarQube Runner (recommended method)
-To run an analysis of your project with Java Properties files, use the SonarQube Runner.
-
-### Run an Analysis with the other Analyzers
-Maven and Ant can also be used to launch analysis on Java Properties files.
+Browse the [SonarQube documentation](http://docs.sonarqube.org/display/SONAR/Analyzing+with+SonarQube+Runner) to run an analysis with the SonarQube Runner. Maven, Ant or Gradle can also be used to run the analysis. See more details [here](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis).
