@@ -43,6 +43,7 @@ public class LineLengthCheckTest {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(2).withMessage("The line contains 51 characters which is greater than 50 authorized.")
+      .next().atLine(4).withMessage("The line contains 51 characters which is greater than 50 authorized.")
       .noMore();
   }
 
@@ -53,6 +54,8 @@ public class LineLengthCheckTest {
     CheckMessagesVerifier.verify(file.getCheckMessages())
       .next().atLine(2).withMessage("The line contains 51 characters which is greater than 30 authorized.")
       .next().atLine(3).withMessage("The line contains 50 characters which is greater than 30 authorized.")
+      .next().atLine(4).withMessage("The line contains 51 characters which is greater than 30 authorized.")
+      .next().atLine(5).withMessage("The line contains 34 characters which is greater than 30 authorized.")
       .noMore();
   }
 
