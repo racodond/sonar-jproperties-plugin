@@ -50,7 +50,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
 
   private static final String DEFAULT_FORMAT = "#";
-  private static final Logger LOG = LoggerFactory.getLogger(SeparatorConventionCheck.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CommentConventionCheck.class);
   private Pattern pattern;
   private boolean runCheck = true;
 
