@@ -4,7 +4,7 @@ SonarQube Java Properties Plugin
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
 
 ## Description
-This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) source code within [SonarQube](http://www.sonarqube.org):
+This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
  * Computes metrics: lines of code, comments lines, etc.
  * Performs more than 15 checks such as: Duplicated keys should be removed, Property with empty element should be removed, Separators should follow a convention, etc.
