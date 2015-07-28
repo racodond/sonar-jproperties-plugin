@@ -1,7 +1,14 @@
 SonarQube Java Properties Plugin
 ====================
 
-The plugin enables analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://sonarqube.org).
+[![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
+
+## Description
+This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) source code within [SonarQube](http://www.sonarqube.org):
+
+ * Computes metrics: lines of code, comments lines, etc.
+ * Performs more than 15 checks such as: Duplicated keys should be removed, Property with empty element should be removed, Separators should follow a convention, etc.
+
 
 ## Useful Links
 
@@ -10,4 +17,7 @@ The plugin enables analysis of [Java Properties files](https://en.wikipedia.org/
 * [Download](https://github.com/racodond/sonar-jproperties-plugin/releases/)
 
 ## Usage
-Browse the [SonarQube documentation](http://docs.sonarqube.org/display/SONAR/Analyzing+with+SonarQube+Runner) to run an analysis with the SonarQube Runner. Maven, Ant or Gradle can also be used to run the analysis. See more details [here](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis).
+### Installing and configuring your SonarQube platform from scratch
+1. [Install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
+2. Install the Java Properties plugin either by a [direct download](https://github.com/SonarCommunity/sonar-css/releases) or through the [update center](http://docs.sonarqube.org/display/SONAR/Update+Center).
+3. Install your [favorite analyzer](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Runner, Maven, etc.) and analyze your code.
