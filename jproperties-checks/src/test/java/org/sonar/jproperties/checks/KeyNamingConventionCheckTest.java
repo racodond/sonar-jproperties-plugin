@@ -34,8 +34,9 @@ public class KeyNamingConventionCheckTest {
   public void should_find_some_keys_that_do_not_follow_the_default_naming_convention_and_raise_issues() {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(2).withMessage("Rename key \"myProperty\" to match the regular expression: ^[a-z]+[a-z0-9_\\-\\.]*$").next()
-      .atLine(3).withMessage("Rename key \"my\\:Property\" to match the regular expression: ^[a-z]+[a-z0-9_\\-\\.]*$").noMore();
+      .atLine(2).withMessage("Rename key \"myProperty\" to match the regular expression: ^[a-z]+[-._a-z0-9]*$").next()
+      .atLine(3).withMessage("Rename key \"my\\:Property\" to match the regular expression: ^[a-z]+[-._a-z0-9]*$").next()
+      .atLine(7).withMessage("Rename key \"abc/def\" to match the regular expression: ^[a-z]+[-._a-z0-9]*$").noMore();
   }
 
   @Test
