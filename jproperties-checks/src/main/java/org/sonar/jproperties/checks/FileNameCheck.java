@@ -45,7 +45,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
 
-  public static final String DEFAULT = "[a-z][A-Za-z0-9]+\\.properties";
+  public static final String DEFAULT = "[_A-Za-z0-9]+\\.properties";
   private Pattern pattern = null;
 
   @RuleProperty(
