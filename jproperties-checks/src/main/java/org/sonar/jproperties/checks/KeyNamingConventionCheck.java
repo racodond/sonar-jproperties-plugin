@@ -42,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 public class KeyNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
 
-  private static final String DEFAULT_FORMAT = "^[a-z]+[-._a-z0-9]*$";
+  private static final String DEFAULT_FORMAT = "^[.a-zA-Z0-9]+$";
   @RuleProperty(
     key = "Format",
     description = "Regular expression used to check the key against",
