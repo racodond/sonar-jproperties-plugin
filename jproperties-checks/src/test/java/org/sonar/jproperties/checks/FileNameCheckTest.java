@@ -38,23 +38,23 @@ public class FileNameCheckTest {
 
   @Test
   public void should_not_follow_the_default_naming_convention_and_raise_an_issue() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name_ko.properties"), check);
+    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name.ko.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .withMessage("Rename this file to match this regular expression: \"[a-z][A-Za-z0-9]+\\.properties\"")
+      .withMessage("Rename this file to match this regular expression: \"[_A-Za-z0-9]+\\.properties\"")
       .noMore();
   }
 
   @Test
   public void should_follow_a_custom_naming_convention_and_not_raise_an_issue() {
-    check.setFormat("[a-z][a-z_]+\\.properties");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name_ko.properties"), check);
+    check.setFormat("[a-z][._a-z]+\\.properties");
+    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name.ko.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
   }
 
   @Test
   public void should_not_follow_a_custom_naming_convention_and_raise_an_issue() {
     check.setFormat("[a-z][a-z]+\\.properties");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name_ko.properties"), check);
+    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name.ko.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
       .withMessage("Rename this file to match this regular expression: \"[a-z][a-z]+\\.properties\"")
       .noMore();
