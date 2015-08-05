@@ -9,16 +9,6 @@
 bank-account-number=123456   # Noncompliant
 bank_account_owner=John Doe  # Noncompliant
 </pre>
-<li>Whenever possible, use lowercase characters. For example, prefer:</li>
-<pre>
-bank.account.number=123456
-bank.account.owner=John Doe
-</pre>
-to
-<pre>
-Bank.Account.Number=123456
-Bank.Account.Owner=John Doe
-</pre>
 <li>Follow OOP concept as much as possible. For example, prefer:
 <pre>
 bank.account.number=123456
@@ -30,6 +20,24 @@ bankAccountNumber=123456
 bankAccountOwner=John Doe
 </pre>
 </li>
+<li>Whenever possible, use lowercase characters. For example, prefer:</li>
+<pre>
+bank.account.number=123456
+bank.account.owner=John Doe
+</pre>
+to
+<pre>
+Bank.Account.Number=123456
+Bank.Account.Owner=John Doe
+</pre>
+But keep it readable. For example, prefer:
+<pre>
+font.timesNewRoman.size=10
+</pre>
+to
+<pre>
+font.timesnewroman.size=10
+</pre>
 </ul>
 </p>
 
