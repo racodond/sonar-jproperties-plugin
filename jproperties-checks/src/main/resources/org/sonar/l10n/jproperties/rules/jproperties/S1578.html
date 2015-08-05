@@ -6,12 +6,8 @@
   following guidelines:
 <ul>
 <li>Suffix files with <code>.properties</code></li>
-<li>Only use letters, digits and '_' characters</li>
-<pre>
-myProperties.p            # Noncompliant
-my-properties.properties  # Noncompliant
-</pre>
-<li>Refrain from using '_' characters. Only use them when mandatory such as in i18n Java resource bundles.</li>
+<li>Only use letters, digits, '_' and '-' characters</li>
+<li>Refrain from using '_' and '-' characters. Only use them when mandatory such as in i18n Java resource bundles.</li>
 <li>Extensively use Camel Case. For example, prefer:
 <pre>
 myProperties.properties
