@@ -79,13 +79,13 @@ public class SeparatorConventionCheck extends SquidCheck<LexerlessGrammar> {
     if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
       int elementFirstCharacter = astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT).getToken().getColumn();
       if ("=".equals(separator) && elementFirstCharacter > separatorPosition + 1) {
-        getContext().createLineViolation(this, "Remove the whitespaces between the separator and the element.", astNode);
+        getContext().createLineViolation(this, "Remove the whitespaces between the separator and the value.", astNode);
       }
       if (":".equals(separator)) {
         if (elementFirstCharacter == separatorPosition + 1) {
-          getContext().createLineViolation(this, "Add a whitespace between the separator and the element.", astNode);
+          getContext().createLineViolation(this, "Add a whitespace between the separator and the value.", astNode);
         } else if (elementFirstCharacter > separatorPosition + 2) {
-          getContext().createLineViolation(this, "Leave one single whitespace between the separator and the element.", astNode);
+          getContext().createLineViolation(this, "Leave one single whitespace between the separator and the value.", astNode);
         }
       }
     }

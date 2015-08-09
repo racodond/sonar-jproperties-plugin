@@ -28,7 +28,7 @@ import org.sonar.squidbridge.checks.CheckMessagesVerifier;
 
 public class EmptyElementTest {
 
-  private final String MESSAGE = "Remove this property whose element is empty.";
+  private final String MESSAGE = "Remove this property whose value is empty.";
   private EmptyElementCheck check = new EmptyElementCheck();
 
   @Test

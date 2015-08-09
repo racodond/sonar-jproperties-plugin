@@ -32,8 +32,8 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "empty-element",
-  name = "Property with empty element should be removed",
-  priority = Priority.MAJOR,
+  name = "Property with empty value should be removed",
+  priority = Priority.CRITICAL,
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
@@ -48,7 +48,7 @@ public class EmptyElementCheck extends SquidCheck<LexerlessGrammar> {
   @Override
   public void visitNode(AstNode astNode) {
     if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) == null) {
-      getContext().createLineViolation(this, "Remove this property whose element is empty.", astNode);
+      getContext().createLineViolation(this, "Remove this property whose value is empty.", astNode);
     }
   }
 

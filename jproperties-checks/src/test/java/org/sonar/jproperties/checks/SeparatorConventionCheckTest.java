@@ -36,7 +36,7 @@ public class SeparatorConventionCheckTest {
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
       .atLine(3).withMessage("Use '=' as separator instead.").next()
       .atLine(4).withMessage("Remove the whitespaces between the key and the separator.").next()
-      .atLine(5).withMessage("Remove the whitespaces between the separator and the element.").noMore();
+      .atLine(5).withMessage("Remove the whitespaces between the separator and the value.").noMore();
   }
 
   @Test
@@ -45,9 +45,9 @@ public class SeparatorConventionCheckTest {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionColon.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
       .atLine(3).withMessage("Use ':' as separator instead.").next()
-      .atLine(4).withMessage("Add a whitespace between the separator and the element.").next()
+      .atLine(4).withMessage("Add a whitespace between the separator and the value.").next()
       .atLine(4).withMessage("Remove the whitespaces between the key and the separator.").next()
-      .atLine(5).withMessage("Leave one single whitespace between the separator and the element.").noMore();
+      .atLine(5).withMessage("Leave one single whitespace between the separator and the value.").noMore();
   }
 
   @Test

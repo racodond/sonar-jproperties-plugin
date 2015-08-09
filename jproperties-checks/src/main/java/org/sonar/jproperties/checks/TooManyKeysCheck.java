@@ -36,8 +36,8 @@ import org.sonar.sslr.parser.LexerlessGrammar;
   key = "maximum-number-keys",
   name = "The number of keys should be reduced",
   priority = Priority.MAJOR,
-  tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
+  tags = {Tags.BRAIN_OVERLOAD})
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class TooManyKeysCheck extends SquidCheck<LexerlessGrammar> {
