@@ -1,0 +1,9 @@
+<p>Defining several keys holding the same value is confusing. It may also lead to issues when one key's value is changed but not the others'. Thus, you should merge those keys.</p>
+<h2>Noncompliant Code Example</h2>
+Those three keys hold the same value:
+<pre>
+title=SonarQube is an open platform to manage code quality. As such, it covers the 7 axes of code quality.
+description=SonarQube is an open platform to manage code quality. As such, it covers the 7 axes of code quality.
+details=SonarQube is an open platform to manage code quality. \
+        As such, it covers the 7 axes of code quality.
+</pre>
