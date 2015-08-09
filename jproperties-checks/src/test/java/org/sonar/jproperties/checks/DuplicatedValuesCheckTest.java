@@ -19,36 +19,24 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
 
-import java.util.Collection;
+import org.junit.Test;
+import org.sonar.jproperties.JavaPropertiesAstScanner;
+import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.squidbridge.checks.CheckMessagesVerifier;
 
-public final class CheckList {
+public class DuplicatedValuesCheckTest {
 
-  public static final String REPOSITORY_NAME = "SonarQube";
-
-  private CheckList() {
+  @Test
+  public void should_find_some_duplicated_values_and_raise_issues() {
+    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(
+      new File("src/test/resources/checks/duplicatedValues.properties"),
+      new DuplicatedValuesCheck());
+    CheckMessagesVerifier.verify(file.getCheckMessages())
+      .next().atLine(3).withMessage("Merge keys \"key1, key2, key3\" that have the same value \"blabla\".")
+      .next().atLine(10).withMessage("Merge keys \"long1, long2, cut1, cut2\" that have the same value \"SonarQube is an open platform to manage code quali...\".")
+      .noMore();
   }
 
-  @SuppressWarnings("rawtypes")
-  public static Collection<Class> getChecks() {
-    return ImmutableList.<Class>of(
-      CommentConventionCheck.class,
-      CommentRegularExpressionCheck.class,
-      DuplicatedKeysCheck.class,
-      DuplicatedValuesCheck.class,
-      EmptyElementCheck.class,
-      FileNameCheck.class,
-      FixmeTagPresenceCheck.class,
-      IndentationCheck.class,
-      KeyNamingConventionCheck.class,
-      LineLengthCheck.class,
-      MissingNewlineAtEndOfFileCheck.class,
-      ParsingErrorCheck.class,
-      SeparatorConventionCheck.class,
-      TabCharacterCheck.class,
-      TodoTagPresenceCheck.class,
-      TooManyKeysCheck.class
-      );
-  }
 }
