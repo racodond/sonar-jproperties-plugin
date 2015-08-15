@@ -17,42 +17,34 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.parser;
+package org.sonar.jproperties.parser;
 
 import org.junit.Test;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class CommentsTest extends TestBase {
+public class ElementTest extends TestBase {
 
   private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
 
   @Test
-  public void should_match_comments_starting_with_hash_sign() {
-    assertThat(b.rule(JavaPropertiesGrammar.WHITESPACES_AND_COMMENTS))
-      .matches("#abc")
-      .matches(" #abc")
-      .matches(" # abc")
-      .matches(" # abc ");
+  public void should_match_elements() {
+    assertThat(b.rule(JavaPropertiesGrammar.ELEMENT))
+      .matches("abc")
+      .matches("abc.def")
+      .matches("abc=def")
+      .matches("abc=:def")
+      .matches(" abc")
+      .matches("  abc");
   }
 
   @Test
-  public void should_match_comments_starting_with_exclamation_mark() {
-    assertThat(b.rule(JavaPropertiesGrammar.WHITESPACES_AND_COMMENTS))
-      .matches("!abc")
-      .matches(" !abc")
-      .matches(" ! abc")
-      .matches(" ! abc ");
-  }
-
-  @Test
-  public void should_not_match_strings_embedding_protected_exclamation_mark() {
-    assertThat(b.rule(JavaPropertiesGrammar.WHITESPACES_AND_COMMENTS))
-      .notMatches("\\!abc")
-      .notMatches("\\! abc")
-      .notMatches("aa\\!abc");
+  public void should_not_match_elements() {
+    assertThat(b.rule(JavaPropertiesGrammar.ELEMENT))
+      .notMatches("")
+      .notMatches(" ")
+      .notMatches("  ");
   }
 
 }

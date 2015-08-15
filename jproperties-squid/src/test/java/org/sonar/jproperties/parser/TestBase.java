@@ -17,36 +17,14 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.parser;
+package org.sonar.jproperties.parser;
 
-import org.junit.Test;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.sslr.parser.LexerlessGrammar;
+import com.google.common.base.Joiner;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
+public class TestBase {
 
-public class KeyTest extends TestBase {
-
-  private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
-
-  @Test
-  public void should_match_keys() {
-    assertThat(b.rule(JavaPropertiesGrammar.KEY))
-      .matches("abc")
-      .matches("abc.def")
-      .matches("abc\\=def")
-      .matches("abc\\=\\ \\:def")
-      .matches(" abc")
-      .matches("  abc");
-  }
-
-  @Test
-  public void should_not_match_keys() {
-    assertThat(b.rule(JavaPropertiesGrammar.KEY))
-      .notMatches("")
-      .notMatches(":")
-      .notMatches("=")
-      .notMatches(" ");
+  protected static String code(String... lines) {
+    return Joiner.on("\n").join(lines);
   }
 
 }

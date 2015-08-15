@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.ast.visitors;
+package org.sonar.jproperties.ast.visitors;
 
 import java.io.File;
 
@@ -29,7 +29,6 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.source.Highlightable;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.*;

@@ -17,43 +17,46 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.parser;
+package org.sonar.jproperties.parser;
 
 import org.junit.Test;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 import static org.sonar.sslr.tests.Assertions.assertThat;
 
-public class PropertyTest extends TestBase {
+public class PropertiesFileTest extends TestBase {
 
   private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
 
   @Test
-  public void should_match_properties() {
-    assertThat(b.rule(JavaPropertiesGrammar.PROPERTY))
-      .matches("abc=def")
-      .matches("abc =def")
-      .matches("abc= def")
-      .matches("abc = def")
-      .matches("abc  =  def")
-      .matches("abc:def")
-      .matches("abc: def")
-      .matches("abc :def")
-      .matches("abc : def")
-      .matches("abc  :  def")
-      .matches("abc:")
-      .matches("abc=")
-      .matches("a\\=\\:\\ bc=def");
+  public void should_match_properties_file() {
+    assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES))
+      .matches(code(
+        "# comments...",
+        "! comments...",
+        "abc=toto",
+        "def:titi",
+        "ghi = tutu",
+        "klm : tata",
+        "nop:sfdsfq   ",
+        "nop:",
+        "nop:   ",
+        "# comments...",
+        "! comments...",
+        "qr\\=s= 3!ll ",
+        "tuv= 777 "
+        ));
   }
 
   @Test
-  public void should_not_match_properties() {
-    assertThat(b.rule(JavaPropertiesGrammar.PROPERTY))
-      .notMatches("abcdef")
-      .notMatches("abc\\ def")
-      .notMatches("abc\\=def")
-      .notMatches("abc\\:def");
+  public void should_not_match_properties_file() {
+    assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES)).notMatches("abc");
+  }
+
+
+  @Test
+  public void should_not_match_properties_filedd() {
+    assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES)).matches(code("", "# qsf"));
   }
 
 }

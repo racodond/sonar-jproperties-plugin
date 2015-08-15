@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.ast.visitors;
+package org.sonar.jproperties.ast.visitors;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -33,8 +33,6 @@ import org.mockito.Mockito;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.source.Highlightable;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
-import org.sonar.jproperties.ast.visitors.SyntaxHighlighterVisitor;
 
 import static org.mockito.Mockito.mock;
 

@@ -17,14 +17,34 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.parser;
+package org.sonar.jproperties.parser;
 
-import com.google.common.base.Joiner;
+import org.junit.Test;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-public class TestBase {
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-  protected static String code(String... lines) {
-    return Joiner.on("\n").join(lines);
+public class SeparatorTest extends TestBase {
+
+  private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
+
+  @Test
+  public void should_match_separators() {
+    assertThat(b.rule(JavaPropertiesGrammar.SEPARATOR))
+      .matches(":")
+      .matches("=")
+      .matches(" :")
+      .matches(" =")
+      .matches("  :")
+      .matches("  =");
+  }
+
+  @Test
+  public void should_not_match_separators() {
+    assertThat(b.rule(JavaPropertiesGrammar.SEPARATOR))
+      .notMatches("\\ ")
+      .notMatches("\\:")
+      .notMatches("\\=");
   }
 
 }

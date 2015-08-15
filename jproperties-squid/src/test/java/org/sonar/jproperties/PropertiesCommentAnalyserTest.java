@@ -17,38 +17,39 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties;
+package org.sonar.jproperties;
 
-import com.google.common.base.Charsets;
-
-import java.nio.charset.Charset;
-
+import org.junit.Rule;
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
+import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
-public class PropertiesConfigurationTest {
+public class PropertiesCommentAnalyserTest {
+
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
+
+  private JavaPropertiesCommentAnalyser analyser = new JavaPropertiesCommentAnalyser();
 
   @Test
-  public void charset() {
-    Charset charset = mock(Charset.class);
-    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(charset);
-    assertThat(conf.getCharset()).isSameAs(charset);
+  public void content() {
+    assertThat(analyser.getContents("# comment")).isEqualTo(" comment");
+    assertThat(analyser.getContents("! comment")).isEqualTo(" comment");
+    assertThat(analyser.getContents("#comment")).isEqualTo("comment");
+    assertThat(analyser.getContents("!comment")).isEqualTo("comment");
   }
 
   @Test
-  public void ignoreHeaderComments() {
-    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(Charsets.UTF_8);
+  public void blank() {
+    assertThat(analyser.isBlank(" ")).isTrue();
+    assertThat(analyser.isBlank("  ")).isTrue();
+  }
 
-    assertThat(conf.ignoreHeaderComments()).isFalse();
-
-    conf.ignoreHeaderComments(true);
-    assertThat(conf.ignoreHeaderComments()).isTrue();
-
-    conf.ignoreHeaderComments(false);
-    assertThat(conf.ignoreHeaderComments()).isFalse();
+  @Test
+  public void unknown_type_of_comments() {
+    thrown.expect(IllegalArgumentException.class);
+    analyser.getContents("");
   }
 
 }

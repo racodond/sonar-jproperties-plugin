@@ -17,35 +17,37 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.javaProperties.parser;
+package org.sonar.jproperties;
+
+import com.google.common.base.Charsets;
+
+import java.nio.charset.Charset;
 
 import org.junit.Test;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
-import static org.sonar.sslr.tests.Assertions.assertThat;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
-public class SeparatorTest extends TestBase {
-
-  private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
+public class PropertiesConfigurationTest {
 
   @Test
-  public void should_match_separators() {
-    assertThat(b.rule(JavaPropertiesGrammar.SEPARATOR))
-      .matches(":")
-      .matches("=")
-      .matches(" :")
-      .matches(" =")
-      .matches("  :")
-      .matches("  =");
+  public void charset() {
+    Charset charset = mock(Charset.class);
+    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(charset);
+    assertThat(conf.getCharset()).isSameAs(charset);
   }
 
   @Test
-  public void should_not_match_separators() {
-    assertThat(b.rule(JavaPropertiesGrammar.SEPARATOR))
-      .notMatches("\\ ")
-      .notMatches("\\:")
-      .notMatches("\\=");
+  public void ignoreHeaderComments() {
+    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(Charsets.UTF_8);
+
+    assertThat(conf.ignoreHeaderComments()).isFalse();
+
+    conf.ignoreHeaderComments(true);
+    assertThat(conf.ignoreHeaderComments()).isTrue();
+
+    conf.ignoreHeaderComments(false);
+    assertThat(conf.ignoreHeaderComments()).isFalse();
   }
 
 }
