@@ -28,7 +28,7 @@ import org.junit.Test;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
-public class PropertiesConfigurationTest {
+public class JavaPropertiesConfigurationTest {
 
   @Test
   public void charset() {

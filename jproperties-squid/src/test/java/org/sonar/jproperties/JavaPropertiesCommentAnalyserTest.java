@@ -25,7 +25,7 @@ import org.junit.rules.ExpectedException;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class PropertiesCommentAnalyserTest {
+public class JavaPropertiesCommentAnalyserTest {
 
   @Rule
   public ExpectedException thrown = ExpectedException.none();

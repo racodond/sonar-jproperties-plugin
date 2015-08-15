@@ -27,7 +27,7 @@ import org.sonar.squidbridge.api.SourceFile;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class PropertiesAstScannerTest {
+public class JavaPropertiesAstScannerTest {
 
   private final String path = "src/test/resources/myProperties.properties";
 
