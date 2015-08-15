@@ -80,13 +80,13 @@ public class JavaPropertiesSquidSensorTest {
     Project project = new Project("key");
     FileSystem fs = mock(FileSystem.class);
     when(fs.predicates()).thenReturn(mock(FilePredicates.class));
-    JavaPropertiesSquidSensor cssSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class));
+    JavaPropertiesSquidSensor javaPropertiesSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class));
 
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ListUtils.EMPTY_LIST);
-    assertThat(cssSensor.shouldExecuteOnProject(project)).isFalse();
+    assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isFalse();
 
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ImmutableList.of(new File("/tmp")));
-    assertThat(cssSensor.shouldExecuteOnProject(project)).isTrue();
+    assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isTrue();
   }
 
   @Test

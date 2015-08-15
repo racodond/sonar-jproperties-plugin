@@ -36,8 +36,8 @@ public class JavaPropertiesTest {
 
   @Test
   public void default_suffixes() {
-    JavaProperties css = new JavaProperties(mock(Settings.class));
-    assertThat(css.getFileSuffixes()).containsOnly(".properties");
+    JavaProperties javaProperties = new JavaProperties(mock(Settings.class));
+    assertThat(javaProperties.getFileSuffixes()).containsOnly(".properties");
   }
 
   @Test
@@ -45,8 +45,8 @@ public class JavaPropertiesTest {
     Settings settings = new Settings();
     settings.setProperty("sonar.javaProperties.file.suffixes", ".foo,bar");
 
-    JavaProperties css = new JavaProperties(settings);
-    assertThat(css.getFileSuffixes()).containsOnly(".foo", "bar");
+    JavaProperties javaProperties = new JavaProperties(settings);
+    assertThat(javaProperties.getFileSuffixes()).containsOnly(".foo", "bar");
   }
 
 }
