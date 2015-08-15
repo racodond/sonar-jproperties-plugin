@@ -15,7 +15,7 @@
   <packaging>pom</packaging>
 
   <name>SonarQube Java Properties Plugin</name>
-  <description>Enables analysis of Java Properties file in SonarQube</description>
+  <description>Enables analysis of Java Properties files in SonarQube</description>
   <url/>
   <inceptionYear>2015</inceptionYear>
   <organization>
@@ -47,14 +47,14 @@
   </modules>
 
   <scm>
-    <connection>scm:git@github.com:racodond/sonar-jproperties.git</connection>
-    <developerConnection>scm:git@github.com:racodond/sonar-jproperties.git</developerConnection>
-    <url>https://github.com/racodond/sonar-jproperties</url>
+    <connection>scm:git@github.com:racodond/sonar-jproperties-plugin.git</connection>
+    <developerConnection>scm:git@github.com:racodond/sonar-jproperties-plugin.git</developerConnection>
+    <url>https://github.com/racodond/sonar-jproperties-plugin</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/racodond/sonar-jproperties/issues</url>
+    <url>https://github.com/racodond/sonar-jproperties-plugin/issues</url>
   </issueManagement>
 
   <properties>
