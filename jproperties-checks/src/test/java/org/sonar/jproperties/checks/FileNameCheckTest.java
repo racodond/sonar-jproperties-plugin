@@ -40,7 +40,7 @@ public class FileNameCheckTest {
   public void should_not_follow_the_default_naming_convention_and_raise_an_issue() {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name.ko.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .withMessage("Rename this file to match this regular expression: \"^[A-Za-z][-_A-Za-z0-9]*\\.properties$\"")
+      .withMessage("Rename this file to match this regular expression: ^[A-Za-z][-_A-Za-z0-9]*\\.properties$")
       .noMore();
   }
 
@@ -56,7 +56,7 @@ public class FileNameCheckTest {
     check.setFormat("^[a-z]+\\.properties$");
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/file_name.ko.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .withMessage("Rename this file to match this regular expression: \"^[a-z]+\\.properties$\"")
+      .withMessage("Rename this file to match this regular expression: ^[a-z]+\\.properties$")
       .noMore();
   }
 

@@ -55,7 +55,7 @@ public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
   @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
-      getContext().createFileViolation(this, "Rename this file to match this regular expression: \"{0}\"", format);
+      getContext().createFileViolation(this, "Rename this file to match this regular expression: {0}", format);
     }
   }
 
