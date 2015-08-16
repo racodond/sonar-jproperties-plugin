@@ -49,7 +49,8 @@ public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
 
   @RuleProperty(
     key = "format",
-    defaultValue = DEFAULT)
+    defaultValue = DEFAULT,
+    description = "Regular expression that file names should match")
   private String format = DEFAULT;
 
   @Override
