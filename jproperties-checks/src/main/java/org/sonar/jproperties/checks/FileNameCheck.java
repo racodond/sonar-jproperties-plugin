@@ -46,7 +46,6 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
 
   public static final String DEFAULT = "^[A-Za-z][-_A-Za-z0-9]*\\.properties$";
-  private Pattern pattern = null;
 
   @RuleProperty(
     key = "format",
@@ -54,13 +53,8 @@ public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
   private String format = DEFAULT;
 
   @Override
-  public void init() {
-    pattern = Pattern.compile(format);
-  }
-
-  @Override
   public void visitFile(@Nullable AstNode astNode) {
-    if (!pattern.matcher(getContext().getFile().getName()).matches()) {
+    if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
       getContext().createFileViolation(this, "Rename this file to match this regular expression: \"{0}\"", format);
     }
   }
