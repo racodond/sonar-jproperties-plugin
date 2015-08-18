@@ -31,9 +31,11 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
+import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.issue.Issuable;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
+import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
@@ -57,11 +59,16 @@ public class JavaPropertiesSquidSensor implements Sensor {
   private AstScanner<LexerlessGrammar> scanner;
   private final SonarComponents sonarComponents;
   private final FileSystem fs;
+  private final RulesProfile rulesProfile;
+  private final ResourcePerspectives resourcePerspectives;
+  private Project project;
 
-  public JavaPropertiesSquidSensor(SonarComponents sonarComponents, FileSystem fs, CheckFactory checkFactory) {
+  public JavaPropertiesSquidSensor(SonarComponents sonarComponents, FileSystem fs, CheckFactory checkFactory, RulesProfile rulesProfile, ResourcePerspectives resourcePerspectives) {
     this.checkFactory = checkFactory;
     this.sonarComponents = sonarComponents;
     this.fs = fs;
+    this.rulesProfile = rulesProfile;
+    this.resourcePerspectives = resourcePerspectives;
   }
 
   @Override
@@ -71,8 +78,8 @@ public class JavaPropertiesSquidSensor implements Sensor {
 
   @Override
   public void analyse(Project project, SensorContext context) {
+    this.project = project;
     this.context = context;
-
     Checks<SquidAstVisitor> checks = checkFactory.<SquidAstVisitor>create(JavaProperties.KEY).addAnnotatedChecks(CheckList.getChecks());
     Collection<SquidAstVisitor> checkList = checks.all();
     JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(fs.encoding());
@@ -94,6 +101,8 @@ public class JavaPropertiesSquidSensor implements Sensor {
       saveMeasures(sonarFile, squidFile);
       saveIssues(sonarFile, squidFile, checks);
     }
+    ProjectChecks projectChecks = new ProjectChecks(project, rulesProfile, checks, resourcePerspectives);
+    projectChecks.reportProjectIssues();
   }
 
   private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {

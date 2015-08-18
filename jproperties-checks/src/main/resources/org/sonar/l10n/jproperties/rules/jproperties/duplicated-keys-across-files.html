@@ -1,0 +1,11 @@
+<p>Defining several times the same key across files may be error prone. Thus, you should carefully review those
+    cross-file duplicated keys and merge them whenever possible.</p>
+<p>This rule logs an issue each time a duplicated key is encountered. For instance, if a key is defined in 3 different
+    files, 3 issues are raised.</p>
+<p>To prevent some files from being check for cross-file duplicated keys (i18n files for example), set <a
+        href="http://docs.sonarqube.org/display/SONAR/Narrowing+the+Focus#NarrowingtheFocus-IgnoreIssues">exclusions</a>. For instance, to exclude all files in any <code>i18n</code> directory, set the <i>Ignore Issues on Multiple Criteria</i> property to:
+    <ul>
+    <li><i>Rule key pattern:</i> <code>jproperties:duplicated-keys-across-files</code></li>
+    <li><i>File path pattern:</i> <code>**/i18n/**</code></li>
+</ul>
+</p>

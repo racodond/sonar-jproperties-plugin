@@ -36,6 +36,7 @@ public final class CheckList {
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
       DuplicatedKeysCheck.class,
+      DuplicatedKeysAcrossFilesCheck.class,
       DuplicatedValuesCheck.class,
       EmptyElementCheck.class,
       FileNameCheck.class,

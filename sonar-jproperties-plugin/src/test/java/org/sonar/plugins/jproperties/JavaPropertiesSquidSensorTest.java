@@ -36,7 +36,7 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.config.Settings;
+import org.sonar.api.component.ResourcePerspectives;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.FileLinesContext;
 import org.sonar.api.measures.FileLinesContextFactory;
@@ -54,6 +54,8 @@ public class JavaPropertiesSquidSensorTest {
   private FileSystem fs;
   private FileLinesContextFactory fileLinesContextFactory;
   private CheckFactory checkFactory;
+  private ResourcePerspectives resourcePerspectives;
+  private RulesProfile rulesProfile;
 
   @Before
   public void setUp() {
@@ -70,9 +72,13 @@ public class JavaPropertiesSquidSensorTest {
     Checks<SquidAstVisitor> checks = mock(Checks.class);
     when(checks.addAnnotatedChecks(Mockito.anyCollection())).thenReturn(checks);
     checkFactory = mock(CheckFactory.class);
+
+    resourcePerspectives = mock(ResourcePerspectives.class);
+    rulesProfile = mock(RulesProfile.class);
+
     when(checkFactory.<SquidAstVisitor>create(Mockito.anyString())).thenReturn(checks);
 
-    sensor = new JavaPropertiesSquidSensor(null, fs, checkFactory);
+    sensor = new JavaPropertiesSquidSensor(null, fs, checkFactory, rulesProfile, resourcePerspectives);
   }
 
   @Test
@@ -80,7 +86,8 @@ public class JavaPropertiesSquidSensorTest {
     Project project = new Project("key");
     FileSystem fs = mock(FileSystem.class);
     when(fs.predicates()).thenReturn(mock(FilePredicates.class));
-    JavaPropertiesSquidSensor javaPropertiesSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class));
+    JavaPropertiesSquidSensor javaPropertiesSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class), mock(RulesProfile.class),
+      mock(ResourcePerspectives.class));
 
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ListUtils.EMPTY_LIST);
     assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isFalse();
