@@ -21,16 +21,18 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
+
+import java.text.MessageFormat;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "maximum-number-keys",
@@ -40,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
-public class TooManyKeysCheck extends SquidCheck<LexerlessGrammar> {
+public class TooManyKeysCheck extends JavaPropertiesCheck {
 
   private static final int DEFAULT_THRESHOLD = 200;
 
@@ -70,8 +72,8 @@ public class TooManyKeysCheck extends SquidCheck<LexerlessGrammar> {
   @Override
   public void leaveFile(AstNode astNode) {
     if (currentKey > numberKeys) {
-      getContext().createFileViolation(this, "Reduce the number of keys. The number of "
-        + "keys is {0} greater than {1} authorized.", currentKey, numberKeys);
+      addIssueOnFile(this, MessageFormat.format("Reduce the number of keys. The number of "
+        + "keys is {0} greater than {1} authorized.", currentKey, numberKeys));
     }
   }
 

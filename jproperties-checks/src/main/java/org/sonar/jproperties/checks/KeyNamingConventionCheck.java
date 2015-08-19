@@ -25,12 +25,11 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "key-naming-convention",
@@ -40,7 +39,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class KeyNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
+public class KeyNamingConventionCheck extends JavaPropertiesCheck {
 
   private static final String DEFAULT_FORMAT = "^[A-Za-z][.A-Za-z0-9]*$";
   @RuleProperty(
@@ -55,10 +54,9 @@ public class KeyNamingConventionCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   @Override
-  public void leaveNode(AstNode astNode) {
-    if (!astNode.getTokenValue().matches(format)) {
-      getContext().createLineViolation(this, "Rename key \"{0}\" to match the regular expression: {1}", astNode,
-        astNode.getTokenValue(), format);
+  public void leaveNode(AstNode node) {
+    if (!node.getTokenValue().matches(format)) {
+      addIssue(node, this, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format);
     }
   }
 

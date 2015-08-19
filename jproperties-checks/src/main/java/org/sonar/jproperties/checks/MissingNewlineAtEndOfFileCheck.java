@@ -29,11 +29,10 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "empty-line-end-of-file",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class MissingNewlineAtEndOfFileCheck extends SquidCheck<LexerlessGrammar> {
+public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
 
   @Override
   public void visitFile(AstNode astNode) {
@@ -51,7 +50,7 @@ public class MissingNewlineAtEndOfFileCheck extends SquidCheck<LexerlessGrammar>
     try {
       randomAccessFile = new RandomAccessFile(getContext().getFile(), "r");
       if (!endsWithNewline(randomAccessFile)) {
-        getContext().createFileViolation(this, "Add an empty new line at the end of this file.");
+        addIssueOnFile(this, "Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new SonarException(e);

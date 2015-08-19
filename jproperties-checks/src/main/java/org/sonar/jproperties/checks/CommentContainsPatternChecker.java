@@ -22,14 +22,14 @@ package org.sonar.jproperties.checks;
 import com.sonar.sslr.api.Token;
 import com.sonar.sslr.api.Trivia;
 import org.apache.commons.lang.StringUtils;
-import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.jproperties.JavaPropertiesCheck;
 
 public class CommentContainsPatternChecker {
-  private final SquidCheck<?> check;
+  private final JavaPropertiesCheck check;
   private final String pattern;
   private final String message;
 
-  public CommentContainsPatternChecker(SquidCheck<?> check, String pattern, String message) {
+  public CommentContainsPatternChecker(JavaPropertiesCheck check, String pattern, String message) {
     this.check = check;
     this.pattern = pattern;
     this.message = message;

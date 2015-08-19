@@ -29,12 +29,11 @@ import java.util.Map;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "duplicated-values",
@@ -44,7 +43,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
-public class DuplicatedValuesCheck extends SquidCheck<LexerlessGrammar> {
+public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   private Map<String, List<AstNode>> elementsMap = new HashMap<>();
 
@@ -74,12 +73,10 @@ public class DuplicatedValuesCheck extends SquidCheck<LexerlessGrammar> {
     if (node.is(JavaPropertiesGrammar.PROPERTIES)) {
       for (Map.Entry<String, List<AstNode>> entry : elementsMap.entrySet()) {
         if (entry.getValue().size() > 1) {
-          getContext().createLineViolation(
-            this,
-            "Merge keys \"{0}\" that have the same value \"{1}\".",
+          addIssue(
             entry.getValue().get(0),
-            getCommaSeparatedListOfDuplicatedKeys(entry.getValue()),
-            getFiftyCharacterValue(entry.getKey()));
+            this,
+            "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".");
         }
       }
     }

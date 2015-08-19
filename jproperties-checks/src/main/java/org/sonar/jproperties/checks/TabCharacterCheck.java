@@ -30,12 +30,11 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "tab-character",
@@ -45,7 +44,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements CharsetAwareVisitor {
+public class TabCharacterCheck extends JavaPropertiesCheck implements CharsetAwareVisitor {
 
   private Charset charset;
 
@@ -64,7 +63,7 @@ public class TabCharacterCheck extends SquidCheck<LexerlessGrammar> implements C
     }
     for (String line : lines) {
       if (line.contains("\t")) {
-        getContext().createFileViolation(this, "Replace all tab characters in this file by sequences of whitespaces.");
+        addIssueOnFile(this, "Replace all tab characters in this file by sequences of whitespaces.");
         break;
       }
     }

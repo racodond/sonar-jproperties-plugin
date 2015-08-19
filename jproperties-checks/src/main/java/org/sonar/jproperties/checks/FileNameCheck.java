@@ -29,11 +29,10 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "S1578",
@@ -43,7 +42,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
+public class FileNameCheck extends JavaPropertiesCheck {
 
   public static final String DEFAULT = "^[A-Za-z][-_A-Za-z0-9]*\\.properties$";
 
@@ -56,7 +55,7 @@ public class FileNameCheck extends SquidCheck<LexerlessGrammar> {
   @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
-      getContext().createFileViolation(this, "Rename this file to match this regular expression: {0}", format);
+      addIssueOnFile(this, "Rename this file to match this regular expression: " + format);
     }
   }
 

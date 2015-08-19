@@ -23,12 +23,11 @@ import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "indentation",
@@ -38,7 +37,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class IndentationCheck extends SquidCheck<LexerlessGrammar> {
+public class IndentationCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
@@ -46,9 +45,9 @@ public class IndentationCheck extends SquidCheck<LexerlessGrammar> {
   }
 
   @Override
-  public void leaveNode(AstNode astNode) {
-    if (astNode.getToken().getColumn() != 0) {
-      getContext().createLineViolation(this, "Remove the whitespaces before the key.", astNode);
+  public void leaveNode(AstNode node) {
+    if (node.getToken().getColumn() != 0) {
+      addIssue(node, this, "Remove the whitespaces before the key.");
     }
   }
 

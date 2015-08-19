@@ -29,12 +29,10 @@ import java.util.Map;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = DuplicatedKeysAcrossFilesCheck.RULE_KEY,
@@ -43,7 +41,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
   tags = {Tags.BUG})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
-public class DuplicatedKeysAcrossFilesCheck extends SquidCheck<LexerlessGrammar> {
+public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public static final String RULE_KEY = "duplicated-keys-across-files";
 

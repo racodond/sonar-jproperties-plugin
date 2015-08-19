@@ -23,12 +23,11 @@ import com.sonar.sslr.api.AstNode;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "empty-element",
@@ -38,7 +37,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class EmptyElementCheck extends SquidCheck<LexerlessGrammar> {
+public class EmptyElementCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
@@ -48,7 +47,7 @@ public class EmptyElementCheck extends SquidCheck<LexerlessGrammar> {
   @Override
   public void visitNode(AstNode astNode) {
     if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) == null) {
-      getContext().createLineViolation(this, "Remove this property whose value is empty.", astNode);
+      addIssue(astNode, this, "Remove this property whose value is empty.");
     }
   }
 

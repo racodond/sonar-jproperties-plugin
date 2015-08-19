@@ -33,11 +33,10 @@ import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "comment-convention",
@@ -47,7 +46,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("1min")
-public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> implements AstAndTokenVisitor {
+public class CommentConventionCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
   private static final String DEFAULT_FORMAT = "#";
   private static final Logger LOG = LoggerFactory.getLogger(CommentConventionCheck.class);
@@ -79,7 +78,7 @@ public class CommentConventionCheck extends SquidCheck<LexerlessGrammar> impleme
       while (iterator.hasNext()) {
         Trivia trivia = (Trivia) iterator.next();
         if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-          this.getContext().createLineViolation(this, "Use starting comment token '" + startingCommentToken + "' instead.", trivia.getToken());
+          addIssue(trivia.getToken().getLine(), this, "Use starting comment token '" + startingCommentToken + "' instead.");
         }
       }
     }

@@ -27,12 +27,11 @@ import java.util.List;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "duplicated-keys",
@@ -42,7 +41,7 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class DuplicatedKeysCheck extends SquidCheck<LexerlessGrammar> {
+public class DuplicatedKeysCheck extends JavaPropertiesCheck {
 
   private List<String> keys = Lists.newArrayList();
 
@@ -57,7 +56,7 @@ public class DuplicatedKeysCheck extends SquidCheck<LexerlessGrammar> {
       keys.clear();
     } else {
       if (keys.contains(astNode.getTokenValue())) {
-        getContext().createLineViolation(this, "Remove the duplicated key \"{0}\".", astNode, astNode.getTokenValue());
+        addIssue(astNode, this, "Remove the duplicated key \"" + astNode.getTokenValue() + "\".");
       } else {
         keys.add(astNode.getTokenValue());
       }
