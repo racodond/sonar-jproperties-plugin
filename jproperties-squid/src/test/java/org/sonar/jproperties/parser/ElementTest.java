@@ -36,7 +36,14 @@ public class ElementTest extends TestBase {
       .matches("abc=def")
       .matches("abc=:def")
       .matches(" abc")
-      .matches("  abc");
+      .matches("  abc")
+      .matches("\\u8ACB\\u7A0D")
+      .matches("\\u8ACB")
+      .matches("\\")
+      .matches(multiLineUnixLineEnding("\\", "\\", "  abc \\ "))
+      .matches(multiLineWindowsLineEnding("\\", "\\", "  abc \\ "))
+      .matches(multiLineUnixLineEnding("\\", "\\", "  abc \\ "))
+      .matches(multiLineWindowsLineEnding("\\", "\\", "  abc \\ "));
   }
 
   @Test

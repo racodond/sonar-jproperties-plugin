@@ -58,7 +58,7 @@ public enum JavaPropertiesGrammar implements GrammarRuleKey {
     b.rule(COLON_SEPARATOR).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.nextNot("\\"), ":");
     b.rule(EQUALS_SEPARATOR).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.nextNot("\\"), "=");
     b.rule(KEY).is(b.optional(WHITESPACES_AND_COMMENTS), b.regexp("([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+"));
-    b.rule(ELEMENT).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.regexp("([^\\n\\r]|(?<=\\\\)[\\n\\r]|(?<=\\n)\\r)+"));
+    b.rule(ELEMENT).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.regexp("[^\\n\\r]+((?<=\\\\)\\r?\\n[^\\n\\r]*)*"));
     b.rule(BOM).is("\ufeff");
   }
 

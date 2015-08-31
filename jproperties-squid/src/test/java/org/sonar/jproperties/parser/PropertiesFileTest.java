@@ -31,7 +31,8 @@ public class PropertiesFileTest extends TestBase {
   @Test
   public void should_match_properties_file() {
     assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES))
-      .matches(code(
+      .matches(multiLineUnixLineEnding(
+        "",
         "# comments...",
         "! comments...",
         "abc=toto",
@@ -44,19 +45,31 @@ public class PropertiesFileTest extends TestBase {
         "# comments...",
         "! comments...",
         "qr\\=s= 3!ll ",
-        "tuv= 777 "
+        "tuv= 777 ",
+        ""
+        ))
+      .matches(multiLineWindowsLineEnding(
+        "",
+        "# comments...",
+        "! comments...",
+        "abc=toto",
+        "def:titi",
+        "ghi = tutu",
+        "klm : tata",
+        "nop:sfdsfq   ",
+        "nop:",
+        "nop:   ",
+        "# comments...",
+        "! comments...",
+        "qr\\=s= 3!ll ",
+        "tuv= 777 ",
+        ""
         ));
   }
 
   @Test
   public void should_not_match_properties_file() {
     assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES)).notMatches("abc");
-  }
-
-
-  @Test
-  public void should_not_match_properties_filedd() {
-    assertThat(b.rule(JavaPropertiesGrammar.PROPERTIES)).matches(code("", "# qsf"));
   }
 
 }
