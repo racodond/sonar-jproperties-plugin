@@ -80,8 +80,10 @@ public class SyntaxHighlighterVisitorTest {
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "c");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "c");
+    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
+    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
     Mockito.verify(highlighting).done();
     Mockito.verifyNoMoreInteractions(highlighting);
   }
@@ -97,8 +99,10 @@ public class SyntaxHighlighterVisitorTest {
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "c");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "c");
+    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
+    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
     Mockito.verify(highlighting).done();
     Mockito.verifyNoMoreInteractions(highlighting);
   }
@@ -114,8 +118,10 @@ public class SyntaxHighlighterVisitorTest {
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "c");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "c");
+    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
+    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
+    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
     Mockito.verify(highlighting).done();
     Mockito.verifyNoMoreInteractions(highlighting);
   }

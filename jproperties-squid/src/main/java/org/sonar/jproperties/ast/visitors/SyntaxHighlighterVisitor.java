@@ -40,7 +40,8 @@ import org.sonar.sslr.parser.LexerlessGrammar;
 public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
   private static final Map<AstNodeType, String> TYPES = ImmutableMap.<AstNodeType, String>builder()
-    .put(JavaPropertiesGrammar.KEY, "c")
+    .put(JavaPropertiesGrammar.KEY, "k")
+    .put(JavaPropertiesGrammar.ELEMENT, "p")
     .build();
 
   private final SonarComponents sonarComponents;
