@@ -22,6 +22,7 @@ package org.sonar.plugins.jproperties;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
 import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.component.ResourcePerspectives;
@@ -53,22 +54,26 @@ public class ProjectChecks {
   }
 
   public void reportProjectIssues() {
-    checkDuplicatedKeysAcrossFiles();
+    triggerkDuplicatedKeysAcrossFilesRule();
   }
 
-  private void checkDuplicatedKeysAcrossFiles() {
+  private void triggerkDuplicatedKeysAcrossFilesRule() {
     ActiveRule activeRule = rulesProfile.getActiveRule(JavaProperties.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY);
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
       if (check != null) {
-        Map<String, List<FileLine>> keys = ((DuplicatedKeysAcrossFilesCheck) check).getKeys();
-        Iterator it = keys.entrySet().iterator();
-        while (it.hasNext()) {
-          Map.Entry pair = (Map.Entry) it.next();
-          if (((List<FileLine>) pair.getValue()).size() > 1) {
-            addIssue(DuplicatedKeysAcrossFilesCheck.RULE_KEY, "Remove this cross-file duplicated key", ((List<FileLine>) pair.getValue()).get(0));
-          }
-        }
+        checkDuplicatedKeysAcrossFiles((DuplicatedKeysAcrossFilesCheck) check);
+      }
+    }
+  }
+
+  private void checkDuplicatedKeysAcrossFiles(@Nonnull DuplicatedKeysAcrossFilesCheck check) {
+    Map<String, List<FileLine>> keys = check.getKeys();
+    Iterator it = keys.entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry pair = (Map.Entry) it.next();
+      if (((List<FileLine>) pair.getValue()).size() > 1) {
+        addIssue(DuplicatedKeysAcrossFilesCheck.RULE_KEY, "Remove this cross-file duplicated key", ((List<FileLine>) pair.getValue()).get(0));
       }
     }
   }

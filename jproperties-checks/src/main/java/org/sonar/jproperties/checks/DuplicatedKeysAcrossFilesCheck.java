@@ -19,6 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 
@@ -63,6 +64,11 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public Map<String, List<FileLine>> getKeys() {
     return keys;
+  }
+
+  @VisibleForTesting
+  public void setKeys(Map<String, List<FileLine>> keys) {
+    this.keys = keys;
   }
 
 }

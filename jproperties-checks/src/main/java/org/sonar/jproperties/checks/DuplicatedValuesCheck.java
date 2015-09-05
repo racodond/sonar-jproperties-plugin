@@ -82,7 +82,7 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     }
   }
 
-  private String getCommaSeparatedListOfDuplicatedKeys(List<AstNode> keyNodes) {
+  private static String getCommaSeparatedListOfDuplicatedKeys(List<AstNode> keyNodes) {
     StringBuilder keys = new StringBuilder();
     for (AstNode keyNode : keyNodes) {
       if (keys.length() != 0) {
@@ -93,11 +93,11 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     return keys.toString();
   }
 
-  private String getFiftyCharacterValue(String value) {
+  private static String getFiftyCharacterValue(String value) {
     return value.length() > 50 ? value.substring(0, 50) + "..." : value;
   }
 
-  private String getValueWithoutLineBreak(String value) {
+  private static String getValueWithoutLineBreak(String value) {
     return value.replaceAll("\\\\\\n\\s*", "");
   }
 

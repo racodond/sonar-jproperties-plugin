@@ -55,4 +55,9 @@ public class JavaPropertiesAstScannerTest {
     assertThat(file.getInt(JavaPropertiesMetric.COMMENT_LINES)).isEqualTo(4);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void file_not_found() {
+    JavaPropertiesAstScanner.scanSingleFile(new File("blabla"));
+  }
+
 }
