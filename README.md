@@ -18,5 +18,5 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
 
 ## Usage
 1. [Install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
-2. Install the Java Properties plugin either by a [direct download](https://github.com/racodond/sonar-jproperties-plugin/releases) or through the [update center](http://docs.sonarqube.org/display/SONAR/Update+Center).
+2. Install the Java Properties plugin by a [direct download](https://github.com/racodond/sonar-jproperties-plugin/releases).
 3. Install your [favorite analyzer](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Runner, Maven, etc.) and analyze your code.
