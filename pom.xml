@@ -16,7 +16,7 @@
 
   <name>SonarQube Java Properties Plugin</name>
   <description>Enables analysis of Java Properties files in SonarQube</description>
-  <url/>
+  <url>https://github.com/racodond/sonar-jproperties-plugin</url>
   <inceptionYear>2015</inceptionYear>
   <organization>
     <name>David RACODON</name>
