@@ -21,10 +21,15 @@ package org.sonar.jproperties.checks;
 
 public class Tags {
 
-  public static final String CONVENTION = "convention";
-  public static final String BUG = "bug";
-  public static final String PITFALL = "pitfall";
   public static final String BRAIN_OVERLOAD = "brain-overload";
+  public static final String BUG = "bug";
+  public static final String CONVENTION = "convention";
+  public static final String PITFALL = "pitfall";
+
+  public static final String SECURITY = "security";
+  public static final String CWE = "cwe";
+  public static final String OWASP_A2 = "owasp-a2";
+  public static final String SANS_TOP25_POROUS = "sans-top25-porous";
 
   private Tags() {
     // This class only defines constants

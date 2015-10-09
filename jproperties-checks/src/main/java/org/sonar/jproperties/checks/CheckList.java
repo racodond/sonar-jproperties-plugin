@@ -41,6 +41,7 @@ public final class CheckList {
       EmptyElementCheck.class,
       FileNameCheck.class,
       FixmeTagPresenceCheck.class,
+      HardCodedCredentialsCheck.class,
       IndentationCheck.class,
       KeyNamingConventionCheck.class,
       LineLengthCheck.class,
