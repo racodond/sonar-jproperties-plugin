@@ -50,7 +50,7 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   @RuleProperty(
     key = "valuesToIgnore",
-    description = "Comma-separated list of values to ignore",
+    description = "Comma-separated list of values to ignore (case insensitive)",
     defaultValue = "" + DEFAULT_VALUES_TO_IGNORE)
   private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
 
@@ -76,7 +76,7 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     } else {
       if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
         String value = getValueWithoutLineBreak(node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getTokenValue());
-        if (!valuesToIgnore.contains(value)) {
+        if (!valuesToIgnore.toLowerCase().contains(value.toLowerCase())) {
           if (elementsMap.containsKey(value)) {
             elementsMap.get(value).add(node.getFirstChild(JavaPropertiesGrammar.KEY));
           } else {
