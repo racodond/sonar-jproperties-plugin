@@ -19,6 +19,8 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 
@@ -29,6 +31,7 @@ import java.util.Map;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
@@ -38,18 +41,32 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @Rule(
   key = "duplicated-values",
   name = "Different keys having the same value should be merged",
-  priority = Priority.CRITICAL,
+  priority = Priority.MAJOR,
   tags = {Tags.PITFALL})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
+  @RuleProperty(
+    key = "valuesToIgnore",
+    description = "Comma-separated list of values to ignore",
+    defaultValue = "" + DEFAULT_VALUES_TO_IGNORE)
+  private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
+
+  private final static String DEFAULT_VALUES_TO_IGNORE = "true,false,yes,no,0,1,-1";
   private Map<String, List<AstNode>> elementsMap = new HashMap<>();
+  private List<String> listOfValuesToIgnore;
+
+  @VisibleForTesting
+  public void setValuesToIgnore(String valuesToIgnore) {
+    this.valuesToIgnore = valuesToIgnore;
+  }
 
   @Override
   public void init() {
     subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
+    listOfValuesToIgnore = Lists.newArrayList(Splitter.on(",").split(valuesToIgnore));
   }
 
   @Override
@@ -59,10 +76,12 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     } else {
       if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
         String value = getValueWithoutLineBreak(node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getTokenValue());
-        if (elementsMap.containsKey(value)) {
-          elementsMap.get(value).add(node.getFirstChild(JavaPropertiesGrammar.KEY));
-        } else {
-          elementsMap.put(value, Lists.newArrayList(node.getFirstChild(JavaPropertiesGrammar.KEY)));
+        if (!valuesToIgnore.contains(value)) {
+          if (elementsMap.containsKey(value)) {
+            elementsMap.get(value).add(node.getFirstChild(JavaPropertiesGrammar.KEY));
+          } else {
+            elementsMap.put(value, Lists.newArrayList(node.getFirstChild(JavaPropertiesGrammar.KEY)));
+          }
         }
       }
     }
