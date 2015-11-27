@@ -10,7 +10,7 @@
     <sourceDirectory>src/</sourceDirectory>
   </build>
   <properties>
-    <sonar.sourceEncoding>utf-8</sonar.sourceEncoding>
+    <sonar.sourceEncoding>ISO-8859-1</sonar.sourceEncoding>
     <sonar.language>jproperties</sonar.language>
   </properties>
 </project>

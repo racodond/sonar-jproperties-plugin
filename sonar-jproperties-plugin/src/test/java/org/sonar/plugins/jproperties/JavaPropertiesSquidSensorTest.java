@@ -67,7 +67,7 @@ public class JavaPropertiesSquidSensorTest {
     when(fs.predicates()).thenReturn(mock(FilePredicates.class));
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(
       Arrays.asList(new File("src/test/resources/myProperties.properties")));
-    when(fs.encoding()).thenReturn(Charset.forName("UTF-8"));
+    when(fs.encoding()).thenReturn(Charset.forName("ISO-8859-1"));
 
     Checks<SquidAstVisitor> checks = mock(Checks.class);
     when(checks.addAnnotatedChecks(Mockito.anyCollection())).thenReturn(checks);

@@ -56,7 +56,7 @@ public final class JavaPropertiesAstScanner {
     if (!file.isFile()) {
       throw new IllegalArgumentException("File '" + file + "' not found.");
     }
-    AstScanner scanner = create(new JavaPropertiesConfiguration(Charsets.UTF_8), null, visitors);
+    AstScanner scanner = create(new JavaPropertiesConfiguration(Charsets.ISO_8859_1), null, visitors);
     scanner.scanFile(file);
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     if (sources.size() != 1) {

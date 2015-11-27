@@ -29,9 +29,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.colorizer.*;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 import org.sonar.sslr.toolkit.AbstractConfigurationModel;
 import org.sonar.sslr.toolkit.ConfigurationProperty;
@@ -39,14 +37,13 @@ import org.sonar.sslr.toolkit.Validators;
 
 public class JavaPropertiesConfigurationModel extends AbstractConfigurationModel {
 
-  private static final Logger LOG = LoggerFactory
-    .getLogger(JavaPropertiesConfigurationModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(JavaPropertiesConfigurationModel.class);
   private static final String CHARSET_PROPERTY_KEY = "sonar.sourceEncoding";
   private static final String END_TAG = "</span>";
 
   @VisibleForTesting
   ConfigurationProperty charsetProperty = new ConfigurationProperty("Charset",
-    CHARSET_PROPERTY_KEY, getPropertyOrDefaultValue(CHARSET_PROPERTY_KEY, "UTF-8"),
+    CHARSET_PROPERTY_KEY, getPropertyOrDefaultValue(CHARSET_PROPERTY_KEY, "ISO-8859-1"),
     Validators.charsetValidator());
 
   @Override
@@ -61,7 +58,7 @@ public class JavaPropertiesConfigurationModel extends AbstractConfigurationModel
 
   @Override
   public Parser doGetParser() {
-    return new ParserAdapter<LexerlessGrammar>(getCharset(), JavaPropertiesGrammar.createGrammar());
+    return new ParserAdapter<>(getCharset(), JavaPropertiesGrammar.createGrammar());
   }
 
   @Override
@@ -71,11 +68,6 @@ public class JavaPropertiesConfigurationModel extends AbstractConfigurationModel
       new CDocTokenizer("<span class=\"cd\">", END_TAG),
       new JavadocTokenizer("<span class=\"cppd\">", END_TAG),
       new CppDocTokenizer("<span class=\"cppd\">", END_TAG));
-  }
-
-  @VisibleForTesting
-  JavaPropertiesConfiguration getConfiguration() {
-    return new JavaPropertiesConfiguration(getCharset());
   }
 
   @VisibleForTesting

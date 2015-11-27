@@ -39,7 +39,7 @@ public class JavaPropertiesConfigurationTest {
 
   @Test
   public void ignoreHeaderComments() {
-    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(Charsets.UTF_8);
+    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(Charsets.ISO_8859_1);
 
     assertThat(conf.ignoreHeaderComments()).isFalse();
 
