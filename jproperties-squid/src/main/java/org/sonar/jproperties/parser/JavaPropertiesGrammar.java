@@ -35,7 +35,6 @@ public enum JavaPropertiesGrammar implements GrammarRuleKey {
   EQUALS_SEPARATOR,
   WHITESPACES_WITHOUT_LINE_BREAK,
   WHITESPACES_AND_COMMENTS,
-  BOM,
   EOF;
 
   public static LexerlessGrammar createGrammar() {
@@ -46,7 +45,7 @@ public enum JavaPropertiesGrammar implements GrammarRuleKey {
   }
 
   private static void syntax(LexerlessGrammarBuilder b) {
-    b.rule(PROPERTIES).is(b.optional(BOM), WHITESPACES_AND_COMMENTS, b.zeroOrMore(PROPERTY), WHITESPACES_AND_COMMENTS, EOF);
+    b.rule(PROPERTIES).is(WHITESPACES_AND_COMMENTS, b.zeroOrMore(PROPERTY), WHITESPACES_AND_COMMENTS, EOF);
     b.rule(PROPERTY).is(WHITESPACES_AND_COMMENTS, KEY, SEPARATOR, b.optional(ELEMENT));
     b.rule(SEPARATOR).is(b.firstOf(COLON_SEPARATOR, EQUALS_SEPARATOR));
     b.rule(EOF).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
@@ -59,7 +58,6 @@ public enum JavaPropertiesGrammar implements GrammarRuleKey {
     b.rule(EQUALS_SEPARATOR).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.nextNot("\\"), "=");
     b.rule(KEY).is(b.optional(WHITESPACES_AND_COMMENTS), b.regexp("([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+"));
     b.rule(ELEMENT).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.regexp("[^\\n\\r]+((?<=\\\\)\\r?\\n[^\\n\\r]*)*"));
-    b.rule(BOM).is("\ufeff");
   }
 
 }

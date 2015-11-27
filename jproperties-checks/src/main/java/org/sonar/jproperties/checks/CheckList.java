@@ -33,7 +33,6 @@ public final class CheckList {
   @SuppressWarnings("rawtypes")
   public static Collection<Class> getChecks() {
     return ImmutableList.<Class>of(
-      BOMCheck.class,
       CommentConventionCheck.class,
       CommentRegularExpressionCheck.class,
       DuplicatedKeysCheck.class,
