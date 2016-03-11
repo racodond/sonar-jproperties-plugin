@@ -28,7 +28,6 @@ import java.util.Collection;
 import javax.annotation.Nullable;
 
 import org.sonar.jproperties.api.JavaPropertiesMetric;
-import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.ast.visitors.SonarComponents;
 import org.sonar.jproperties.ast.visitors.SyntaxHighlighterVisitor;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
@@ -56,7 +55,7 @@ public final class JavaPropertiesAstScanner {
     if (!file.isFile()) {
       throw new IllegalArgumentException("File '" + file + "' not found.");
     }
-    AstScanner scanner = create(new JavaPropertiesConfiguration(Charsets.ISO_8859_1), null, visitors);
+    AstScanner scanner = create(new JavaPropertiesConfiguration(), null, visitors);
     scanner.scanFile(file);
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     if (sources.size() != 1) {
@@ -66,8 +65,8 @@ public final class JavaPropertiesAstScanner {
   }
 
   public static AstScanner<LexerlessGrammar> create(JavaPropertiesConfiguration conf, @Nullable SonarComponents sonarComponents, SquidAstVisitor<LexerlessGrammar>... visitors) {
-    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<LexerlessGrammar>(new SourceProject("Java Properties Project"));
-    final Parser<LexerlessGrammar> parser = new ParserAdapter(conf.getCharset(), JavaPropertiesGrammar.createGrammar());
+    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<>(new SourceProject("Java Properties Project"));
+    final Parser<LexerlessGrammar> parser = new ParserAdapter(Charsets.ISO_8859_1, JavaPropertiesGrammar.createGrammar());
 
     AstScanner.Builder<LexerlessGrammar> builder = AstScanner.builder(context).setBaseParser(parser);
 
@@ -89,13 +88,10 @@ public final class JavaPropertiesAstScanner {
     builder.withSquidAstVisitor(new LinesOfCodeVisitor<LexerlessGrammar>(JavaPropertiesMetric.LINES_OF_CODE));
 
     if (sonarComponents != null) {
-      builder.withSquidAstVisitor(new SyntaxHighlighterVisitor(sonarComponents, conf.getCharset()));
+      builder.withSquidAstVisitor(new SyntaxHighlighterVisitor(sonarComponents));
     }
 
     for (SquidAstVisitor<LexerlessGrammar> visitor : visitors) {
-      if (visitor instanceof CharsetAwareVisitor) {
-        ((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
-      }
       builder.withSquidAstVisitor(visitor);
     }
 

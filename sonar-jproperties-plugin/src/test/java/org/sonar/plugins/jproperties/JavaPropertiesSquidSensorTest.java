@@ -19,10 +19,10 @@
  */
 package org.sonar.plugins.jproperties;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 
 import java.io.File;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.apache.commons.collections.ListUtils;
@@ -67,7 +67,7 @@ public class JavaPropertiesSquidSensorTest {
     when(fs.predicates()).thenReturn(mock(FilePredicates.class));
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(
       Arrays.asList(new File("src/test/resources/myProperties.properties")));
-    when(fs.encoding()).thenReturn(Charset.forName("ISO-8859-1"));
+    when(fs.encoding()).thenReturn(Charsets.ISO_8859_1);
 
     Checks<SquidAstVisitor> checks = mock(Checks.class);
     when(checks.addAnnotatedChecks(Mockito.anyCollection())).thenReturn(checks);

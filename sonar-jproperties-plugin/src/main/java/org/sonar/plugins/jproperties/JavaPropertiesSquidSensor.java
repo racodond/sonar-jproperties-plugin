@@ -82,8 +82,7 @@ public class JavaPropertiesSquidSensor implements Sensor {
     this.context = context;
     Checks<SquidAstVisitor> checks = checkFactory.<SquidAstVisitor>create(JavaProperties.KEY).addAnnotatedChecks(CheckList.getChecks());
     Collection<SquidAstVisitor> checkList = checks.all();
-    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(fs.encoding());
-    this.scanner = JavaPropertiesAstScanner.create(conf, sonarComponents, checkList.toArray(new SquidAstVisitor[checkList.size()]));
+    this.scanner = JavaPropertiesAstScanner.create(new JavaPropertiesConfiguration(), sonarComponents, checkList.toArray(new SquidAstVisitor[checkList.size()]));
     scanner.scanFiles(Lists.newArrayList(filesToAnalyze()));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(new QueryByType(SourceFile.class));

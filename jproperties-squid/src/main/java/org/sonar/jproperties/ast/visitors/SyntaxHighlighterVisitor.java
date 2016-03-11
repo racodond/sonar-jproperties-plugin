@@ -19,6 +19,7 @@
  */
 package org.sonar.jproperties.ast.visitors;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -27,10 +28,14 @@ import com.google.common.io.Files;
 import com.sonar.sslr.api.*;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.source.Highlightable;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
@@ -45,14 +50,12 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
     .build();
 
   private final SonarComponents sonarComponents;
-  private final Charset charset;
 
   private Highlightable.HighlightingBuilder highlighting;
   private List<Integer> lineStart;
 
-  public SyntaxHighlighterVisitor(SonarComponents sonarComponents, Charset charset) {
+  public SyntaxHighlighterVisitor(SonarComponents sonarComponents) {
     this.sonarComponents = Preconditions.checkNotNull(sonarComponents);
-    this.charset = charset;
   }
 
   @Override
@@ -76,7 +79,7 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
     lineStart = Lists.newArrayList();
     final String content;
     try {
-      content = Files.toString(getContext().getFile(), charset);
+      content = Files.toString(getContext().getFile(), Charsets.ISO_8859_1);
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }

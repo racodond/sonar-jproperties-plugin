@@ -30,7 +30,7 @@ public class JavaPropertiesConfigurationModelTest {
   @Test
   public void test() {
     assertThat(model.getTokenizers().size()).isEqualTo(4);
-    assertThat(model.getProperties()).hasSize(1);
+    assertThat(model.getProperties()).hasSize(0);
   }
 
 }

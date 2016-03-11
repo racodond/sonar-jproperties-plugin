@@ -19,41 +19,31 @@
  */
 package org.sonar.jproperties.sslr.toolkit;
 
-import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.sonar.sslr.impl.Parser;
-
-import java.nio.charset.Charset;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.colorizer.*;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 import org.sonar.sslr.toolkit.AbstractConfigurationModel;
 import org.sonar.sslr.toolkit.ConfigurationProperty;
-import org.sonar.sslr.toolkit.Validators;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JavaPropertiesConfigurationModel extends AbstractConfigurationModel {
 
-  private static final Logger LOG = LoggerFactory.getLogger(JavaPropertiesConfigurationModel.class);
-  private static final String CHARSET_PROPERTY_KEY = "sonar.sourceEncoding";
   private static final String END_TAG = "</span>";
-
-  @VisibleForTesting
-  ConfigurationProperty charsetProperty = new ConfigurationProperty("Charset",
-    CHARSET_PROPERTY_KEY, getPropertyOrDefaultValue(CHARSET_PROPERTY_KEY, "ISO-8859-1"),
-    Validators.charsetValidator());
 
   @Override
   public Charset getCharset() {
-    return Charset.forName(charsetProperty.getValue());
+    return Charsets.ISO_8859_1;
   }
 
   @Override
   public List<ConfigurationProperty> getProperties() {
-    return ImmutableList.of(charsetProperty);
+    return new ArrayList<>();
   }
 
   @Override
@@ -68,20 +58,6 @@ public class JavaPropertiesConfigurationModel extends AbstractConfigurationModel
       new CDocTokenizer("<span class=\"cd\">", END_TAG),
       new JavadocTokenizer("<span class=\"cppd\">", END_TAG),
       new CppDocTokenizer("<span class=\"cppd\">", END_TAG));
-  }
-
-  @VisibleForTesting
-  static String getPropertyOrDefaultValue(String propertyKey,
-    String defaultValue) {
-    String propertyValue = System.getProperty(propertyKey);
-
-    if (propertyValue == null) {
-      LOG.info("The property \"" + propertyKey + "\" is not set, using the default value \"" + defaultValue + "\".");
-      return defaultValue;
-    } else {
-      LOG.info("The property \"" + propertyKey + "\" is set, using its value \"" + propertyValue + "\".");
-      return propertyValue;
-    }
   }
 
 }

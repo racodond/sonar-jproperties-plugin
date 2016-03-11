@@ -19,11 +19,11 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import org.sonar.api.server.rule.RulesDefinition;
@@ -31,7 +31,6 @@ import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
@@ -44,20 +43,13 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 @ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
 @SqaleConstantRemediation("2min")
-public class TabCharacterCheck extends JavaPropertiesCheck implements CharsetAwareVisitor {
-
-  private Charset charset;
-
-  @Override
-  public void setCharset(Charset charset) {
-    this.charset = charset;
-  }
+public class TabCharacterCheck extends JavaPropertiesCheck {
 
   @Override
   public void visitFile(AstNode astNode) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), charset);
+      lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
     } catch (IOException e) {
       throw new SonarException(e);
     }

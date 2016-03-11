@@ -45,7 +45,7 @@ public class SyntaxHighlighterVisitorTest {
   private final Highlightable highlightable = Mockito.mock(Highlightable.class);
   private final Highlightable.HighlightingBuilder highlighting = Mockito.mock(Highlightable.HighlightingBuilder.class);
 
-  private final SyntaxHighlighterVisitor syntaxHighlighterVisitor = new SyntaxHighlighterVisitor(sonarComponents, Charsets.UTF_8);
+  private final SyntaxHighlighterVisitor syntaxHighlighterVisitor = new SyntaxHighlighterVisitor(sonarComponents);
 
   private final String path = "src/test/resources/syntaxHighlight.properties";
 
@@ -63,7 +63,7 @@ public class SyntaxHighlighterVisitorTest {
   @Test
   public void parse_error() throws Exception {
     File file = temp.newFile();
-    Files.write("ParseError", file, Charsets.UTF_8);
+    Files.write("ParseError", file, Charsets.ISO_8859_1);
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
 
     Mockito.verifyZeroInteractions(highlightable);
@@ -73,10 +73,10 @@ public class SyntaxHighlighterVisitorTest {
   public void test_LF() throws Exception {
     this.eol = "\n";
     File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.UTF_8).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.UTF_8);
+    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
 
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.UTF_8);
+    lines = Files.readLines(file, Charsets.ISO_8859_1);
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
@@ -92,10 +92,10 @@ public class SyntaxHighlighterVisitorTest {
   public void test_CR_LF() throws Exception {
     this.eol = "\r\n";
     File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.UTF_8).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.UTF_8);
+    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
 
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.UTF_8);
+    lines = Files.readLines(file, Charsets.ISO_8859_1);
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
@@ -111,10 +111,10 @@ public class SyntaxHighlighterVisitorTest {
   public void test_CR() throws Exception {
     this.eol = "\r";
     File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.UTF_8).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.UTF_8);
+    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
 
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.UTF_8);
+    lines = Files.readLines(file, Charsets.ISO_8859_1);
 
     Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
     Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
