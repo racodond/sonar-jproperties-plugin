@@ -20,14 +20,8 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -37,6 +31,12 @@ import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Rule(
   key = "duplicated-values",
@@ -50,13 +50,12 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   @RuleProperty(
     key = "valuesToIgnore",
-    description = "Comma-separated list of values to ignore (case insensitive)",
+    description = "Regular expression of values to ignore. See http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html for detailed regular expression syntax.",
     defaultValue = "" + DEFAULT_VALUES_TO_IGNORE)
   private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
-
-  private final static String DEFAULT_VALUES_TO_IGNORE = "true,false,yes,no,0,1,-1";
+  private static final String DEFAULT_VALUES_TO_IGNORE = "(?i)(true|false|yes|no|0|1|-1)";
   private Map<String, List<AstNode>> elementsMap = new HashMap<>();
-  private List<String> listOfValuesToIgnore;
+
 
   @VisibleForTesting
   public void setValuesToIgnore(String valuesToIgnore) {
@@ -65,8 +64,13 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
-    subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
-    listOfValuesToIgnore = Lists.newArrayList(Splitter.on(",").split(valuesToIgnore));
+    try {
+      Pattern.compile(valuesToIgnore);
+      subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException("Rule jproperties:duplicated-values - valuesToIgnore parameter \""
+        + valuesToIgnore + "\" is not a valid regular expression.");
+    }
   }
 
   @Override
@@ -76,7 +80,7 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     } else {
       if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
         String value = getValueWithoutLineBreak(node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getTokenValue());
-        if (!valuesToIgnore.toLowerCase().contains(value.toLowerCase())) {
+        if (!value.matches(valuesToIgnore)) {
           if (elementsMap.containsKey(value)) {
             elementsMap.get(value).add(node.getFirstChild(JavaPropertiesGrammar.KEY));
           } else {
