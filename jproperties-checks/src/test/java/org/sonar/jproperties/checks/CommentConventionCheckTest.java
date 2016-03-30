@@ -60,25 +60,10 @@ public class CommentConventionCheckTest {
       .atLine(3).withMessage("Use starting comment token '!' instead.").noMore();
   }
 
-  @Test
-  public void should_not_check_anything_if_the_token_parameter_value_is_not_valid1() {
+  @Test(expected = IllegalStateException.class)
+  public void should_throw_an_illegal_state_exception_as_the_starting_comment_token_parameter_is_not_valid() {
     check.setStartingCommentToken("abc");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-  }
-
-  @Test
-  public void should_not_check_anything_if_the_token_parameter_value_is_not_valid2() {
-    check.setStartingCommentToken("abc");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashOnly.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-  }
-
-  @Test
-  public void should_not_check_anything_if_the_token_parameter_value_is_not_valid3() {
-    check.setStartingCommentToken("abc");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsExclamationMarkOnly.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"), check);
   }
 
 }

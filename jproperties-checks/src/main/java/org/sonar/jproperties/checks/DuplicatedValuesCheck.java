@@ -64,13 +64,8 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
-    try {
-      Pattern.compile(valuesToIgnore);
-      subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
-    } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Rule jproperties:duplicated-values - valuesToIgnore parameter \""
-        + valuesToIgnore + "\" is not a valid regular expression.");
-    }
+    validateValuesToIgnoreParameter();
+    subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
   }
 
   @Override
@@ -122,6 +117,15 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   private static String getValueWithoutLineBreak(String value) {
     return value.replaceAll("\\\\\\n\\s*", "");
+  }
+
+  private void validateValuesToIgnoreParameter() {
+    try {
+      Pattern.compile(valuesToIgnore);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException("Rule jproperties:duplicated-values - valuesToIgnore parameter \""
+        + valuesToIgnore + "\" is not a valid regular expression.", exception);
+    }
   }
 
 }
