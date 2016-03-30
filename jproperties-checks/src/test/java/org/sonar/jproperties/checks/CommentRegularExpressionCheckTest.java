@@ -22,6 +22,7 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
+import org.sonar.api.utils.SonarException;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.checks.CheckMessagesVerifier;
@@ -49,6 +50,13 @@ public class CommentRegularExpressionCheckTest {
     check.message = "blabla";
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  }
+
+  @Test(expected = SonarException.class)
+  public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_regular_expression_is_not_valid() {
+    check.regularExpression = "(";
+    check.message = "blabla";
+    JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
   }
 
 }

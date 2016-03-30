@@ -31,6 +31,9 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 @Rule(
   key = "key-naming-convention",
   name = "Keys should follow a naming convention",
@@ -50,6 +53,7 @@ public class KeyNamingConventionCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
+    validateFormatParameter();
     subscribeTo(JavaPropertiesGrammar.KEY);
   }
 
@@ -63,6 +67,15 @@ public class KeyNamingConventionCheck extends JavaPropertiesCheck {
   @VisibleForTesting
   public void setFormat(String format) {
     this.format = format;
+  }
+
+  private void validateFormatParameter() {
+    try {
+      Pattern.compile(format);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException("Rule jproperties:key-naming-convention - format parameter \""
+        + format + "\" is not a valid regular expression.", exception);
+    }
   }
 
 }

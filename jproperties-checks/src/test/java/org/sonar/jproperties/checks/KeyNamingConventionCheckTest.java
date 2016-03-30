@@ -51,4 +51,11 @@ public class KeyNamingConventionCheckTest {
       .atLine(4).withMessage("Rename key \"my\\:Property\" to match the regular expression: a.*").next()
       .atLine(9).withMessage("Rename key \"Abc\" to match the regular expression: a.*").noMore();
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
+    check.setFormat("(");
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
+  }
+
 }
