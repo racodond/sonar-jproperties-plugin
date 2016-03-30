@@ -28,6 +28,7 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
@@ -36,6 +37,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   name = "Credentials should not be hard-coded",
   priority = Priority.CRITICAL,
   tags = {Tags.SECURITY, Tags.CWE, Tags.OWASP_A2, Tags.SANS_TOP25_POROUS})
+@ActivatedByDefault
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
 @SqaleConstantRemediation("30min")
 public class HardCodedCredentialsCheck extends JavaPropertiesCheck {

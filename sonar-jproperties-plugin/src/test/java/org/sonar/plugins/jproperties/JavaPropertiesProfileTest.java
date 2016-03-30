@@ -42,7 +42,7 @@ public class JavaPropertiesProfileTest {
 
     assertThat(profile.getName()).isEqualTo(JavaPropertiesProfile.SONARQUBE_WAY_PROFILE_NAME);
     assertThat(profile.getLanguage()).isEqualTo(JavaProperties.KEY);
-    assertThat(profile.getActiveRulesByRepository(JavaProperties.KEY)).hasSize(15);
+    assertThat(profile.getActiveRulesByRepository(JavaProperties.KEY)).hasSize(16);
     assertThat(validation.hasErrors()).isFalse();
   }
 
