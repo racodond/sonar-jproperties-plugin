@@ -28,14 +28,9 @@ import com.google.common.io.Files;
 import com.sonar.sslr.api.*;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.source.Highlightable;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;

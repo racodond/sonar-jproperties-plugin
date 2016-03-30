@@ -27,9 +27,6 @@ import org.sonar.squidbridge.annotations.RuleTemplate;
 import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
 @Rule(
   key = "comment-regular-expression",
   name = "Regular expression on comment",

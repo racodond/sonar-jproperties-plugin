@@ -19,12 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.io.Closeables;
 import com.sonar.sslr.api.AstNode;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
@@ -33,6 +28,9 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 @Rule(
   key = "empty-line-end-of-file",
@@ -46,16 +44,12 @@ public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
 
   @Override
   public void visitFile(AstNode astNode) {
-    RandomAccessFile randomAccessFile = null;
-    try {
-      randomAccessFile = new RandomAccessFile(getContext().getFile(), "r");
+    try (RandomAccessFile randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
         addIssueOnFile(this, "Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new SonarException(e);
-    } finally {
-      Closeables.closeQuietly(randomAccessFile);
     }
   }
 
