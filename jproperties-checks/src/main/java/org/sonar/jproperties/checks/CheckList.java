@@ -44,6 +44,7 @@ public final class CheckList {
       HardCodedCredentialsCheck.class,
       IndentationCheck.class,
       KeyNamingConventionCheck.class,
+      KeyRegularExpressionCheck.class,
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
       ParsingErrorCheck.class,
