@@ -27,8 +27,6 @@ import com.sonar.sslr.api.Trivia;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -49,9 +47,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 public class CommentConventionCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
   private static final String DEFAULT_FORMAT = "#";
-  private static final Logger LOG = LoggerFactory.getLogger(CommentConventionCheck.class);
   private Pattern pattern;
-  private boolean runCheck = true;
 
   @RuleProperty(
     key = "startingCommentToken",
@@ -61,25 +57,18 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
 
   @Override
   public void init() {
-    if (isStartingCommentTokenParameterValid()) {
-      String startingTokenToDisallow = "#".equals(startingCommentToken) ? "!" : "#";
-      pattern = Pattern.compile("^\\" + startingTokenToDisallow + ".*");
-    } else {
-      runCheck = false;
-      LOG.error("Rule jproperties:comment-convention: startingCommentToken parameter value is not valid.\nActual: '" + startingCommentToken
-        + "'\nExpected: '#' or '!'\nNo check will be performed against this jproperties:comment-convention rule.");
-    }
+    validateStartingCommentTokenParameter();
+    String startingTokenToDisallow = "#".equals(startingCommentToken) ? "!" : "#";
+    pattern = Pattern.compile("^\\" + startingTokenToDisallow + ".*");
   }
 
   @Override
   public void visitToken(Token token) {
-    if (runCheck) {
-      Iterator iterator = token.getTrivia().iterator();
-      while (iterator.hasNext()) {
-        Trivia trivia = (Trivia) iterator.next();
-        if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-          addIssue(trivia.getToken().getLine(), this, "Use starting comment token '" + startingCommentToken + "' instead.");
-        }
+    Iterator iterator = token.getTrivia().iterator();
+    while (iterator.hasNext()) {
+      Trivia trivia = (Trivia) iterator.next();
+      if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
+        addIssue(trivia.getToken().getLine(), this, "Use starting comment token '" + startingCommentToken + "' instead.");
       }
     }
   }
@@ -89,8 +78,11 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
     this.startingCommentToken = startingCommentToken;
   }
 
-  private boolean isStartingCommentTokenParameterValid() {
-    return "#".equals(startingCommentToken) || "!".equals(startingCommentToken);
+  private void validateStartingCommentTokenParameter() {
+    if (!"#".equals(startingCommentToken) && !"!".equals(startingCommentToken)) {
+      throw new IllegalStateException("Rule jproperties:comment-convention: startingCommentToken parameter is not valid.\n" +
+        "Actual: '" + startingCommentToken + "'\n" + "Expected: '#' or '!'");
+    }
   }
 
 }

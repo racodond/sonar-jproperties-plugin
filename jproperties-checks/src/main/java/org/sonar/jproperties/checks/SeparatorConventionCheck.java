@@ -21,8 +21,6 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -44,7 +42,6 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 public class SeparatorConventionCheck extends JavaPropertiesCheck {
 
   private static final String DEFAULT_FORMAT = "=";
-  private static final Logger LOG = LoggerFactory.getLogger(SeparatorConventionCheck.class);
 
   @RuleProperty(
     key = "Separator",
@@ -54,12 +51,8 @@ public class SeparatorConventionCheck extends JavaPropertiesCheck {
 
   @Override
   public void init() {
-    if (isSeparatorParameterValid()) {
-      subscribeTo(JavaPropertiesGrammar.PROPERTY);
-    } else {
-      LOG.error("Rule jproperties:separator-convention: separator parameter value is not valid.\nActual: '" + separator
-        + "'\nExpected: '=' or ':'\nNo check will be performed against this jproperties:separator-convention rule.");
-    }
+    validateSeparatorParameter();
+    subscribeTo(JavaPropertiesGrammar.PROPERTY);
   }
 
   @Override
@@ -95,8 +88,11 @@ public class SeparatorConventionCheck extends JavaPropertiesCheck {
     this.separator = separator;
   }
 
-  private boolean isSeparatorParameterValid() {
-    return "=".equals(separator) || ":".equals(separator);
+  private void validateSeparatorParameter() {
+    if (!"=".equals(separator) && !":".equals(separator)) {
+      throw new IllegalStateException("Rule jproperties:separator-convention - separator parameter is not valid.\nActual: '"
+        + separator + "'\nExpected: '=' or ':'");
+    }
   }
 
 }

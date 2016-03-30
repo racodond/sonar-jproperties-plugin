@@ -34,10 +34,10 @@ public class KeyNamingConventionCheckTest {
   public void should_find_some_keys_that_do_not_follow_the_default_naming_convention_and_raise_issues() {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(4).withMessage("Rename key \"my\\:Property\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
-      .atLine(6).withMessage("Rename key \"abc-def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
-      .atLine(7).withMessage("Rename key \"abc_def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
-      .atLine(8).withMessage("Rename key \"abc/def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").noMore();
+        .atLine(4).withMessage("Rename key \"my\\:Property\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
+        .atLine(6).withMessage("Rename key \"abc-def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
+        .atLine(7).withMessage("Rename key \"abc_def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").next()
+        .atLine(8).withMessage("Rename key \"abc/def\" to match the regular expression: ^[A-Za-z][.A-Za-z0-9]*$").noMore();
   }
 
   @Test
@@ -45,10 +45,17 @@ public class KeyNamingConventionCheckTest {
     check.setFormat("a.*");
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(1).withMessage("Rename key \"my.property\" to match the regular expression: a.*").next()
-      .atLine(2).withMessage("Rename key \"myProperty\" to match the regular expression: a.*").next()
-      .atLine(3).withMessage("Rename key \"myProperty01\" to match the regular expression: a.*").next()
-      .atLine(4).withMessage("Rename key \"my\\:Property\" to match the regular expression: a.*").next()
-      .atLine(9).withMessage("Rename key \"Abc\" to match the regular expression: a.*").noMore();
+        .atLine(1).withMessage("Rename key \"my.property\" to match the regular expression: a.*").next()
+        .atLine(2).withMessage("Rename key \"myProperty\" to match the regular expression: a.*").next()
+        .atLine(3).withMessage("Rename key \"myProperty01\" to match the regular expression: a.*").next()
+        .atLine(4).withMessage("Rename key \"my\\:Property\" to match the regular expression: a.*").next()
+        .atLine(9).withMessage("Rename key \"Abc\" to match the regular expression: a.*").noMore();
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
+    check.setFormat("(");
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
+  }
+
 }

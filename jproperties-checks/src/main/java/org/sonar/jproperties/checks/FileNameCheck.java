@@ -23,6 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import javax.annotation.Nullable;
 
 import org.sonar.api.server.rule.RulesDefinition;
@@ -53,6 +54,11 @@ public class FileNameCheck extends JavaPropertiesCheck {
   private String format = DEFAULT;
 
   @Override
+  public void init() {
+    validateFormatParameter();
+  }
+
+  @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
       addIssueOnFile(this, "Rename this file to match this regular expression: " + format);
@@ -62,6 +68,15 @@ public class FileNameCheck extends JavaPropertiesCheck {
   @VisibleForTesting
   public void setFormat(String format) {
     this.format = format;
+  }
+
+  private void validateFormatParameter() {
+    try {
+      Pattern.compile(format);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException("Rule jproperties:S1578 - format parameter \""
+        + format + "\" is not a valid regular expression.", exception);
+    }
   }
 
 }
