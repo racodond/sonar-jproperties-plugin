@@ -36,7 +36,7 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "maximum-number-keys",
-  name = "The number of keys should be reduced",
+  name = "Number of keys should be reduced",
   priority = Priority.MAJOR,
   tags = {Tags.BRAIN_OVERLOAD})
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
