@@ -54,18 +54,9 @@ public class SeparatorConventionCheckTest {
       .noMore();
   }
 
-  @Test
-  public void should_not_check_anything_if_the_separator_format_parameter_is_not_valid_file_with_colons() {
+  @Test(expected = IllegalStateException.class)
+  public void should_throw_an_illegal_state_exception_as_the_separator_parameter_is_not_valid() {
     check.setSeparator("abc");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionColon.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionEquals.properties"), check);
   }
-
-  @Test
-  public void should_not_check_anything_if_the_separator_format_parameter_is_not_valid_file_with_equals() {
-    check.setSeparator("abc");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionEquals.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
-  }
-
 }

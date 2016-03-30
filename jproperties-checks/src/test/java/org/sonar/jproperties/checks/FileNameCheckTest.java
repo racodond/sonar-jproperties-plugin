@@ -60,4 +60,10 @@ public class FileNameCheckTest {
       .noMore();
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
+    check.setFormat("(");
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/fileNameOK.properties"), check);
+  }
+
 }

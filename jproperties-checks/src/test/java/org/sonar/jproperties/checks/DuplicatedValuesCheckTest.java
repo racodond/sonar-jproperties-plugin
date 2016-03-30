@@ -62,7 +62,7 @@ public class DuplicatedValuesCheckTest {
       .noMore();
   }
 
-  @Test(expected=IllegalStateException.class)
+  @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_values_to_ignore_regular_expression_is_not_valid() {
     DuplicatedValuesCheck check = new DuplicatedValuesCheck();
     check.setValuesToIgnore("(");
