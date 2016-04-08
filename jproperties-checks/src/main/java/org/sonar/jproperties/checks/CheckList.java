@@ -34,6 +34,7 @@ public final class CheckList {
   public static Collection<Class> getChecks() {
     return ImmutableList.<Class>of(
       CommentConventionCheck.class,
+      CommentedOutCodeCheck.class,
       CommentRegularExpressionCheck.class,
       DuplicatedKeysCheck.class,
       DuplicatedKeysAcrossFilesCheck.class,

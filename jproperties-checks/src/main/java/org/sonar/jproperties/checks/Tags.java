@@ -25,6 +25,7 @@ public class Tags {
   public static final String BUG = "bug";
   public static final String CONVENTION = "convention";
   public static final String PITFALL = "pitfall";
+  public static final String UNUSED = "unused";
 
   public static final String SECURITY = "security";
   public static final String CWE = "cwe";
