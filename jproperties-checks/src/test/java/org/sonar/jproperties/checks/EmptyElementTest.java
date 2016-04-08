@@ -32,7 +32,7 @@ public class EmptyElementTest {
   private EmptyElementCheck check = new EmptyElementCheck();
 
   @Test
-  public void should_find_som_empty_elements_and_raise_issues() {
+  public void should_find_some_empty_elements_and_raise_issues() {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
       .atLine(3).withMessage(MESSAGE).next()
