@@ -38,6 +38,7 @@ public final class CheckList {
       DuplicatedKeysCheck.class,
       DuplicatedKeysAcrossFilesCheck.class,
       DuplicatedValuesCheck.class,
+      EndLineCharactersCheck.class,
       EmptyElementCheck.class,
       FileNameCheck.class,
       FixmeTagPresenceCheck.class,
