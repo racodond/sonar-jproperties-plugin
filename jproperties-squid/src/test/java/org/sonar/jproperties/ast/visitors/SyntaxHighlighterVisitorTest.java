@@ -39,15 +39,12 @@ import static org.mockito.Mockito.mock;
 public class SyntaxHighlighterVisitorTest {
 
   @Rule
-  public TemporaryFolder temp = new TemporaryFolder();
+  public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   private final SonarComponents sonarComponents = Mockito.mock(SonarComponents.class);
   private final Highlightable highlightable = Mockito.mock(Highlightable.class);
   private final Highlightable.HighlightingBuilder highlighting = Mockito.mock(Highlightable.HighlightingBuilder.class);
-
   private final SyntaxHighlighterVisitor syntaxHighlighterVisitor = new SyntaxHighlighterVisitor(sonarComponents);
-
-  private final String path = "src/test/resources/syntaxHighlight.properties";
 
   private List<String> lines;
   private String eol;
@@ -62,7 +59,7 @@ public class SyntaxHighlighterVisitorTest {
 
   @Test
   public void parse_error() throws Exception {
-    File file = temp.newFile();
+    File file = temporaryFolder.newFile();
     Files.write("ParseError", file, Charsets.ISO_8859_1);
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
 
@@ -71,10 +68,8 @@ public class SyntaxHighlighterVisitorTest {
 
   @Test
   public void test_LF() throws Exception {
-    this.eol = "\n";
-    File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
-
+    eol = "\n";
+    File file = getTestFileWithProperEndLineCharacters(eol);
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
     lines = Files.readLines(file, Charsets.ISO_8859_1);
 
@@ -90,10 +85,8 @@ public class SyntaxHighlighterVisitorTest {
 
   @Test
   public void test_CR_LF() throws Exception {
-    this.eol = "\r\n";
-    File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
-
+    eol = "\r\n";
+    File file = getTestFileWithProperEndLineCharacters(eol);
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
     lines = Files.readLines(file, Charsets.ISO_8859_1);
 
@@ -109,10 +102,8 @@ public class SyntaxHighlighterVisitorTest {
 
   @Test
   public void test_CR() throws Exception {
-    this.eol = "\r";
-    File file = temp.newFile();
-    Files.write(Files.toString(new File(path), Charsets.ISO_8859_1).replaceAll("\\r\\n", "\n").replaceAll("\\n", eol), file, Charsets.ISO_8859_1);
-
+    eol = "\r";
+    File file = getTestFileWithProperEndLineCharacters(eol);
     JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
     lines = Files.readLines(file, Charsets.ISO_8859_1);
 
@@ -133,6 +124,17 @@ public class SyntaxHighlighterVisitorTest {
     }
     result += column - 1;
     return result;
+  }
+
+  private File getTestFileWithProperEndLineCharacters(String endLineCharacter) throws Exception {
+    File testFile = temporaryFolder.newFile();
+    Files.write(
+      Files.toString(new File("src/test/resources/syntaxHighlight.properties"), Charsets.ISO_8859_1)
+        .replaceAll("\\r\\n", "\n")
+        .replaceAll("\\r", "\n")
+        .replaceAll("\\n", endLineCharacter),
+      testFile, Charsets.ISO_8859_1);
+    return testFile;
   }
 
 }
