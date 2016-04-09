@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
@@ -51,7 +50,7 @@ public class TabCharacterCheck extends JavaPropertiesCheck {
     try {
       lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
     } catch (IOException e) {
-      throw new SonarException(e);
+      throw new IllegalStateException("Check jproperties:tab-character, error while reading " + getContext().getFile(), e);
     }
     for (String line : lines) {
       if (line.contains("\t")) {

@@ -76,13 +76,13 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();
     } catch (IOException e) {
-      throw new IllegalStateException("Rule jproperties:end-line-characters - File cannot be read.", e);
+      throw new IllegalStateException("Check jproperties:end-line-characters - File cannot be read.", e);
     }
   }
 
   private void validateEndLineCharactersParameter() {
     if (!"CRLF".equals(endLineCharacters) && !"CR".equals(endLineCharacters) && !"LF".equals(endLineCharacters)) {
-      throw new IllegalStateException("Rule jproperties:end-line-characters - End-line character parameter is not valid.\nActual: '"
+      throw new IllegalStateException("Check jproperties:end-line-characters - End-line character parameter is not valid.\nActual: '"
         + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
     }
   }

@@ -74,7 +74,7 @@ public class FileNameCheck extends JavaPropertiesCheck {
     try {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Rule jproperties:S1578 - format parameter \""
+      throw new IllegalStateException("Check jproperties:S1578 - format parameter \""
         + format + "\" is not a valid regular expression.", exception);
     }
   }

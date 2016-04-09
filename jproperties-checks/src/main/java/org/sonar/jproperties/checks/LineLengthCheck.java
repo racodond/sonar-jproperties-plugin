@@ -23,8 +23,13 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.List;
+import javax.annotation.Nullable;
+
 import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -32,11 +37,6 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.List;
 
 @Rule(
   key = "line-length",
@@ -62,7 +62,7 @@ public class LineLengthCheck extends JavaPropertiesCheck {
     try {
       lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
     } catch (IOException e) {
-      throw new SonarException(e);
+      throw new IllegalStateException("Check jproperties:line-length, error while reading " + getContext().getFile(), e);
     }
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);

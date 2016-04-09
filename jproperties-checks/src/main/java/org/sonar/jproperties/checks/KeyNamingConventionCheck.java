@@ -73,7 +73,7 @@ public class KeyNamingConventionCheck extends JavaPropertiesCheck {
     try {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Rule jproperties:key-naming-convention - format parameter \""
+      throw new IllegalStateException("Check jproperties:key-naming-convention - format parameter \""
         + format + "\" is not a valid regular expression.", exception);
     }
   }

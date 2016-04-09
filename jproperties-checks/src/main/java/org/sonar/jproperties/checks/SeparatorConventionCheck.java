@@ -90,7 +90,7 @@ public class SeparatorConventionCheck extends JavaPropertiesCheck {
 
   private void validateSeparatorParameter() {
     if (!"=".equals(separator) && !":".equals(separator)) {
-      throw new IllegalStateException("Rule jproperties:separator-convention - separator parameter is not valid.\nActual: '"
+      throw new IllegalStateException("Check jproperties:separator-convention - separator parameter is not valid.\nActual: '"
         + separator + "'\nExpected: '=' or ':'");
     }
   }

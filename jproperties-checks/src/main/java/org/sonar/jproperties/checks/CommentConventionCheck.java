@@ -80,7 +80,7 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
 
   private void validateStartingCommentTokenParameter() {
     if (!"#".equals(startingCommentToken) && !"!".equals(startingCommentToken)) {
-      throw new IllegalStateException("Rule jproperties:comment-convention: startingCommentToken parameter is not valid.\n" +
+      throw new IllegalStateException("Check jproperties:comment-convention: startingCommentToken parameter is not valid.\n" +
         "Actual: '" + startingCommentToken + "'\n" + "Expected: '#' or '!'");
     }
   }

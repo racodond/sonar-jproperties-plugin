@@ -20,17 +20,17 @@
 package org.sonar.jproperties.checks;
 
 import com.sonar.sslr.api.AstNode;
+
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.api.utils.SonarException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 @Rule(
   key = "empty-line-end-of-file",
@@ -49,7 +49,7 @@ public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
         addIssueOnFile("Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
-      throw new SonarException(e);
+      throw new IllegalStateException("Check jproperties:empty-line-end-of-file, error while reading " + getContext().getFile(), e);
     }
   }
 

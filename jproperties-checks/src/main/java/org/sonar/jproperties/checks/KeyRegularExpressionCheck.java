@@ -71,7 +71,7 @@ public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
     try {
       Pattern.compile(regularExpression);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Rule jproperties:key-regular-expression - regularExpression parameter \""
+      throw new IllegalStateException("Check jproperties:key-regular-expression - regularExpression parameter \""
         + regularExpression + "\" is not a valid regular expression.", exception);
     }
   }

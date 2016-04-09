@@ -122,7 +122,7 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     try {
       Pattern.compile(valuesToIgnore);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Rule jproperties:duplicated-values - valuesToIgnore parameter \""
+      throw new IllegalStateException("Check jproperties:duplicated-values - valuesToIgnore parameter \""
         + valuesToIgnore + "\" is not a valid regular expression.", exception);
     }
   }
