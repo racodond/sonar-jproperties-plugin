@@ -42,7 +42,7 @@ public class CommentContainsPatternChecker {
         String[] lines = comment.split("\r\n?|\n");
         for (int i = 0; i < lines.length; i++) {
           if (StringUtils.containsIgnoreCase(lines[i], pattern) && !isLetterAround(lines[i], pattern)) {
-            check.getContext().createLineViolation(check, message, trivia.getToken().getLine() + i);
+            check.addIssue(trivia.getToken().getLine() + i, message);
           }
         }
       }
