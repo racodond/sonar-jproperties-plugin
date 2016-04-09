@@ -60,7 +60,7 @@ public class KeyNamingConventionCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (!node.getTokenValue().matches(format)) {
-      addIssue(node, this, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format);
+      addIssue(node, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format);
     }
   }
 

@@ -72,7 +72,7 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
   @Override
   public void leaveFile(AstNode astNode) {
     if (currentKey > numberKeys) {
-      addIssueOnFile(this, MessageFormat.format("Reduce the number of keys. The number of "
+      addIssueOnFile(MessageFormat.format("Reduce the number of keys. The number of "
         + "keys is {0} greater than {1} authorized.", currentKey, numberKeys));
     }
   }

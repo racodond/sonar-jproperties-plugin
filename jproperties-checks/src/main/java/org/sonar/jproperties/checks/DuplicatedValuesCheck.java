@@ -93,7 +93,6 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
         if (entry.getValue().size() > 1) {
           addIssue(
             entry.getValue().get(0),
-            this,
             "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".");
         }
       }

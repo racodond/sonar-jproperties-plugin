@@ -61,7 +61,7 @@ public class FileNameCheck extends JavaPropertiesCheck {
   @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
-      addIssueOnFile(this, "Rename this file to match this regular expression: " + format);
+      addIssueOnFile("Rename this file to match this regular expression: " + format);
     }
   }
 

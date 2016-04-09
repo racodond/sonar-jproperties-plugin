@@ -46,7 +46,7 @@ public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
   public void visitFile(AstNode astNode) {
     try (RandomAccessFile randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
-        addIssueOnFile(this, "Add an empty new line at the end of this file.");
+        addIssueOnFile("Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new SonarException(e);

@@ -63,7 +63,7 @@ public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (node.getTokenValue().matches(regularExpression)) {
-      addIssue(node, this, message);
+      addIssue(node, message);
     }
   }
 

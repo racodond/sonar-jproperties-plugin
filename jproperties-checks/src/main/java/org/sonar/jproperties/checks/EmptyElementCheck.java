@@ -47,7 +47,7 @@ public class EmptyElementCheck extends JavaPropertiesCheck {
   @Override
   public void visitNode(AstNode astNode) {
     if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) == null) {
-      addIssue(astNode, this, "Remove this property whose value is empty.");
+      addIssue(astNode, "Remove this property whose value is empty.");
     }
   }
 

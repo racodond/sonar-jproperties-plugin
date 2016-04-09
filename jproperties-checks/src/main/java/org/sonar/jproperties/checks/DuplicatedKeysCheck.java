@@ -56,7 +56,7 @@ public class DuplicatedKeysCheck extends JavaPropertiesCheck {
       keys.clear();
     } else {
       if (keys.contains(astNode.getTokenValue())) {
-        addIssue(astNode, this, "Remove the duplicated key \"" + astNode.getTokenValue() + "\".");
+        addIssue(astNode, "Remove the duplicated key \"" + astNode.getTokenValue() + "\".");
       } else {
         keys.add(astNode.getTokenValue());
       }

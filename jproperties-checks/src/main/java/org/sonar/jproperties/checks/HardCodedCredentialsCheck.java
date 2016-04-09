@@ -53,10 +53,10 @@ public class HardCodedCredentialsCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (HARD_CODED_USERNAME.matcher(node.getTokenValue()).matches()) {
-      addIssue(node, this, "Remove this hard-coded username.");
+      addIssue(node, "Remove this hard-coded username.");
     }
     if (HARD_CODED_PASSWORD.matcher(node.getTokenValue()).matches()) {
-      addIssue(node, this, "Remove this hard-coded password.");
+      addIssue(node, "Remove this hard-coded password.");
     }
   }
 

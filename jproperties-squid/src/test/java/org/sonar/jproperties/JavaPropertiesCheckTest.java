@@ -33,7 +33,7 @@ public class JavaPropertiesCheckTest {
     JavaPropertiesCheck check = new JavaPropertiesCheck();
     check.setContext(new SquidAstVisitorContextImpl(new SourceProject("testProject")));
     check.getContext().addSourceCode(new SourceFile("abc", "src/abc.properties"));
-    check.addIssue(10, check, "Remove xxx.");
+    check.addIssue(10, "Remove xxx.");
 
     Assert.assertNotNull(check.getContext().peekSourceCode().getCheckMessages());
     Assert.assertEquals(check.getContext().peekSourceCode().getCheckMessages().size(), 1);
@@ -52,7 +52,7 @@ public class JavaPropertiesCheckTest {
     JavaPropertiesCheck check = new JavaPropertiesCheck();
     check.setContext(new SquidAstVisitorContextImpl(new SourceProject("testProject")));
     check.getContext().addSourceCode(new SourceFile("abc", "src/abc.properties"));
-    check.addIssueOnFile(check, "Remove xxx.");
+    check.addIssueOnFile("Remove xxx.");
 
     Assert.assertNotNull(check.getContext().peekSourceCode().getCheckMessages());
     Assert.assertEquals(check.getContext().peekSourceCode().getCheckMessages().size(), 1);
@@ -71,7 +71,7 @@ public class JavaPropertiesCheckTest {
     JavaPropertiesCheck check = new JavaPropertiesCheck();
     check.setContext(new SquidAstVisitorContextImpl(new SourceProject("testProject")));
     check.getContext().addSourceCode(new SourceFile("abc", "src/abc.properties"));
-    check.addIssue(2, check, "Remove xxx.", 10.0);
+    check.addIssue(2, "Remove xxx.", 10.0);
 
     Assert.assertNotNull(check.getContext().peekSourceCode().getCheckMessages());
     Assert.assertEquals(check.getContext().peekSourceCode().getCheckMessages().size(), 1);
@@ -89,7 +89,7 @@ public class JavaPropertiesCheckTest {
   public void add_issue_on_non_existing_source_code() {
     JavaPropertiesCheck check = new JavaPropertiesCheck();
     check.setContext(new SquidAstVisitorContextImpl(new SourceProject("testProject")));
-    check.addIssue(2, check, "Remove xxx.");
+    check.addIssue(2, "Remove xxx.");
   }
 
 }

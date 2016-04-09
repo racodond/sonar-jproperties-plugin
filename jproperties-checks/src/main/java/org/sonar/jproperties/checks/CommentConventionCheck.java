@@ -68,7 +68,7 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
     while (iterator.hasNext()) {
       Trivia trivia = (Trivia) iterator.next();
       if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-        addIssue(trivia.getToken().getLine(), this, "Use starting comment token '" + startingCommentToken + "' instead.");
+        addIssue(trivia.getToken().getLine(), "Use starting comment token '" + startingCommentToken + "' instead.");
       }
     }
   }

@@ -47,12 +47,12 @@ public class ParsingErrorCheck extends JavaPropertiesCheck implements AstScanner
   public void processException(Exception e) {
     StringWriter exception = new StringWriter();
     e.printStackTrace(new PrintWriter(exception));  // NOSONAR(squid:S1148): printStackTrace intentionally used
-    addIssueOnFile(this, exception.toString());
+    addIssueOnFile(exception.toString());
   }
 
   @Override
   public void processRecognitionException(RecognitionException e) {
-    addIssue(e.getLine(), this, e.getMessage());
+    addIssue(e.getLine(), e.getMessage());
   }
 
 }

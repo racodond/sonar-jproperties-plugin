@@ -35,32 +35,31 @@ import org.sonar.squidbridge.checks.SquidCheck;
 
 public class JavaPropertiesCheck extends SquidCheck {
 
-  public void addIssue(AstNode node, CodeCheck check, String message) {
-    addIssue(node.getTokenLine(), check, message, null);
+  public void addIssue(AstNode node, String message) {
+    addIssue(node.getTokenLine(), message, null);
   }
 
-  public void addIssue(AstNode node, CodeCheck check, String message, Double cost) {
-    addIssue(node.getTokenLine(), check, message, cost);
+  public void addIssue(AstNode node, String message, Double cost) {
+    addIssue(node.getTokenLine(), message, cost);
   }
 
-  public void addIssue(int line, CodeCheck check, String message) {
-    addIssue(line, check, message, null);
+  public void addIssue(int line, String message) {
+    addIssue(line, message, null);
   }
 
-  public void addIssueOnFile(CodeCheck check, String message) {
-    addIssue(-1, check, message, null);
+  public void addIssueOnFile(String message) {
+    addIssue(-1, message, null);
   }
 
-  public void addIssue(@Nullable Integer line, CodeCheck check, String message, @Nullable Double cost) {
-    Preconditions.checkNotNull(check);
+  public void addIssue(@Nullable Integer line, String message, @Nullable Double cost) {
     Preconditions.checkNotNull(message);
-    CheckMessage checkMessage = new CheckMessage(check, message);
+    CheckMessage checkMessage = new CheckMessage(this, message);
     if (line > 0) {
       checkMessage.setLine(line);
     }
     if (cost == null) {
-      Annotation linear = AnnotationUtils.getAnnotation(check, SqaleLinearRemediation.class);
-      Annotation linearWithOffset = AnnotationUtils.getAnnotation(check, SqaleLinearWithOffsetRemediation.class);
+      Annotation linear = AnnotationUtils.getAnnotation(this, SqaleLinearRemediation.class);
+      Annotation linearWithOffset = AnnotationUtils.getAnnotation(this, SqaleLinearWithOffsetRemediation.class);
       if (linear != null || linearWithOffset != null) {
         throw new IllegalStateException("A check annotated with a linear SQALE function should provide an effort to fix.");
       }

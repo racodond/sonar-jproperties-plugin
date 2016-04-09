@@ -60,7 +60,7 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
   @Override
   public void visitFile(AstNode astNode) {
     if (fileContainsIllegalEndLineCharacters()) {
-      addIssueOnFile(this, "Set all end-line characters to '" + endLineCharacters + "' in this file.");
+      addIssueOnFile("Set all end-line characters to '" + endLineCharacters + "' in this file.");
     }
   }
 
