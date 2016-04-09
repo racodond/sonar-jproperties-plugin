@@ -54,10 +54,10 @@ public class ProjectChecks {
   }
 
   public void reportProjectIssues() {
-    triggerkDuplicatedKeysAcrossFilesRule();
+    triggerDuplicatedKeysAcrossFilesRule();
   }
 
-  private void triggerkDuplicatedKeysAcrossFilesRule() {
+  private void triggerDuplicatedKeysAcrossFilesRule() {
     ActiveRule activeRule = rulesProfile.getActiveRule(JavaProperties.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY);
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
