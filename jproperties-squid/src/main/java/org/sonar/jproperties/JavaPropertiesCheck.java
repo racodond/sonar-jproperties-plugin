@@ -29,7 +29,6 @@ import org.sonar.api.utils.AnnotationUtils;
 import org.sonar.squidbridge.annotations.SqaleLinearRemediation;
 import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
 import org.sonar.squidbridge.api.CheckMessage;
-import org.sonar.squidbridge.api.CodeCheck;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.checks.SquidCheck;
 
