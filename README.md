@@ -4,6 +4,8 @@ SonarQube Java Properties Plugin
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
 [![Quality Gate](https://nemo.sonarqube.org/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://nemo.sonarqube.org/overview?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
+Plugin versions and compatibility with SonarQube versions: [http://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix](http://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix)
+
 ## Description
 This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
