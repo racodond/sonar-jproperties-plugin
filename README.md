@@ -8,7 +8,7 @@ SonarQube Java Properties Plugin
 This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
  * Computes metrics: lines of code, comments lines, etc.
- * Performs more than 15 checks such as: Duplicated keys should be removed, Property with empty value should be removed, Separators should follow a convention, etc.
+ * Performs more than 20 checks such as: Duplicated keys should be removed, Property with empty value should be removed, Separators should follow a convention, etc. [Browse the full list of checks](https://nemo.sonarqube.org/coding_rules#languages=jproperties).
 
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
