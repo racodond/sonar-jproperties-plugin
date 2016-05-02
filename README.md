@@ -10,13 +10,6 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
  * Computes metrics: lines of code, comments lines, etc.
  * Performs more than 15 checks such as: Duplicated keys should be removed, Property with empty value should be removed, Separators should follow a convention, etc.
 
-
-## Useful Links
-
-* [Homepage](https://github.com/racodond/sonar-jproperties-plugin)
-* [Issue tracking](https://github.com/racodond/sonar-jproperties-plugin/issues)
-* [Download](https://github.com/racodond/sonar-jproperties-plugin/releases/)
-
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
 2. Install the Java Properties plugin either by a [direct download](https://github.com/racodond/sonar-jproperties-plugin/releases) or through the [Update Center](http://docs.sonarqube.org/display/SONAR/Update+Center).
