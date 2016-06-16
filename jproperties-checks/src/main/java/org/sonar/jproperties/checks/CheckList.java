@@ -25,35 +25,36 @@ import java.util.Collection;
 
 public final class CheckList {
 
-  public static final String REPOSITORY_NAME = "SonarQube";
+    public static final String REPOSITORY_NAME = "SonarQube";
 
-  private CheckList() {
-  }
+    private CheckList() {
+    }
 
-  @SuppressWarnings("rawtypes")
-  public static Collection<Class> getChecks() {
-    return ImmutableList.<Class>of(
-      CommentConventionCheck.class,
-      CommentedOutCodeCheck.class,
-      CommentRegularExpressionCheck.class,
-      DuplicatedKeysCheck.class,
-      DuplicatedKeysAcrossFilesCheck.class,
-      DuplicatedValuesCheck.class,
-      EndLineCharactersCheck.class,
-      EmptyElementCheck.class,
-      FileNameCheck.class,
-      FixmeTagPresenceCheck.class,
-      HardCodedCredentialsCheck.class,
-      IndentationCheck.class,
-      KeyNamingConventionCheck.class,
-      KeyRegularExpressionCheck.class,
-      LineLengthCheck.class,
-      MissingNewlineAtEndOfFileCheck.class,
-      ParsingErrorCheck.class,
-      SeparatorConventionCheck.class,
-      TabCharacterCheck.class,
-      TodoTagPresenceCheck.class,
-      TooManyKeysCheck.class
-      );
-  }
+    @SuppressWarnings("rawtypes")
+    public static Collection<Class> getChecks() {
+        return ImmutableList.<Class>of(
+                CommentConventionCheck.class,
+                CommentedOutCodeCheck.class,
+                CommentRegularExpressionCheck.class,
+                DuplicatedKeysCheck.class,
+                DuplicatedKeysAcrossFilesCheck.class,
+                DuplicatedValuesCheck.class,
+                EndLineCharactersCheck.class,
+                EmptyElementCheck.class,
+                FileNameCheck.class,
+                FixmeTagPresenceCheck.class,
+                HardCodedCredentialsCheck.class,
+                IndentationCheck.class,
+                KeyNamingConventionCheck.class,
+                KeyRegularExpressionCheck.class,
+                LineLengthCheck.class,
+                MissingNewlineAtEndOfFileCheck.class,
+                ParsingErrorCheck.class,
+                SeparatorConventionCheck.class,
+                TabCharacterCheck.class,
+                TodoTagPresenceCheck.class,
+                TooManyKeysCheck.class,
+                IPAddressCheck.class
+        );
+    }
 }
