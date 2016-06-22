@@ -19,15 +19,27 @@
  */
 package org.sonar.jproperties;
 
+import com.google.common.base.Charsets;
+
+import java.nio.charset.Charset;
+
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 public class JavaPropertiesConfigurationTest {
 
   @Test
+  public void charset() {
+    Charset charset = mock(Charset.class);
+    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(charset);
+    assertThat(conf.getCharset()).isSameAs(charset);
+  }
+
+  @Test
   public void ignoreHeaderComments() {
-    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration();
+    JavaPropertiesConfiguration conf = new JavaPropertiesConfiguration(Charsets.ISO_8859_1);
 
     assertThat(conf.ignoreHeaderComments()).isFalse();
 

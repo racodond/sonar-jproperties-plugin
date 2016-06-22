@@ -19,21 +19,28 @@
  */
 package org.sonar.plugins.jproperties;
 
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.jproperties.checks.CheckList;
-import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
+import org.apache.commons.lang.StringUtils;
+import org.sonar.api.config.Settings;
+import org.sonar.api.resources.AbstractLanguage;
 
-public class JavaPropertiesRulesDefinition implements RulesDefinition {
+public class JavaPropertiesLanguage extends AbstractLanguage {
+
+  public static final String KEY = "jproperties";
+
+  private final Settings settings;
+
+  public JavaPropertiesLanguage(Settings settings) {
+    super(KEY, "Java Properties");
+    this.settings = settings;
+  }
 
   @Override
-  public void define(Context context) {
-    NewRepository repository = context
-      .createRepository(JavaPropertiesLanguage.KEY, JavaPropertiesLanguage.KEY)
-      .setName(CheckList.REPOSITORY_NAME);
-
-    AnnotationBasedRulesDefinition.load(repository, JavaPropertiesLanguage.KEY, CheckList.getChecks());
-
-    repository.done();
+  public String[] getFileSuffixes() {
+    String[] suffixes = settings.getStringArray(JavaPropertiesPlugin.FILE_SUFFIXES_KEY);
+    if (suffixes == null || suffixes.length == 0) {
+      suffixes = StringUtils.split(JavaPropertiesPlugin.FILE_SUFFIXES_DEFAULT_VALUE, ",");
+    }
+    return suffixes;
   }
 
 }

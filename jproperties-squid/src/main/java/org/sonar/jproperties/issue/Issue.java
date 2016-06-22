@@ -17,23 +17,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties.issue;
 
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.jproperties.checks.CheckList;
-import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
-
-public class JavaPropertiesRulesDefinition implements RulesDefinition {
-
-  @Override
-  public void define(Context context) {
-    NewRepository repository = context
-      .createRepository(JavaPropertiesLanguage.KEY, JavaPropertiesLanguage.KEY)
-      .setName(CheckList.REPOSITORY_NAME);
-
-    AnnotationBasedRulesDefinition.load(repository, JavaPropertiesLanguage.KEY, CheckList.getChecks());
-
-    repository.done();
-  }
+public interface Issue {
 
 }

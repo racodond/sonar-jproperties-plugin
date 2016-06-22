@@ -17,23 +17,28 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties;
 
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.jproperties.checks.CheckList;
-import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
+import com.google.common.io.Files;
 
-public class JavaPropertiesRulesDefinition implements RulesDefinition {
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
-  @Override
-  public void define(Context context) {
-    NewRepository repository = context
-      .createRepository(JavaPropertiesLanguage.KEY, JavaPropertiesLanguage.KEY)
-      .setName(CheckList.REPOSITORY_NAME);
+public class FileUtils {
 
-    AnnotationBasedRulesDefinition.load(repository, JavaPropertiesLanguage.KEY, CheckList.getChecks());
+  public static boolean startsWithBOM(File file, Charset charset) {
+    return fileContent(file, charset).startsWith(Character.toString('\uFEFF'));
+  }
 
-    repository.done();
+  public static String fileContent(File file, Charset charset) {
+    String fileContent;
+    try {
+      fileContent = Files.toString(file, charset);
+    } catch (IOException e) {
+      throw new IllegalStateException("Could not read " + file, e);
+    }
+    return fileContent;
   }
 
 }

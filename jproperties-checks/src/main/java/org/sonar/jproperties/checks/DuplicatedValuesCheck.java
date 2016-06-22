@@ -22,15 +22,12 @@ package org.sonar.jproperties.checks;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +40,6 @@ import java.util.regex.PatternSyntaxException;
   name = "Different keys having the same value should be merged",
   priority = Priority.MAJOR,
   tags = {Tags.PITFALL})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
-@SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 

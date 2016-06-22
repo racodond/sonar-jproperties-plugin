@@ -28,15 +28,13 @@ import org.sonar.squidbridge.checks.CheckMessagesVerifier;
 
 public class EmptyElementTest {
 
-  private final String MESSAGE = "Remove this property whose value is empty.";
-  private EmptyElementCheck check = new EmptyElementCheck();
-
   @Test
   public void should_find_some_empty_elements_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), check);
+    String message = "Remove this property whose value is empty.";
+    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), new EmptyElementCheck());
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(3).withMessage(MESSAGE).next()
-      .atLine(4).withMessage(MESSAGE).noMore();
+      .atLine(3).withMessage(message).next()
+      .atLine(4).withMessage(message).noMore();
   }
 
 }

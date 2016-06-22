@@ -20,7 +20,6 @@
 package org.sonar.jproperties.checks;
 
 import java.io.File;
-import java.util.regex.PatternSyntaxException;
 
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;

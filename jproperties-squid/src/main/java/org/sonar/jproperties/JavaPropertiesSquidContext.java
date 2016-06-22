@@ -17,30 +17,26 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties;
 
-import org.apache.commons.lang.StringUtils;
-import org.sonar.api.config.Settings;
-import org.sonar.api.resources.AbstractLanguage;
+import java.util.Set;
 
-public class JavaProperties extends AbstractLanguage {
+import org.sonar.jproperties.issue.Issue;
+import org.sonar.squidbridge.SquidAstVisitorContextImpl;
+import org.sonar.squidbridge.api.SourceProject;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-  public static final String KEY = "jproperties";
+public class JavaPropertiesSquidContext extends SquidAstVisitorContextImpl<LexerlessGrammar> {
 
-  private final Settings settings;
+  private final Set<Issue> issues;
 
-  public JavaProperties(Settings settings) {
-    super(KEY, "Java Properties");
-    this.settings = settings;
+  public JavaPropertiesSquidContext(SourceProject project, Set<Issue> issues) {
+    super(project);
+    this.issues = issues;
   }
 
-  @Override
-  public String[] getFileSuffixes() {
-    String[] suffixes = settings.getStringArray(JavaPropertiesPlugin.FILE_SUFFIXES_KEY);
-    if (suffixes == null || suffixes.length == 0) {
-      suffixes = StringUtils.split(JavaPropertiesPlugin.FILE_SUFFIXES_DEFAULT_VALUE, ",");
-    }
-    return suffixes;
+  public Set<Issue> getIssues() {
+    return issues;
   }
 
 }

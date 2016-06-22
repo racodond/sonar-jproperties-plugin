@@ -19,11 +19,9 @@
  */
 package org.sonar.plugins.jproperties;
 
-import com.google.common.collect.ImmutableList;
+import org.sonar.api.Plugin;
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
-import org.sonar.api.SonarPlugin;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
 
 @Properties({
   @Property(
@@ -34,20 +32,18 @@ import org.sonar.jproperties.ast.visitors.SonarComponents;
     global = true,
     project = true)
 })
-public class JavaPropertiesPlugin extends SonarPlugin {
+public class JavaPropertiesPlugin implements Plugin {
 
   public static final String FILE_SUFFIXES_KEY = "sonar.javaProperties.file.suffixes";
-  public static final String FILE_SUFFIXES_DEFAULT_VALUE = ".properties";
+  public static final String FILE_SUFFIXES_DEFAULT_VALUE = "properties";
 
   @Override
-  public ImmutableList getExtensions() {
-    return ImmutableList.of(
-      JavaProperties.class,
-      SonarComponents.class,
+  public void define(Context context) {
+    context.addExtensions(
+      JavaPropertiesLanguage.class,
       JavaPropertiesSquidSensor.class,
       JavaPropertiesProfile.class,
-      JavaPropertiesRulesDefinition.class
-      );
+      JavaPropertiesRulesDefinition.class);
   }
 
 }

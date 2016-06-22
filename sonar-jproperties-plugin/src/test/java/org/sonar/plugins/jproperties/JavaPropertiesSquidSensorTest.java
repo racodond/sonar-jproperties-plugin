@@ -20,93 +20,86 @@
 package org.sonar.plugins.jproperties;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.sonar.api.batch.SensorContext;
-import org.sonar.api.batch.fs.FilePredicate;
-import org.sonar.api.batch.fs.FilePredicates;
-import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.fs.internal.FileMetadata;
+import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
-import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.component.ResourcePerspectives;
+import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
+import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.measures.FileLinesContext;
-import org.sonar.api.measures.FileLinesContextFactory;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
-import org.sonar.squidbridge.SquidAstVisitor;
+import org.sonar.api.rule.RuleKey;
+import org.sonar.jproperties.checks.CheckList;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 public class JavaPropertiesSquidSensorTest {
 
-  private JavaPropertiesSquidSensor sensor;
-  private FileSystem fs;
-  private FileLinesContextFactory fileLinesContextFactory;
-  private CheckFactory checkFactory;
-  private ResourcePerspectives resourcePerspectives;
-  private RulesProfile rulesProfile;
+  private final File baseDir = new File("src/test/resources");
+  private final SensorContextTester context = SensorContextTester.create(baseDir);
+  private CheckFactory checkFactory = new CheckFactory(mock(ActiveRules.class));
 
-  @Before
-  public void setUp() {
-    fileLinesContextFactory = mock(FileLinesContextFactory.class);
-    FileLinesContext fileLinesContext = mock(FileLinesContext.class);
-    when(fileLinesContextFactory.createFor(Mockito.any(InputFile.class))).thenReturn(fileLinesContext);
-
-    fs = mock(FileSystem.class);
-    when(fs.predicates()).thenReturn(mock(FilePredicates.class));
-    when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(
-      Arrays.asList(new File("src/test/resources/myProperties.properties")));
-    when(fs.encoding()).thenReturn(Charsets.ISO_8859_1);
-
-    Checks<SquidAstVisitor> checks = mock(Checks.class);
-    when(checks.addAnnotatedChecks(Mockito.anyCollection())).thenReturn(checks);
-    checkFactory = mock(CheckFactory.class);
-
-    resourcePerspectives = mock(ResourcePerspectives.class);
-    rulesProfile = mock(RulesProfile.class);
-
-    when(checkFactory.<SquidAstVisitor>create(Mockito.anyString())).thenReturn(checks);
-
-    sensor = new JavaPropertiesSquidSensor(null, fs, checkFactory, rulesProfile, resourcePerspectives);
+  @Test
+  public void should_create_a_valid_sensor_descriptor() {
+    DefaultSensorDescriptor descriptor = new DefaultSensorDescriptor();
+    createCssSquidSensor().describe(descriptor);
+    assertThat(descriptor.name()).isEqualTo("Java Properties Squid Sensor");
+    assertThat(descriptor.languages()).containsOnly("jproperties");
+    assertThat(descriptor.type()).isEqualTo(InputFile.Type.MAIN);
   }
 
   @Test
-  public void should_execute_on() {
-    Project project = new Project("key");
-    FileSystem fs = mock(FileSystem.class);
-    when(fs.predicates()).thenReturn(mock(FilePredicates.class));
-    JavaPropertiesSquidSensor javaPropertiesSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class), mock(RulesProfile.class),
-      mock(ResourcePerspectives.class));
+  public void should_execute_and_compute_valid_measures() {
+    String relativePath = "myProperties.properties";
+    inputFile(relativePath);
 
-    when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(new ArrayList<>());
-    assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isFalse();
+    createCssSquidSensor().execute(context);
 
-    when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ImmutableList.of(new File("/tmp")));
-    assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isTrue();
+    String key = "moduleKey:" + relativePath;
+
+    assertThat(context.measure(key, CoreMetrics.NCLOC).value()).isEqualTo(6);
+    assertThat(context.measure(key, CoreMetrics.STATEMENTS).value()).isEqualTo(6);
+    assertThat(context.measure(key, CoreMetrics.COMMENT_LINES).value()).isEqualTo(4);
   }
 
   @Test
-  public void should_analyse() {
-    Project project = new Project("key");
-    SensorContext context = mock(SensorContext.class);
+  @Ignore
+  public void should_execute_and_save_issues() throws Exception {
+    inputFile("myProperties.properties");
 
-    sensor.analyse(project, context);
+    ActiveRules activeRules = (new ActiveRulesBuilder())
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
+      .activate()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
+      .activate()
+      .build();
+    checkFactory = new CheckFactory(activeRules);
 
-    verify(context).saveMeasure(Mockito.any(InputFile.class), Mockito.eq(CoreMetrics.LINES), Mockito.eq(12.0));
-    verify(context).saveMeasure(Mockito.any(InputFile.class), Mockito.eq(CoreMetrics.NCLOC), Mockito.eq(6.0));
-    verify(context).saveMeasure(Mockito.any(InputFile.class), Mockito.eq(CoreMetrics.STATEMENTS), Mockito.eq(6.0));
-    verify(context).saveMeasure(Mockito.any(InputFile.class), Mockito.eq(CoreMetrics.COMMENT_LINES), Mockito.eq(4.0));
+    createCssSquidSensor().execute(context);
+
+    assertThat(context.allIssues()).hasSize(3);
+  }
+
+  private JavaPropertiesSquidSensor createCssSquidSensor() {
+    return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
+  }
+
+  private DefaultInputFile inputFile(String relativePath) {
+    DefaultInputFile inputFile = new DefaultInputFile("moduleKey", relativePath)
+      .setModuleBaseDir(baseDir.toPath())
+      .setType(InputFile.Type.MAIN)
+      .setLanguage(JavaPropertiesLanguage.KEY);
+
+    context.fileSystem().add(inputFile);
+
+    return inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), Charsets.ISO_8859_1));
   }
 
 }

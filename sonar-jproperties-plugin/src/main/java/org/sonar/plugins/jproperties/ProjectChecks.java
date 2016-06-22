@@ -58,7 +58,7 @@ public class ProjectChecks {
   }
 
   private void triggerDuplicatedKeysAcrossFilesRule() {
-    ActiveRule activeRule = rulesProfile.getActiveRule(JavaProperties.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY);
+    ActiveRule activeRule = rulesProfile.getActiveRule(JavaPropertiesLanguage.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY);
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
       if (check != null) {
@@ -79,13 +79,13 @@ public class ProjectChecks {
   }
 
   private void addIssue(String ruleKey, String message, FileLine fileLine) {
-    ActiveRule activeRule = rulesProfile.getActiveRule(JavaProperties.KEY, ruleKey);
+    ActiveRule activeRule = rulesProfile.getActiveRule(JavaPropertiesLanguage.KEY, ruleKey);
     if (activeRule != null) {
       CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
       if (check != null) {
         Issuable issuable = resourcePerspectives.as(Issuable.class, File.fromIOFile(fileLine.getFile(), project));
         if (issuable != null) {
-          Issue issue = issuable.newIssueBuilder().ruleKey(RuleKey.of(JavaProperties.KEY, ruleKey)).message(message).line(fileLine.getLine()).build();
+          Issue issue = issuable.newIssueBuilder().ruleKey(RuleKey.of(JavaPropertiesLanguage.KEY, ruleKey)).message(message).line(fileLine.getLine()).build();
           issuable.addIssue(issue);
         }
       }

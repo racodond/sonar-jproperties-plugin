@@ -32,12 +32,6 @@ public class JavaPropertiesAstScannerTest {
   private final String path = "src/test/resources/myProperties.properties";
 
   @Test
-  public void lines() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(path));
-    assertThat(file.getInt(JavaPropertiesMetric.LINES)).isEqualTo(12);
-  }
-
-  @Test
   public void lines_of_code() {
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(path));
     assertThat(file.getInt(JavaPropertiesMetric.LINES_OF_CODE)).isEqualTo(6);

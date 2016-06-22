@@ -25,6 +25,7 @@ import java.util.Collection;
 
 public final class CheckList {
 
+  public static final String REPOSITORY_KEY = "jproperties";
   public static final String REPOSITORY_NAME = "SonarQube";
 
   private CheckList() {
@@ -53,7 +54,7 @@ public final class CheckList {
       SeparatorConventionCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
-      TooManyKeysCheck.class
-      );
+      TooManyKeysCheck.class);
   }
+
 }
