@@ -1,6 +1,6 @@
 /*
  * SonarQube Java Properties Plugin
- * Copyright (C) 2016 David RACODON
+ * Copyright (C) 2015-2016 David RACODON
  * david.racodon@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package org.sonar.plugins.jproperties;
 
@@ -23,9 +23,9 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.collections.ListUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -89,7 +89,7 @@ public class JavaPropertiesSquidSensorTest {
     JavaPropertiesSquidSensor javaPropertiesSensor = new JavaPropertiesSquidSensor(mock(SonarComponents.class), fs, mock(CheckFactory.class), mock(RulesProfile.class),
       mock(ResourcePerspectives.class));
 
-    when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ListUtils.EMPTY_LIST);
+    when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(new ArrayList<>());
     assertThat(javaPropertiesSensor.shouldExecuteOnProject(project)).isFalse();
 
     when(fs.files(Mockito.any(FilePredicate.class))).thenReturn(ImmutableList.of(new File("/tmp")));
