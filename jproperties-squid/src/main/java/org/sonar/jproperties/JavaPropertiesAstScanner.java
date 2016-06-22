@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.jproperties.api.JavaPropertiesMetric;
+import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.ast.visitors.SyntaxHighlighterVisitor;
 import org.sonar.jproperties.issue.Issue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
@@ -104,6 +105,9 @@ public final class JavaPropertiesAstScanner {
     }
 
     for (SquidAstVisitor<LexerlessGrammar> visitor : visitors) {
+      if (visitor instanceof CharsetAwareVisitor) {
+        ((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
+      }
       builder.withSquidAstVisitor(visitor);
     }
 

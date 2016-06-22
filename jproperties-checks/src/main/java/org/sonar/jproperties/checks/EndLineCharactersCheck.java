@@ -26,6 +26,7 @@ import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -53,9 +54,9 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     if (fileContainsIllegalEndLineCharacters()) {
-      addIssueOnFile("Set all end-line characters to '" + endLineCharacters + "' in this file.");
+      addFileIssue(this, "Set all end-line characters to '" + endLineCharacters + "' in this file.");
     }
   }
 

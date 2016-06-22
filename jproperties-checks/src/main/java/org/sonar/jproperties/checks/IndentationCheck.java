@@ -42,7 +42,7 @@ public class IndentationCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (node.getToken().getColumn() != 0) {
-      addIssue(node, "Remove the whitespaces before the key.");
+      addIssue(this, "Remove the whitespaces before the key.", node);
     }
   }
 

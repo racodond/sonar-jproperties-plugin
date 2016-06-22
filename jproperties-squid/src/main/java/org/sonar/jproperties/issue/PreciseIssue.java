@@ -20,11 +20,9 @@
 package org.sonar.jproperties.issue;
 
 import com.google.common.base.Preconditions;
-import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,10 +79,6 @@ public class PreciseIssue implements Issue {
     return primaryLocation;
   }
 
-  public void setEffortToFix(Double effortToFix) {
-    this.effortToFix = effortToFix;
-  }
-
   public PreciseIssue addSecondaryLocation(String message, AstNode astNode) {
     secondaryLocations.add(new PreciseIssueLocation(message, astNode, fileStartsWithBOM));
     return this;
@@ -128,16 +122,6 @@ public class PreciseIssue implements Issue {
     }
 
     issue.save();
-  }
-
-  private static String fileContent(File file, Charset charset) {
-    String fileContent;
-    try {
-      fileContent = Files.toString(file, charset);
-    } catch (IOException e) {
-      throw new IllegalStateException("Could not read " + file, e);
-    }
-    return fileContent;
   }
 
 }

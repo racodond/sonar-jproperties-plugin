@@ -23,7 +23,6 @@ import com.google.common.base.Charsets;
 
 import java.io.File;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
@@ -70,7 +69,6 @@ public class JavaPropertiesSquidSensorTest {
   }
 
   @Test
-  @Ignore
   public void should_execute_and_save_issues() throws Exception {
     inputFile("myProperties.properties");
 

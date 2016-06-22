@@ -19,61 +19,57 @@
  */
 package org.sonar.jproperties;
 
-import com.google.common.base.Preconditions;
+import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 
-import java.lang.annotation.Annotation;
-import javax.annotation.Nullable;
+import java.nio.charset.Charset;
+import java.util.Set;
 
-import org.sonar.api.utils.AnnotationUtils;
-import org.sonar.squidbridge.annotations.SqaleLinearRemediation;
-import org.sonar.squidbridge.annotations.SqaleLinearWithOffsetRemediation;
-import org.sonar.squidbridge.api.CheckMessage;
-import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
+import org.sonar.jproperties.issue.Issue;
+import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.squidbridge.checks.SquidCheck;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-public class JavaPropertiesCheck extends SquidCheck {
+public class JavaPropertiesCheck extends SquidCheck<LexerlessGrammar> implements CharsetAwareVisitor {
 
-  public void addIssue(AstNode node, String message) {
-    addIssue(node.getTokenLine(), message, null);
+  private Charset charset;
+
+  @Override
+  public void setCharset(Charset charset) {
+    this.charset = charset;
   }
 
-  public void addIssue(AstNode node, String message, Double cost) {
-    addIssue(node.getTokenLine(), message, cost);
+  public Charset getCharset() {
+    return charset;
   }
 
-  public void addIssue(int line, String message) {
-    addIssue(line, message, null);
+  public PreciseIssue addIssue(SquidCheck check, String message, AstNode astNode) {
+    PreciseIssue issue = new PreciseIssue(check, getContext().getFile(), message, astNode, charset);
+    addIssue(issue);
+    return issue;
   }
 
-  public void addIssueOnFile(String message) {
-    addIssue(-1, message, null);
+  public PreciseIssue addFileIssue(SquidCheck check, String message) {
+    PreciseIssue issue = new PreciseIssue(check, getContext().getFile(), message);
+    addIssue(issue);
+    return issue;
   }
 
-  public void addIssue(@Nullable Integer line, String message, @Nullable Double cost) {
-    Preconditions.checkNotNull(message);
-    CheckMessage checkMessage = new CheckMessage(this, message);
-    if (line > 0) {
-      checkMessage.setLine(line);
-    }
-    if (cost == null) {
-      Annotation linear = AnnotationUtils.getAnnotation(this, SqaleLinearRemediation.class);
-      Annotation linearWithOffset = AnnotationUtils.getAnnotation(this, SqaleLinearWithOffsetRemediation.class);
-      if (linear != null || linearWithOffset != null) {
-        throw new IllegalStateException("A check annotated with a linear SQALE function should provide an effort to fix.");
-      }
-    } else {
-      checkMessage.setCost(cost);
-    }
+  public PreciseIssue addLineIssue(SquidCheck check, String message, int line) {
+    PreciseIssue issue = new PreciseIssue(check, getContext().getFile(), message, line);
+    addIssue(issue);
+    return issue;
+  }
 
-    if (getContext().peekSourceCode() instanceof SourceFile) {
-      getContext().peekSourceCode().log(checkMessage);
-    } else if (getContext().peekSourceCode().getParent(SourceFile.class) != null) {
-      getContext().peekSourceCode().getParent(SourceFile.class).log(checkMessage);
-    } else {
-      throw new IllegalStateException("Unable to log a check message on source code '"
-        + (getContext().peekSourceCode() == null ? "[NULL]" : getContext().peekSourceCode().getKey()) + "'");
-    }
+  @VisibleForTesting
+  public Set<Issue> getIssues() {
+    return ((JavaPropertiesSquidContext) getContext()).getIssues();
+  }
+
+  @VisibleForTesting
+  public void addIssue(Issue issue) {
+    ((JavaPropertiesSquidContext) getContext()).getIssues().add(issue);
   }
 
 }

@@ -22,21 +22,13 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class IndentationCheckTest {
 
-  private final static String MESSAGE = "Remove the whitespaces before the key.";
-  private IndentationCheck check = new IndentationCheck();
-
   @Test
   public void should_find_some_keys_that_are_not_properly_indented_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/indentation.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(2).withMessage(MESSAGE).next()
-      .atLine(3).withMessage(MESSAGE).noMore();
+    JavaPropertiesCheckVerifier.verify(new IndentationCheck(), new File("src/test/resources/checks/indentation.properties"));
   }
 
 }

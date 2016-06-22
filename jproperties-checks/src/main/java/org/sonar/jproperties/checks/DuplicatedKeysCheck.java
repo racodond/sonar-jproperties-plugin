@@ -22,11 +22,14 @@ package org.sonar.jproperties.checks;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 
@@ -38,7 +41,7 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 @ActivatedByDefault
 public class DuplicatedKeysCheck extends JavaPropertiesCheck {
 
-  private List<String> keys = Lists.newArrayList();
+  private final Map<String, List<AstNode>> keys = new HashMap<>();
 
   @Override
   public void init() {
@@ -50,11 +53,26 @@ public class DuplicatedKeysCheck extends JavaPropertiesCheck {
     if (astNode.getType().equals(JavaPropertiesGrammar.PROPERTIES)) {
       keys.clear();
     } else {
-      if (keys.contains(astNode.getTokenValue())) {
-        addIssue(astNode, "Remove the duplicated key \"" + astNode.getTokenValue() + "\".");
+      if (keys.containsKey(astNode.getTokenValue())) {
+        keys.get(astNode.getTokenValue()).add(astNode);
       } else {
-        keys.add(astNode.getTokenValue());
+        keys.put(astNode.getTokenValue(), Lists.newArrayList(astNode));
       }
     }
   }
+
+  @Override
+  public void leaveNode(AstNode astNode) {
+    if (astNode.is(JavaPropertiesGrammar.PROPERTIES)) {
+      keys.keySet().stream().filter(k -> keys.get(k).size() > 1).forEach(k -> createIssue(keys.get(k)));
+    }
+  }
+
+  private void createIssue(List<AstNode> duplicatedKeys) {
+    PreciseIssue issue = addIssue(this, "Remove the duplicated keys \"" + duplicatedKeys.get(0).getTokenValue() + "\".", duplicatedKeys.get(0));
+    for (int i = 1; i < duplicatedKeys.size(); i++) {
+      issue.addSecondaryLocation("Duplicated key", duplicatedKeys.get(i));
+    }
+  }
+
 }

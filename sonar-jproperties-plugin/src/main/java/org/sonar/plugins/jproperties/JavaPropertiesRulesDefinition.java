@@ -31,8 +31,7 @@ public class JavaPropertiesRulesDefinition implements RulesDefinition {
       .createRepository(JavaPropertiesLanguage.KEY, JavaPropertiesLanguage.KEY)
       .setName(CheckList.REPOSITORY_NAME);
 
-    AnnotationBasedRulesDefinition.load(repository, JavaPropertiesLanguage.KEY, CheckList.getChecks());
-
+    new AnnotationBasedRulesDefinition(repository, JavaPropertiesLanguage.KEY).addRuleClasses(false, CheckList.getChecks());
     repository.done();
   }
 

@@ -19,77 +19,45 @@
  */
 package org.sonar.plugins.jproperties;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import java.util.Set;
 
 import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.File;
-import org.sonar.api.resources.Project;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.api.rules.ActiveRule;
+import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.checks.DuplicatedKeysAcrossFilesCheck;
-import org.sonar.jproperties.checks.FileLine;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.api.CodeVisitor;
+import org.sonar.jproperties.checks.FileNode;
+import org.sonar.jproperties.issue.Issue;
+import org.sonar.jproperties.issue.PreciseIssue;
+import org.sonar.squidbridge.checks.SquidCheck;
 
 public class ProjectChecks {
 
-  private final Project project;
-  private final RulesProfile rulesProfile;
-  private final Checks<SquidAstVisitor> checks;
-  private final ResourcePerspectives resourcePerspectives;
+  private final Checks<SquidCheck> checks;
+  private final Set<Issue> issues;
 
-  public ProjectChecks(Project project, RulesProfile rulesProfile, Checks<SquidAstVisitor> checks,
-    ResourcePerspectives resourcePerspectives) {
-    this.project = project;
-    this.rulesProfile = rulesProfile;
+  public ProjectChecks(Checks<SquidCheck> checks, Set<Issue> issues) {
+    this.issues = issues;
     this.checks = checks;
-    this.resourcePerspectives = resourcePerspectives;
   }
 
-  public void reportProjectIssues() {
-    triggerDuplicatedKeysAcrossFilesRule();
+  public void checkProjectIssues() {
+    checkDuplicatedKeysAcrossFiles();
   }
 
-  private void triggerDuplicatedKeysAcrossFilesRule() {
-    ActiveRule activeRule = rulesProfile.getActiveRule(JavaPropertiesLanguage.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY);
-    if (activeRule != null) {
-      CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
-      if (check != null) {
-        checkDuplicatedKeysAcrossFiles((DuplicatedKeysAcrossFilesCheck) check);
-      }
-    }
-  }
-
-  private void checkDuplicatedKeysAcrossFiles(@Nonnull DuplicatedKeysAcrossFilesCheck check) {
-    Map<String, List<FileLine>> keys = check.getKeys();
-    Iterator it = keys.entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry pair = (Map.Entry) it.next();
-      if (((List<FileLine>) pair.getValue()).size() > 1) {
-        addIssue(DuplicatedKeysAcrossFilesCheck.RULE_KEY, "Remove this cross-file duplicated key", ((List<FileLine>) pair.getValue()).get(0));
-      }
-    }
-  }
-
-  private void addIssue(String ruleKey, String message, FileLine fileLine) {
-    ActiveRule activeRule = rulesProfile.getActiveRule(JavaPropertiesLanguage.KEY, ruleKey);
-    if (activeRule != null) {
-      CodeVisitor check = checks.of(activeRule.getRule().ruleKey());
-      if (check != null) {
-        Issuable issuable = resourcePerspectives.as(Issuable.class, File.fromIOFile(fileLine.getFile(), project));
-        if (issuable != null) {
-          Issue issue = issuable.newIssueBuilder().ruleKey(RuleKey.of(JavaPropertiesLanguage.KEY, ruleKey)).message(message).line(fileLine.getLine()).build();
-          issuable.addIssue(issue);
+  private void checkDuplicatedKeysAcrossFiles() {
+    DuplicatedKeysAcrossFilesCheck check = (DuplicatedKeysAcrossFilesCheck) checks.of(RuleKey.of(JavaPropertiesLanguage.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY));
+    if (check != null) {
+      for (Map.Entry<String, List<FileNode>> entry : check.getKeys().entrySet())
+        if (entry.getValue().size() > 1) {
+          addIssue(check, "Remove this cross-file duplicated key.", entry.getValue().get(0));
         }
-      }
     }
+  }
+
+  private void addIssue(JavaPropertiesCheck check, String message, FileNode fileNode) {
+    issues.add(new PreciseIssue(check, fileNode.getFile(), message, fileNode.getNode(), check.getCharset()));
   }
 
 }

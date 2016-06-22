@@ -22,19 +22,13 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
-public class EmptyElementTest {
+public class EmptyElementCheckTest {
 
   @Test
   public void should_find_some_empty_elements_and_raise_issues() {
-    String message = "Remove this property whose value is empty.";
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), new EmptyElementCheck());
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(3).withMessage(message).next()
-      .atLine(4).withMessage(message).noMore();
+    JavaPropertiesCheckVerifier.verify(new EmptyElementCheck(), new File("src/test/resources/checks/emptyElement.properties"));
   }
 
 }

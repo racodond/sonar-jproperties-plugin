@@ -41,7 +41,7 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public static final String RULE_KEY = "duplicated-keys-across-files";
 
-  private Map<String, List<FileLine>> keys = new HashMap<>();
+  private Map<String, List<FileNode>> keys = new HashMap<>();
 
   @Override
   public void init() {
@@ -51,18 +51,18 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
   @Override
   public void visitNode(AstNode node) {
     if (keys.containsKey(node.getTokenValue())) {
-      keys.get(node.getTokenValue()).add(new FileLine(getContext().getFile(), node.getTokenLine()));
+      keys.get(node.getTokenValue()).add(new FileNode(getContext().getFile(), node));
     } else {
-      keys.put(node.getTokenValue(), Lists.newArrayList(new FileLine(getContext().getFile(), node.getTokenLine())));
+      keys.put(node.getTokenValue(), Lists.newArrayList(new FileNode(getContext().getFile(), node)));
     }
   }
 
-  public Map<String, List<FileLine>> getKeys() {
+  public Map<String, List<FileNode>> getKeys() {
     return keys;
   }
 
   @VisibleForTesting
-  public void setKeys(Map<String, List<FileLine>> keys) {
+  public void setKeys(Map<String, List<FileNode>> keys) {
     this.keys = keys;
   }
 

@@ -19,16 +19,14 @@
  */
 package org.sonar.jproperties.checks;
 
+import java.io.File;
+
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
-
-import java.io.File;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class KeyRegularExpressionCheckTest {
 
-  private final String PATH = "src/test/resources/checks/keyRegularExpression.properties";
   private KeyRegularExpressionCheck check = new KeyRegularExpressionCheck();
 
   @Test
@@ -36,11 +34,7 @@ public class KeyRegularExpressionCheckTest {
     String message = "Find out keys starting with 'mykey'";
     check.regularExpression = "^mykey.*";
     check.message = message;
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(1).withMessage(message)
-      .next().atLine(2).withMessage(message)
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyRegularExpression.properties"));
   }
 
   @Test
@@ -48,15 +42,14 @@ public class KeyRegularExpressionCheckTest {
     String message = "Find out keys starting with 'blabla'";
     check.regularExpression = "^blabla.*";
     check.message = message;
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyRegularExpressionNoMatch.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_regular_expression_is_not_valid() {
     check.regularExpression = "(";
     check.message = "blabla";
-    JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyRegularExpressionNoMatch.properties"), check);
   }
 
 }

@@ -62,10 +62,10 @@ public class LineLengthCheck extends JavaPropertiesCheck {
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);
       if (line.length() > maximumLineLength) {
-        addIssue(i + 1,
-          MessageFormat.format("The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
-            line.length(),
-            maximumLineLength));
+        addLineIssue(
+          this,
+          MessageFormat.format("The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.", line.length(), maximumLineLength),
+          i + 1);
       }
     }
   }

@@ -21,15 +21,16 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
+
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 @Rule(
   key = "key-naming-convention",
@@ -55,7 +56,7 @@ public class KeyNamingConventionCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (!node.getTokenValue().matches(format)) {
-      addIssue(node, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format);
+      addIssue(this, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format, node);
     }
   }
 

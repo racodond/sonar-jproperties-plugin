@@ -99,8 +99,8 @@ public class JavaPropertiesSquidSensor implements Sensor {
       InputFile sonarFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
       saveMeasures(sonarFile, squidFile);
     }
-    // ProjectChecks projectChecks = new ProjectChecks(rulesProfile, checks);
-    // projectChecks.reportProjectIssues();
+    ProjectChecks projectChecks = new ProjectChecks(checks, issues);
+    projectChecks.checkProjectIssues();
     saveIssues(checks, issues);
   }
 

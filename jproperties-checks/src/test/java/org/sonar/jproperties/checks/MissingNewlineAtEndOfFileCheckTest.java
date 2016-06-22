@@ -22,26 +22,18 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class MissingNewlineAtEndOfFileCheckTest {
 
-  MissingNewlineAtEndOfFileCheck check = new MissingNewlineAtEndOfFileCheck();
-
   @Test
   public void should_contain_an_empty_new_line_at_the_end_of_the_file_and_not_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/newLineEndOfFile.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(new MissingNewlineAtEndOfFileCheck(), new File("src/test/resources/checks/newLineEndOfFile.properties"));
   }
 
   @Test
   public void should_not_contain_an_empty_new_line_at_the_end_of_the_file_and_raise_an_issue() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/noNewLineEndOfFile.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .withMessage("Add an empty new line at the end of this file.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(new MissingNewlineAtEndOfFileCheck(), new File("src/test/resources/checks/noNewLineEndOfFile.properties"));
   }
 
 }

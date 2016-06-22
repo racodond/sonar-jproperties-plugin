@@ -23,8 +23,7 @@ import java.io.File;
 
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class CommentConventionCheckTest {
 
@@ -32,32 +31,24 @@ public class CommentConventionCheckTest {
 
   @Test
   public void should_only_contain_comments_starting_with_hash_token_and_not_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashOnly.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsHashOnly.properties"));
   }
 
   @Test
   public void should_only_contain_comments_starting_with_exclamation_mark_token_and_not_raise_issues() {
     check.setStartingCommentToken("!");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsExclamationMarkOnly.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsExclamationMarkOnly.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_exclamation_mark_token_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(2).withMessage("Use starting comment token '#' instead.").next()
-      .atLine(4).withMessage("Use starting comment token '#' instead.").noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_hash_token_and_raise_issues() {
     check.setStartingCommentToken("!");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(1).withMessage("Use starting comment token '!' instead.").next()
-      .atLine(3).withMessage("Use starting comment token '!' instead.").noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsExclamationMarkAndHash.properties"));
   }
 
   @Test(expected = IllegalStateException.class)

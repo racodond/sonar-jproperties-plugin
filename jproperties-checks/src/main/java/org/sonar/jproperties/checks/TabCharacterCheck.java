@@ -49,7 +49,7 @@ public class TabCharacterCheck extends JavaPropertiesCheck {
     }
     for (String line : lines) {
       if (line.contains("\t")) {
-        addIssueOnFile("Replace all tab characters in this file by sequences of whitespaces.");
+        addFileIssue(this, "Replace all tab characters in this file by sequences of whitespaces.");
         break;
       }
     }

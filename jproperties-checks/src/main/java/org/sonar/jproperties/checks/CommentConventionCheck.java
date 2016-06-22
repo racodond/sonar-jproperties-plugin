@@ -22,9 +22,7 @@ package org.sonar.jproperties.checks;
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
 
-import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.sonar.check.Priority;
@@ -59,13 +57,10 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
 
   @Override
   public void visitToken(Token token) {
-    Iterator iterator = token.getTrivia().iterator();
-    while (iterator.hasNext()) {
-      Trivia trivia = (Trivia) iterator.next();
-      if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-        addIssue(trivia.getToken().getLine(), "Use starting comment token '" + startingCommentToken + "' instead.");
-      }
-    }
+    token.getTrivia()
+      .stream()
+      .filter(t -> t.isComment() && pattern.matcher(t.getToken().getOriginalValue()).matches())
+      .forEach(t -> addLineIssue(this, "Use starting comment token '" + startingCommentToken + "' instead.", t.getToken().getLine()));
   }
 
   @VisibleForTesting

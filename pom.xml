@@ -44,6 +44,7 @@
     <module>sslr-jproperties-toolkit</module>
     <module>jproperties-checks</module>
     <module>sonar-jproperties-plugin</module>
+    <module>jproperties-checks-testkit</module>
   </modules>
 
   <scm>
@@ -82,6 +83,11 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>jproperties-checks</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>jproperties-checks-testkit</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

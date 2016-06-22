@@ -64,7 +64,7 @@ public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAnd
     int lastLineIssue = Integer.MIN_VALUE;
     for (Integer line : commentedOutLines) {
       if (line != lastLineIssue + 1) {
-        addIssue(line, "Remove this commented out code.");
+        addLineIssue(this, "Remove this commented out code.", line);
       }
       lastLineIssue = line;
     }
