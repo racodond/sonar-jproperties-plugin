@@ -41,7 +41,7 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 @ActivatedByDefault
 public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
-  private static final Pattern commentedOutCodePattern = Pattern.compile("^(#|!){1}[ \\t\\x0B\\f]*([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
+  private static final Pattern commentedOutCodePattern = Pattern.compile("^(#|!){1}[ \\t\\x0B\\f]*(?!(?i)todo)(?!(?i)fixme)([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
   private List<Integer> commentedOutLines;
 
   @Override
