@@ -22,6 +22,7 @@ package org.sonar.plugins.jproperties;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.rule.RuleKey;
@@ -51,13 +52,28 @@ public class ProjectChecks {
     if (check != null) {
       for (Map.Entry<String, List<FileNode>> entry : check.getKeys().entrySet())
         if (entry.getValue().size() > 1) {
-          addIssue(check, "Remove this cross-file duplicated key.", entry.getValue().get(0));
+          addIssue(check, buildIssueMessage(entry), entry.getValue().get(0));
         }
     }
   }
 
   private void addIssue(JavaPropertiesCheck check, String message, FileNode fileNode) {
     issues.add(new PreciseIssue(check, fileNode.getFile(), message, fileNode.getNode(), check.getCharset()));
+  }
+
+  private String buildIssueMessage(Map.Entry<String, List<FileNode>> duplicatedKey) {
+    StringBuilder message = new StringBuilder("Remove this cross-file duplicated key.")
+      .append(" \"")
+      .append(duplicatedKey.getKey())
+      .append("\" is defined in: ")
+      .append(duplicatedKey.getValue()
+        .stream()
+        .map(o -> o.getFile().getName())
+        .distinct()
+        .sorted()
+        .collect(Collectors.joining(", ")));
+
+    return message.toString();
   }
 
 }

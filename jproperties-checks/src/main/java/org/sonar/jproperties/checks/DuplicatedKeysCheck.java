@@ -64,7 +64,10 @@ public class DuplicatedKeysCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode astNode) {
     if (astNode.is(JavaPropertiesGrammar.PROPERTIES)) {
-      keys.keySet().stream().filter(k -> keys.get(k).size() > 1).forEach(k -> createIssue(keys.get(k)));
+      keys.keySet()
+        .stream()
+        .filter(k -> keys.get(k).size() > 1)
+        .forEach(k -> createIssue(keys.get(k)));
     }
   }
 
