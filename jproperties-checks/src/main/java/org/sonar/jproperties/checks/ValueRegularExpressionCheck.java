@@ -32,14 +32,14 @@ import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.RuleTemplate;
 
 @Rule(
-  key = "key-regular-expression",
-  name = "Regular expression on key",
+  key = "value-regular-expression",
+  name = "Regular expression on value",
   priority = Priority.MAJOR)
 @RuleTemplate
-public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
+public class ValueRegularExpressionCheck extends JavaPropertiesCheck {
 
   private static final String DEFAULT_REGULAR_EXPRESSION = ".*";
-  private static final String DEFAULT_MESSAGE = "The regular expression matches this key.";
+  private static final String DEFAULT_MESSAGE = "The regular expression matches this value.";
 
   @RuleProperty(
     key = "regularExpression",
@@ -56,13 +56,13 @@ public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
   @Override
   public void init() {
     validateRegularExpressionParameter();
-    subscribeTo(JavaPropertiesGrammar.KEY);
+    subscribeTo(JavaPropertiesGrammar.ELEMENT);
   }
 
   @Override
   public void leaveNode(AstNode node) {
     if (node.getTokenValue().matches(regularExpression)) {
-      addIssue(this, message, node);
+      addLineIssue(this, message, node.getTokenLine());
     }
   }
 
@@ -70,7 +70,7 @@ public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
     try {
       Pattern.compile(regularExpression);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:key-regular-expression - regularExpression parameter \""
+      throw new IllegalStateException("Check jproperties:value-regular-expression - regularExpression parameter \""
         + regularExpression + "\" is not a valid regular expression.", exception);
     }
   }

@@ -25,29 +25,29 @@ import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
-public class KeyRegularExpressionCheckTest {
+public class ValueRegularExpressionCheckTest {
 
-  private KeyRegularExpressionCheck check = new KeyRegularExpressionCheck();
+  private ValueRegularExpressionCheck check = new ValueRegularExpressionCheck();
 
   @Test
-  public void should_match_some_keys_and_raise_issues() {
-    check.regularExpression = "^mykey.*";
-    check.message = "Find out keys starting with 'mykey'";
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyRegularExpression.properties"));
+  public void should_match_some_values_and_raise_issues() {
+    check.regularExpression = "^(?s)myvalue.*";
+    check.message = "Find out values starting with 'myvalue'";
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/valueRegularExpression.properties"));
   }
 
   @Test
   public void should_not_match_any_keys_and_not_raise_issues() {
     check.regularExpression = "^blabla.*";
-    check.message = "Find out keys starting with 'blabla'";
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyRegularExpressionNoMatch.properties"));
+    check.message = "Find out values starting with 'blabla'";
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/valueRegularExpressionNoMatch.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
     check.regularExpression = "(";
     check.message = "blabla";
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyRegularExpressionNoMatch.properties"), check);
+    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/valueRegularExpressionNoMatch.properties"), check);
   }
 
 }

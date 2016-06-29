@@ -54,7 +54,8 @@ public final class CheckList {
       SeparatorConventionCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
-      TooManyKeysCheck.class);
+      TooManyKeysCheck.class,
+      ValueRegularExpressionCheck.class);
   }
 
 }

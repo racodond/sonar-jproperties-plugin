@@ -22,7 +22,6 @@ package org.sonar.jproperties.checks;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.squidbridge.annotations.NoSqale;
 import org.sonar.squidbridge.annotations.RuleTemplate;
 import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
 import org.sonar.sslr.parser.LexerlessGrammar;
@@ -32,7 +31,6 @@ import org.sonar.sslr.parser.LexerlessGrammar;
   name = "Regular expression on comment",
   priority = Priority.MAJOR)
 @RuleTemplate
-@NoSqale
 public class CommentRegularExpressionCheck extends AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
 
   private static final String DEFAULT_REGULAR_EXPRESSION = ".*";
