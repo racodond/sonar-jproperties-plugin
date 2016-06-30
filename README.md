@@ -10,16 +10,16 @@ Plugin versions and compatibility with SonarQube versions: [http://docs.sonarqub
 This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
  * Computes metrics: lines of code, comments lines, etc.
- * Performs more than 20 checks such as: Duplicated keys should be removed, Property with empty value should be removed, Separators should follow a convention, etc. [Browse the full list of checks](https://nemo.sonarqube.org/coding_rules#languages=jproperties).
+ * Performs more than 20 checks
 
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
 2. Install the Java Properties plugin either by a [direct download](https://github.com/racodond/sonar-jproperties-plugin/releases) or through the [Update Center](http://docs.sonarqube.org/display/SONAR/Update+Center).
-3. [Install your favorite analyzer](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Scanner, Maven, Ant, etc.) and analyze your code.
+3. [Install your favorite analyzer](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Scanner, Maven, Ant, etc.) and analyze your code. Note that starting at version 2.0, Java 8 is required to run an analysis.
 
 ## Notes
 
- * Java properties files are expected to be encoded in ISO-8859-1 as stated in Java specifications. During analysis, the following error may indicate that the file is not encoded in ISO-8859-1:
+ * The following kind of error may indicate that you did not properly set the `sonar.sourceEncoding` property. Prior to version 2.0, only ISO-8859-1 was supported.
  
         Caused by: java.lang.IllegalArgumentException: Unable to highlight file \[moduleKey=xxx, relative=xxx, basedir=xxx\] from offset 808 to offset 876
          at org.sonar.api.batch.sensor.highlighting.internal.DefaultHighlighting.highlight(DefaultHighlighting.java:85)
@@ -29,4 +29,32 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
          ...
         
 
- 
+## Available Checks
+
+####Checks
+
+ * "FIXME" tags should be handled
+ * "TODO" tags should be handled
+ * All comments should be formatted consistently
+ * All property definitions should start at column 1
+ * Byte Order Mark (BOM) should not be used for UTF-8 files
+ * Credentials should not be hard-coded
+ * Different keys having the same value should be merged
+ * Duplicated keys across files should be removed
+ * Duplicated keys should be removed
+ * End-line characters should be consistent
+ * File names should comply with a naming convention
+ * Files should contain an empty new line at the end
+ * Keys should follow a naming convention
+ * Lines should not be too long
+ * Number of keys should be reduced
+ * Property with empty value should be removed
+ * Sections of code should not be commented out
+ * Separators should follow a convention
+ * Tabulation characters should not be used
+
+#### Templates
+
+ * Regular expression on comment
+ * Regular expression on key
+ * Regular expression on value
