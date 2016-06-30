@@ -28,7 +28,7 @@ import static org.fest.assertions.Assertions.assertThat;
 public class JavaPropertiesPluginTest {
 
   @Test
-  public void should_get_the_right_version() throws Exception {
+  public void should_get_the_right_version() {
     Plugin.Context context = new Plugin.Context(Version.create(5, 6));
     new JavaPropertiesPlugin().define(context);
     assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
@@ -36,7 +36,7 @@ public class JavaPropertiesPluginTest {
   }
 
   @Test
-  public void should_get_the_right_number_of_extensions() throws Exception {
+  public void should_get_the_right_number_of_extensions() {
     Plugin.Context context = new Plugin.Context(Version.create(5, 6));
     new JavaPropertiesPlugin().define(context);
     assertThat(context.getExtensions()).hasSize(4);

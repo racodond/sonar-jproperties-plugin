@@ -55,9 +55,9 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
 
   @Override
   public void init() {
-    for (AstNodeType type : TYPES.keySet()) {
-      subscribeTo(type);
-    }
+    TYPES.keySet()
+      .stream()
+      .forEach(t -> subscribeTo(t));
   }
 
   @Override
@@ -81,15 +81,14 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
 
   @Override
   public void visitToken(Token token) {
-    for (Trivia trivia : token.getTrivia()) {
-      if (trivia.isComment()) {
-        highlighting
-          .highlight(
-            sourceFileOffsets.startOffset(trivia.getToken()),
-            sourceFileOffsets.endOffset(trivia.getToken()),
-            TypeOfText.COMMENT);
-      }
-    }
+    token.getTrivia()
+      .stream()
+      .filter(Trivia::isComment)
+      .forEach(t -> highlighting
+        .highlight(
+          sourceFileOffsets.startOffset(t.getToken()),
+          sourceFileOffsets.endOffset(t.getToken()),
+          TypeOfText.COMMENT));
   }
 
   @Override

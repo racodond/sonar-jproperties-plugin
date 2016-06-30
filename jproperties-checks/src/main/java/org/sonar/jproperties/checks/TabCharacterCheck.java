@@ -31,6 +31,8 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
+import javax.annotation.Nullable;
+
 @Rule(
   key = "tab-character",
   name = "Tabulation characters should not be used",
@@ -41,7 +43,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 public class TabCharacterCheck extends JavaPropertiesCheck {
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     List<String> lines;
     try {
       lines = Files.readLines(getContext().getFile(), getCharset());

@@ -61,7 +61,7 @@ public class JavaPropertiesCheckVerifier {
     verify(check, file, new JavaPropertiesConfiguration(Charsets.ISO_8859_1), expectedIssues);
   }
 
-  public static void verify(JavaPropertiesCheck check, File file, JavaPropertiesConfiguration configuration, List<TestIssue> expectedIssues) {
+  private static void verify(JavaPropertiesCheck check, File file, JavaPropertiesConfiguration configuration, List<TestIssue> expectedIssues) {
     JavaPropertiesAstScanner.scanSingleFileWithCustomConfiguration(file, null, configuration, check);
     Iterator<Issue> actualIssues = getActualIssues(check);
 

@@ -1,43 +1,46 @@
 <p>Shared coding conventions allow teams to collaborate efficiently. This rule checks that all keys match a provided
     regular expression.</p>
-<p>As Java properties files are used in a large variety of ways and by many frameworks, it might sometimes be tricky to enforce a
-    strict key naming convention. However, the default regular expression has been designed to match as closely as possible the
+<p>As Java properties files are used in a large variety of ways and by many frameworks, it might sometimes be tricky to
+    enforce a
+    strict key naming convention. However, the default regular expression has been designed to match as closely as
+    possible the
     following guidelines:
+</p>
 <ul>
-<li>Only use letters, digits and '.' characters</li>
+    <li>Only use letters, digits and '.' characters
 <pre>
 bank-account-number=123456   # Noncompliant
 bank_account_owner=John Doe  # Noncompliant
 </pre>
-<li>Follow object-oriented programming concept as much as possible. For example, prefer:
+    </li>
+    <li>Follow object-oriented programming concept as much as possible. For example, prefer:
 <pre>
 bank.account.number=123456
 bank.account.owner=John Doe
 </pre>
-to
+        to
 <pre>
 bankAccountNumber=123456
 bankAccountOwner=John Doe
 </pre>
-</li>
-<li>Whenever possible, use lowercase characters. For example, prefer:</li>
+    </li>
+    <li>Whenever possible, use lowercase characters. For example, prefer:
 <pre>
 bank.account.number=123456
 bank.account.owner=John Doe
 </pre>
-to
+        to
 <pre>
 Bank.Account.Number=123456
 Bank.Account.Owner=John Doe
 </pre>
-But keep it readable. For example, prefer:
+        But keep it readable. For example, prefer:
 <pre>
 font.timesNewRoman.size=10
 </pre>
-to
+        to
 <pre>
 font.timesnewroman.size=10
 </pre>
+    </li>
 </ul>
-</p>
-

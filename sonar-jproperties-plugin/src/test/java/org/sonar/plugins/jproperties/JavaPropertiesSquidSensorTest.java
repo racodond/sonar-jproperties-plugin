@@ -78,7 +78,7 @@ public class JavaPropertiesSquidSensorTest {
   }
 
   @Test
-  public void should_execute_and_save_issues_on_UTF8_with_BOM_file() throws Exception {
+  public void should_execute_and_save_issues_on_UTF8_with_BOM_file() {
     inputFile("myPropertiesUTF8WithBOM.properties", Charsets.UTF_8);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
@@ -95,15 +95,15 @@ public class JavaPropertiesSquidSensorTest {
   }
 
   @Test
-  public void should_execute_and_save_issues_on_ISO_8859_1_file() throws Exception {
+  public void should_execute_and_save_issues_on_ISO_8859_1_file() {
     inputFile("myProperties.properties", Charsets.ISO_8859_1);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-        .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
-        .activate()
-        .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
-        .activate()
-        .build();
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
+      .activate()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
+      .activate()
+      .build();
     checkFactory = new CheckFactory(activeRules);
 
     createCssSquidSensor().execute(context);
@@ -115,7 +115,7 @@ public class JavaPropertiesSquidSensorTest {
     return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
   }
 
-  private DefaultInputFile inputFile(String relativePath, Charset charset) {
+  private void inputFile(String relativePath, Charset charset) {
     DefaultInputFile inputFile = new DefaultInputFile("moduleKey", relativePath)
       .setModuleBaseDir(baseDir.toPath())
       .setType(InputFile.Type.MAIN)
@@ -123,7 +123,7 @@ public class JavaPropertiesSquidSensorTest {
 
     context.fileSystem().add(inputFile);
 
-    return inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), charset));
+    inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), charset));
   }
 
 }

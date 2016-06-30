@@ -23,11 +23,11 @@ import com.google.common.base.Joiner;
 
 public class TestBase {
 
-  protected static String multiLineUnixLineEnding(String... lines) {
+  static String multiLineUnixLineEnding(String... lines) {
     return Joiner.on("\n").join(lines);
   }
 
-  protected static String multiLineWindowsLineEnding(String... lines) {
+  static String multiLineWindowsLineEnding(String... lines) {
     return Joiner.on("\r\n").join(lines);
   }
 

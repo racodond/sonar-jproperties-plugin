@@ -25,6 +25,7 @@ import com.sonar.sslr.api.AstNode;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
@@ -60,7 +61,7 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     keyNodes.clear();
   }
 
@@ -70,7 +71,7 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
   }
 
   @Override
-  public void leaveFile(AstNode astNode) {
+  public void leaveFile(@Nullable AstNode astNode) {
     if (keyNodes.size() > numberKeys) {
       PreciseIssue issue = addFileIssue(this, MessageFormat.format("Reduce the number of keys. The number of "
         + "keys is {0}, greater than {1} authorized.", keyNodes.size(), numberKeys));

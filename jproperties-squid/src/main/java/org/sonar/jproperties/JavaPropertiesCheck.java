@@ -44,13 +44,13 @@ public class JavaPropertiesCheck extends SquidCheck<LexerlessGrammar> implements
     return charset;
   }
 
-  public PreciseIssue addIssue(SquidCheck check, String message, AstNode astNode) {
+  protected PreciseIssue addIssue(SquidCheck check, String message, AstNode astNode) {
     PreciseIssue issue = new PreciseIssue(check, getContext().getFile(), message, astNode, charset);
     addIssue(issue);
     return issue;
   }
 
-  public PreciseIssue addFileIssue(SquidCheck check, String message) {
+  protected PreciseIssue addFileIssue(SquidCheck check, String message) {
     PreciseIssue issue = new PreciseIssue(check, getContext().getFile(), message);
     addIssue(issue);
     return issue;
@@ -68,7 +68,7 @@ public class JavaPropertiesCheck extends SquidCheck<LexerlessGrammar> implements
   }
 
   @VisibleForTesting
-  public void addIssue(Issue issue) {
+  protected void addIssue(Issue issue) {
     ((JavaPropertiesSquidContext) getContext()).getIssues().add(issue);
   }
 

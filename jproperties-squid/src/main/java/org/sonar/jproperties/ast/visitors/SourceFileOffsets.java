@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.sonar.jproperties.FileUtils;
 
-public class SourceFileOffsets {
+class SourceFileOffsets {
 
   private final int length;
   private final boolean startsWithBOM;

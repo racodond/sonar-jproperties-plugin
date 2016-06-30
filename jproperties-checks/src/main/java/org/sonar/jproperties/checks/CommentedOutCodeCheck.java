@@ -34,6 +34,8 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
+import javax.annotation.Nullable;
+
 @Rule(
   key = "commented-out-code",
   name = "Sections of code should not be commented out",
@@ -47,7 +49,7 @@ public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAnd
   private List<Integer> commentedOutLines;
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     commentedOutLines = new ArrayList<>();
   }
 
@@ -62,7 +64,7 @@ public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAnd
   }
 
   @Override
-  public void leaveFile(AstNode astNode) {
+  public void leaveFile(@Nullable AstNode astNode) {
     int lastLineIssue = Integer.MIN_VALUE;
     for (Integer line : commentedOutLines) {
       if (line != lastLineIssue + 1) {

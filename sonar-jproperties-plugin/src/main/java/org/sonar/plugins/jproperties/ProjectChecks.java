@@ -33,7 +33,7 @@ import org.sonar.jproperties.issue.Issue;
 import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.squidbridge.checks.SquidCheck;
 
-public class ProjectChecks {
+class ProjectChecks {
 
   private final Checks<SquidCheck> checks;
   private final Set<Issue> issues;
@@ -50,10 +50,9 @@ public class ProjectChecks {
   private void checkDuplicatedKeysAcrossFiles() {
     DuplicatedKeysAcrossFilesCheck check = (DuplicatedKeysAcrossFilesCheck) checks.of(RuleKey.of(JavaPropertiesLanguage.KEY, DuplicatedKeysAcrossFilesCheck.RULE_KEY));
     if (check != null) {
-      for (Map.Entry<String, List<FileNode>> entry : check.getKeys().entrySet())
-        if (entry.getValue().size() > 1) {
-          addIssue(check, buildIssueMessage(entry), entry.getValue().get(0));
-        }
+      check.getKeys().entrySet()
+        .stream().filter(e -> e.getValue().size() > 1)
+        .forEach(e -> addIssue(check, buildIssueMessage(e), e.getValue().get(0)));
     }
   }
 

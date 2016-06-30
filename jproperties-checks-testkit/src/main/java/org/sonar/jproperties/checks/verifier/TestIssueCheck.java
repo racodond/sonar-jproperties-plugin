@@ -33,7 +33,7 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.JavaPropertiesSquidContext;
 import org.sonar.jproperties.issue.Issue;
 
-public class TestIssueCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
+class TestIssueCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
   @Override
   public void visitToken(Token token) {
@@ -47,13 +47,13 @@ public class TestIssueCheck extends JavaPropertiesCheck implements AstAndTokenVi
         String paramsAndMessage = text.substring(marker.length()).trim();
 
         if (paramsAndMessage.startsWith("[")) {
-          int endIndex = paramsAndMessage.indexOf("]");
+          int endIndex = paramsAndMessage.indexOf(']');
           addParams(issue, paramsAndMessage.substring(1, endIndex));
           paramsAndMessage = paramsAndMessage.substring(endIndex + 1).trim();
         }
 
         if (paramsAndMessage.startsWith("{")) {
-          int endIndex = paramsAndMessage.indexOf("}");
+          int endIndex = paramsAndMessage.indexOf('}');
           String message = paramsAndMessage.substring(1, endIndex);
           issue.message(message);
         }

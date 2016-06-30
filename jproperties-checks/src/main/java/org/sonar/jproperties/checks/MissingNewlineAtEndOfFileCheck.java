@@ -30,6 +30,8 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
+import javax.annotation.Nullable;
+
 @Rule(
   key = "empty-line-end-of-file",
   name = "Files should contain an empty new line at the end",
@@ -40,7 +42,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     try (RandomAccessFile randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
         addFileIssue(this, "Add an empty new line at the end of this file.");

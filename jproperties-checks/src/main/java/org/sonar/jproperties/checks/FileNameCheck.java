@@ -42,7 +42,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 @ActivatedByDefault
 public class FileNameCheck extends JavaPropertiesCheck {
 
-  public static final String DEFAULT = "^[A-Za-z][-_A-Za-z0-9]*\\.properties$";
+  private static final String DEFAULT = "^[A-Za-z][-_A-Za-z0-9]*\\.properties$";
 
   @RuleProperty(
     key = "format",
