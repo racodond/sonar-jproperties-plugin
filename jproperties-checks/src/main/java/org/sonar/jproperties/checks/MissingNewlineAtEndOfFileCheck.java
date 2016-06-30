@@ -24,21 +24,16 @@ import com.sonar.sslr.api.AstNode;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "empty-line-end-of-file",
   name = "Files should contain an empty new line at the end",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
 
@@ -46,7 +41,7 @@ public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
   public void visitFile(AstNode astNode) {
     try (RandomAccessFile randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
-        addIssueOnFile("Add an empty new line at the end of this file.");
+        addFileIssue(this, "Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:empty-line-end-of-file, error while reading " + getContext().getFile(), e);

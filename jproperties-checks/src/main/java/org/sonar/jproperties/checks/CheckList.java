@@ -25,6 +25,7 @@ import java.util.Collection;
 
 public final class CheckList {
 
+  public static final String REPOSITORY_KEY = "jproperties";
   public static final String REPOSITORY_NAME = "SonarQube";
 
   private CheckList() {
@@ -33,6 +34,7 @@ public final class CheckList {
   @SuppressWarnings("rawtypes")
   public static Collection<Class> getChecks() {
     return ImmutableList.<Class>of(
+      BOMCheck.class,
       CommentConventionCheck.class,
       CommentedOutCodeCheck.class,
       CommentRegularExpressionCheck.class,
@@ -53,7 +55,8 @@ public final class CheckList {
       SeparatorConventionCheck.class,
       TabCharacterCheck.class,
       TodoTagPresenceCheck.class,
-      TooManyKeysCheck.class
-      );
+      TooManyKeysCheck.class,
+      ValueRegularExpressionCheck.class);
   }
+
 }

@@ -19,29 +19,31 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.collect.ImmutableList;
+
 import java.io.File;
+import java.util.Collections;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
-
-import static org.hamcrest.Matchers.containsString;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
+import org.sonar.jproperties.checks.verifier.TestIssue;
 
 public class ParsingErrorCheckTest {
 
-  private ParsingErrorCheck check = new ParsingErrorCheck();
-
   @Test
-  public void should_find_a_parsing_error() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/parsingError.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next().atLine(3).withMessageThat(containsString("Parse error")).noMore();
+  public void should_find_a_parsing_error_and_raise_an_issue() {
+    JavaPropertiesCheckVerifier.verify(
+      new ParsingErrorCheck(),
+      new File("src/test/resources/checks/parsingError.properties"),
+      ImmutableList.of(new TestIssue(3)));
   }
 
   @Test
-  public void should_not_find_any_parsing_error() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  public void should_not_find_any_parsing_error_and_not_raise_any_issue() {
+    JavaPropertiesCheckVerifier.verify(
+      new ParsingErrorCheck(),
+      new File("src/test/resources/checks/noParsingError.properties"),
+      Collections.EMPTY_LIST);
   }
 
 }

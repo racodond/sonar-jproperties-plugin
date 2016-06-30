@@ -20,28 +20,23 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "end-line-characters",
   name = "End-line characters should be consistent",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("5min")
 public class EndLineCharactersCheck extends JavaPropertiesCheck {
 
   private static final String DEFAULT_FORMAT = "LF";
@@ -58,9 +53,9 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     if (fileContainsIllegalEndLineCharacters()) {
-      addIssueOnFile("Set all end-line characters to '" + endLineCharacters + "' in this file.");
+      addFileIssue(this, "Set all end-line characters to '" + endLineCharacters + "' in this file.");
     }
   }
 
@@ -71,7 +66,7 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
 
   private boolean fileContainsIllegalEndLineCharacters() {
     try {
-      String fileContent = Files.toString(getContext().getFile(), Charsets.ISO_8859_1);
+      String fileContent = Files.toString(getContext().getFile(), getCharset());
       return "CR".equals(endLineCharacters) && Pattern.compile("(?s)\n").matcher(fileContent).find()
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();

@@ -28,11 +28,10 @@ public class JavaPropertiesRulesDefinition implements RulesDefinition {
   @Override
   public void define(Context context) {
     NewRepository repository = context
-      .createRepository(JavaProperties.KEY, JavaProperties.KEY)
+      .createRepository(JavaPropertiesLanguage.KEY, JavaPropertiesLanguage.KEY)
       .setName(CheckList.REPOSITORY_NAME);
 
-    AnnotationBasedRulesDefinition.load(repository, JavaProperties.KEY, CheckList.getChecks());
-
+    new AnnotationBasedRulesDefinition(repository, JavaPropertiesLanguage.KEY).addRuleClasses(false, CheckList.getChecks());
     repository.done();
   }
 

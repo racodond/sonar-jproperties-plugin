@@ -17,26 +17,27 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.jproperties.checks;
-
-import java.io.File;
+package org.sonar.jproperties.parser;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-public class EmptyElementTest {
+import static org.sonar.sslr.tests.Assertions.assertThat;
 
-  private final String MESSAGE = "Remove this property whose value is empty.";
-  private EmptyElementCheck check = new EmptyElementCheck();
+public class BomTest extends TestBase {
+
+  private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
 
   @Test
-  public void should_find_some_empty_elements_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(3).withMessage(MESSAGE).next()
-      .atLine(4).withMessage(MESSAGE).noMore();
+  public void should_match_bom() {
+    assertThat(b.rule(JavaPropertiesGrammar.BOM))
+      .matches("\uFEFF");
+  }
+
+  @Test
+  public void should_not_match_bom() {
+    assertThat(b.rule(JavaPropertiesGrammar.BOM))
+      .notMatches("uFEFF");
   }
 
 }

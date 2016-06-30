@@ -25,15 +25,18 @@ import com.sonar.sslr.impl.Parser;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.Nullable;
 
+import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.jproperties.api.JavaPropertiesMetric;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
+import org.sonar.jproperties.ast.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.ast.visitors.SyntaxHighlighterVisitor;
+import org.sonar.jproperties.issue.Issue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.AstScanner;
 import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.SquidAstVisitorContextImpl;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
 import org.sonar.squidbridge.api.SourceProject;
@@ -41,7 +44,6 @@ import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.squidbridge.metrics.CommentsVisitor;
 import org.sonar.squidbridge.metrics.CounterVisitor;
 import org.sonar.squidbridge.metrics.LinesOfCodeVisitor;
-import org.sonar.squidbridge.metrics.LinesVisitor;
 import org.sonar.sslr.parser.LexerlessGrammar;
 import org.sonar.sslr.parser.ParserAdapter;
 
@@ -52,10 +54,21 @@ public final class JavaPropertiesAstScanner {
 
   @VisibleForTesting
   public static SourceFile scanSingleFile(File file, SquidAstVisitor<LexerlessGrammar>... visitors) {
+    return scanSingleFileWithCustomConfiguration(file, null, new JavaPropertiesConfiguration(Charsets.ISO_8859_1), visitors);
+  }
+
+  @VisibleForTesting
+  public static SourceFile scanSingleFile(File file, SensorContext sensorContext, SquidAstVisitor<LexerlessGrammar>... visitors) {
+    return scanSingleFileWithCustomConfiguration(file, sensorContext, new JavaPropertiesConfiguration(Charsets.ISO_8859_1), visitors);
+  }
+
+  @VisibleForTesting
+  public static SourceFile scanSingleFileWithCustomConfiguration(File file, @Nullable SensorContext sensorContext, JavaPropertiesConfiguration conf,
+    SquidAstVisitor<LexerlessGrammar>... visitors) {
     if (!file.isFile()) {
       throw new IllegalArgumentException("File '" + file + "' not found.");
     }
-    AstScanner scanner = create(new JavaPropertiesConfiguration(), null, visitors);
+    AstScanner scanner = create(sensorContext, conf, new HashSet<>(), visitors);
     scanner.scanFile(file);
     Collection<SourceCode> sources = scanner.getIndex().search(new QueryByType(SourceFile.class));
     if (sources.size() != 1) {
@@ -64,9 +77,10 @@ public final class JavaPropertiesAstScanner {
     return (SourceFile) sources.iterator().next();
   }
 
-  public static AstScanner<LexerlessGrammar> create(JavaPropertiesConfiguration conf, @Nullable SonarComponents sonarComponents, SquidAstVisitor<LexerlessGrammar>... visitors) {
-    final SquidAstVisitorContextImpl<LexerlessGrammar> context = new SquidAstVisitorContextImpl<>(new SourceProject("Java Properties Project"));
-    final Parser<LexerlessGrammar> parser = new ParserAdapter(Charsets.ISO_8859_1, JavaPropertiesGrammar.createGrammar());
+  public static AstScanner<LexerlessGrammar> create(@Nullable SensorContext sensorContext, JavaPropertiesConfiguration conf, Set<Issue> issues,
+    SquidAstVisitor<LexerlessGrammar>... visitors) {
+    JavaPropertiesSquidContext context = new JavaPropertiesSquidContext(new SourceProject("Java Properties Project"), issues);
+    Parser<LexerlessGrammar> parser = new ParserAdapter<>(conf.getCharset(), JavaPropertiesGrammar.createGrammar());
 
     AstScanner.Builder<LexerlessGrammar> builder = AstScanner.builder(context).setBaseParser(parser);
 
@@ -84,14 +98,16 @@ public final class JavaPropertiesAstScanner {
       .subscribeTo(JavaPropertiesGrammar.PROPERTY)
       .build());
 
-    builder.withSquidAstVisitor(new LinesVisitor<LexerlessGrammar>(JavaPropertiesMetric.LINES));
-    builder.withSquidAstVisitor(new LinesOfCodeVisitor<LexerlessGrammar>(JavaPropertiesMetric.LINES_OF_CODE));
+    builder.withSquidAstVisitor(new LinesOfCodeVisitor<>(JavaPropertiesMetric.LINES_OF_CODE));
 
-    if (sonarComponents != null) {
-      builder.withSquidAstVisitor(new SyntaxHighlighterVisitor(sonarComponents));
+    if (sensorContext != null) {
+      builder.withSquidAstVisitor(new SyntaxHighlighterVisitor(sensorContext, conf.getCharset()));
     }
 
     for (SquidAstVisitor<LexerlessGrammar> visitor : visitors) {
+      if (visitor instanceof CharsetAwareVisitor) {
+        ((CharsetAwareVisitor) visitor).setCharset(conf.getCharset());
+      }
       builder.withSquidAstVisitor(visitor);
     }
 

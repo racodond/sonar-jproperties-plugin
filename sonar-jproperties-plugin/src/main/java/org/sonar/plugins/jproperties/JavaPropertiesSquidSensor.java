@@ -21,33 +21,31 @@ package org.sonar.plugins.jproperties;
 
 import com.google.common.collect.Lists;
 
-import java.io.File;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.sonar.api.batch.Sensor;
-import org.sonar.api.batch.SensorContext;
+import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
-import org.sonar.api.component.ResourcePerspectives;
-import org.sonar.api.issue.Issuable;
-import org.sonar.api.issue.Issue;
+import org.sonar.api.batch.sensor.Sensor;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.resources.Project;
-import org.sonar.api.rule.RuleKey;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.jproperties.api.JavaPropertiesMetric;
-import org.sonar.jproperties.ast.visitors.SonarComponents;
 import org.sonar.jproperties.checks.CheckList;
+import org.sonar.jproperties.issue.Issue;
+import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.squidbridge.AstScanner;
 import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.api.CheckMessage;
 import org.sonar.squidbridge.api.SourceCode;
 import org.sonar.squidbridge.api.SourceFile;
+import org.sonar.squidbridge.checks.SquidCheck;
 import org.sonar.squidbridge.indexer.QueryByType;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
@@ -55,84 +53,86 @@ public class JavaPropertiesSquidSensor implements Sensor {
 
   private final CheckFactory checkFactory;
 
-  private SensorContext context;
-  private AstScanner<LexerlessGrammar> scanner;
-  private final SonarComponents sonarComponents;
-  private final FileSystem fs;
-  private final RulesProfile rulesProfile;
-  private final ResourcePerspectives resourcePerspectives;
-  private Project project;
+  private SensorContext sensorContext;
+  private final FileSystem fileSystem;
+  private final FilePredicate mainFilePredicate;
 
-  public JavaPropertiesSquidSensor(SonarComponents sonarComponents, FileSystem fs, CheckFactory checkFactory, RulesProfile rulesProfile, ResourcePerspectives resourcePerspectives) {
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
     this.checkFactory = checkFactory;
-    this.sonarComponents = sonarComponents;
-    this.fs = fs;
-    this.rulesProfile = rulesProfile;
-    this.resourcePerspectives = resourcePerspectives;
+    this.fileSystem = fileSystem;
+    this.mainFilePredicate = fileSystem.predicates().and(
+      fileSystem.predicates().hasType(InputFile.Type.MAIN),
+      fileSystem.predicates().hasLanguage(JavaPropertiesLanguage.KEY));
   }
 
   @Override
-  public boolean shouldExecuteOnProject(Project project) {
-    return filesToAnalyze().iterator().hasNext();
+  public void describe(SensorDescriptor descriptor) {
+    descriptor
+      .onlyOnLanguage(JavaPropertiesLanguage.KEY)
+      .name("Java Properties Squid Sensor")
+      .onlyOnFileType(Type.MAIN);
   }
 
   @Override
-  public void analyse(Project project, SensorContext context) {
-    this.project = project;
-    this.context = context;
-    Checks<SquidAstVisitor> checks = checkFactory.<SquidAstVisitor>create(JavaProperties.KEY).addAnnotatedChecks(CheckList.getChecks());
-    Collection<SquidAstVisitor> checkList = checks.all();
-    this.scanner = JavaPropertiesAstScanner.create(new JavaPropertiesConfiguration(), sonarComponents, checkList.toArray(new SquidAstVisitor[checkList.size()]));
-    scanner.scanFiles(Lists.newArrayList(filesToAnalyze()));
+  public void execute(SensorContext sensorContext) {
+    this.sensorContext = sensorContext;
+
+    Checks<SquidCheck> checks = checkFactory.<SquidCheck>create(JavaPropertiesLanguage.KEY).addAnnotatedChecks((Iterable) CheckList.getChecks());
+    Collection<SquidCheck> checkList = checks.all();
+
+    Set<Issue> issues = new HashSet<>();
+
+    AstScanner<LexerlessGrammar> scanner = JavaPropertiesAstScanner.create(
+      sensorContext,
+      new JavaPropertiesConfiguration(fileSystem.encoding()),
+      issues,
+      checkList.toArray(new SquidAstVisitor[checkList.size()]));
+    scanner.scanFiles(Lists.newArrayList(fileSystem.files(mainFilePredicate)));
 
     Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(new QueryByType(SourceFile.class));
-    save(squidSourceFiles, checks);
+    save(squidSourceFiles, checks, issues);
   }
 
-  private Iterable<File> filesToAnalyze() {
-    return fs.files(fs.predicates().and(fs.predicates().hasLanguage(JavaProperties.KEY), fs.predicates().hasType(Type.MAIN)));
-  }
-
-  private void save(Collection<SourceCode> squidSourceFiles, Checks<SquidAstVisitor> checks) {
+  private void save(Collection<SourceCode> squidSourceFiles, Checks<SquidCheck> checks, Set<Issue> issues) {
     for (SourceCode squidSourceFile : squidSourceFiles) {
       SourceFile squidFile = (SourceFile) squidSourceFile;
-      InputFile sonarFile = fs.inputFile(fs.predicates().hasAbsolutePath(squidFile.getKey()));
+      InputFile sonarFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
       saveMeasures(sonarFile, squidFile);
-      saveIssues(sonarFile, squidFile, checks);
     }
-    ProjectChecks projectChecks = new ProjectChecks(project, rulesProfile, checks, resourcePerspectives);
-    projectChecks.reportProjectIssues();
+    ProjectChecks projectChecks = new ProjectChecks(checks, issues);
+    projectChecks.checkProjectIssues();
+    saveIssues(checks, issues);
   }
 
   private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {
-    context.saveMeasure(sonarFile, CoreMetrics.LINES, squidFile.getDouble(JavaPropertiesMetric.LINES));
-    context.saveMeasure(sonarFile, CoreMetrics.NCLOC, squidFile.getDouble(JavaPropertiesMetric.LINES_OF_CODE));
-    context.saveMeasure(sonarFile, CoreMetrics.STATEMENTS, squidFile.getDouble(JavaPropertiesMetric.STATEMENTS));
-    context.saveMeasure(sonarFile, CoreMetrics.COMMENT_LINES, squidFile.getDouble(JavaPropertiesMetric.COMMENT_LINES));
+    sensorContext.<Integer>newMeasure()
+      .on(sonarFile)
+      .forMetric(CoreMetrics.NCLOC)
+      .withValue(squidFile.getInt(JavaPropertiesMetric.LINES_OF_CODE))
+      .save();
+
+    sensorContext.<Integer>newMeasure()
+      .on(sonarFile)
+      .forMetric(CoreMetrics.STATEMENTS)
+      .withValue(squidFile.getInt(JavaPropertiesMetric.STATEMENTS))
+      .save();
+
+    sensorContext.<Integer>newMeasure()
+      .on(sonarFile)
+      .forMetric(CoreMetrics.COMMENT_LINES)
+      .withValue(squidFile.getInt(JavaPropertiesMetric.COMMENT_LINES))
+      .save();
   }
 
-  private void saveIssues(InputFile sonarFile, SourceFile squidFile, Checks<SquidAstVisitor> checks) {
-    Collection<CheckMessage> messages = squidFile.getCheckMessages();
-    if (messages != null) {
-      for (CheckMessage message : messages) {
-        RuleKey activeRule = checks.ruleKey((SquidAstVisitor) message.getCheck());
-        Issuable issuable = sonarComponents.getResourcePerspectives().as(Issuable.class, sonarFile);
-        if (issuable != null && activeRule != null) {
-          Issue issue = issuable.newIssueBuilder()
-            .ruleKey(RuleKey.of(activeRule.repository(), activeRule.rule()))
-            .line(message.getLine())
-            .message(message.formatDefaultMessage())
-            .effortToFix(message.getCost())
-            .build();
-          issuable.addIssue(issue);
-        }
+  private void saveIssues(Checks<SquidCheck> checks, Set<Issue> issues) {
+    // TODO: Try and remove TestIssue to avoid this ugly if
+    for (Issue issue : issues) {
+      if (issue instanceof PreciseIssue) {
+        ((PreciseIssue) issue).save(checks, sensorContext);
+      } else {
+        throw new IllegalStateException("Unsupported type of issue to be saved.");
       }
     }
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName();
   }
 
 }

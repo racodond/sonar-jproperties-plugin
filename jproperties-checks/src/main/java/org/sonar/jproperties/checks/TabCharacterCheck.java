@@ -19,20 +19,16 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
 import java.util.List;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "tab-character",
@@ -40,21 +36,19 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("2min")
 public class TabCharacterCheck extends JavaPropertiesCheck {
 
   @Override
   public void visitFile(AstNode astNode) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
+      lines = Files.readLines(getContext().getFile(), getCharset());
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:tab-character, error while reading " + getContext().getFile(), e);
     }
     for (String line : lines) {
       if (line.contains("\t")) {
-        addIssueOnFile("Replace all tab characters in this file by sequences of whitespaces.");
+        addFileIssue(this, "Replace all tab characters in this file by sequences of whitespaces.");
         break;
       }
     }

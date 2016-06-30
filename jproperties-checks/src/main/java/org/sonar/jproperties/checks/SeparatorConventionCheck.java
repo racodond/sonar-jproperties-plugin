@@ -21,23 +21,18 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "separator-convention",
   name = "Separators should follow a convention",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class SeparatorConventionCheck extends JavaPropertiesCheck {
 
@@ -58,26 +53,26 @@ public class SeparatorConventionCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (!node.getFirstChild(JavaPropertiesGrammar.SEPARATOR).getTokenValue().equals(separator)) {
-      addIssue(node, "Use '" + separator + "' as separator instead.");
+      addIssue(this, "Use '" + separator + "' as separator instead.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
       return;
     }
 
     int separatorPosition = node.getFirstChild(JavaPropertiesGrammar.SEPARATOR).getToken().getColumn();
     int keyLastCharacter = node.getFirstChild(JavaPropertiesGrammar.KEY).getTokenValue().length() + node.getFirstChild(JavaPropertiesGrammar.KEY).getToken().getColumn();
     if (separatorPosition > keyLastCharacter) {
-      addIssue(node, "Remove the whitespaces between the key and the separator.");
+      addIssue(this, "Remove the whitespaces between the key and the separator.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
     }
 
     if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
       int elementFirstCharacter = node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getToken().getColumn();
       if ("=".equals(separator) && elementFirstCharacter > separatorPosition + 1) {
-        addIssue(node, "Remove the whitespaces between the separator and the value.");
+        addIssue(this, "Remove the whitespaces between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
       }
       if (":".equals(separator)) {
         if (elementFirstCharacter == separatorPosition + 1) {
-          addIssue(node, "Add a whitespace between the separator and the value.");
+          addIssue(this, "Add a whitespace between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
         } else if (elementFirstCharacter > separatorPosition + 2) {
-          addIssue(node, "Leave one single whitespace between the separator and the value.");
+          addIssue(this, "Leave one single whitespace between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
         }
       }
     }

@@ -22,26 +22,18 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class TabCharacterCheckTest {
 
-  private TabCharacterCheck check = new TabCharacterCheck();
-
   @Test
   public void should_find_tab_characters_and_raise_an_issue() {
-    SourceFile testFile = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/tabCharacter.properties"), check);
-    CheckMessagesVerifier.verify(testFile.getCheckMessages()).next()
-      .withMessage("Replace all tab characters in this file by sequences of whitespaces.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(new TabCharacterCheck(), new File("src/test/resources/checks/tabCharacter.properties"));
   }
 
   @Test
   public void should_not_find_tab_characters_and_not_raise_an_issue() {
-    SourceFile testFile = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/noTabCharacter.properties"), check);
-    CheckMessagesVerifier.verify(testFile.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(new TabCharacterCheck(), new File("src/test/resources/checks/noTabCharacter.properties"));
   }
 
 }

@@ -28,25 +28,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "commented-out-code",
   name = "Sections of code should not be commented out",
   priority = Priority.MAJOR,
   tags = {Tags.UNUSED})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.UNDERSTANDABILITY)
-@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
-  private static final Pattern commentedOutCodePattern = Pattern.compile("^(#|!){1}[ \\t\\x0B\\f]*([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
+  private static final Pattern commentedOutCodePattern = Pattern.compile("^(#|!){1}[ \\t\\x0B\\f]*(?!(?i)todo)(?!(?i)fixme)([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
   private List<Integer> commentedOutLines;
 
   @Override
@@ -69,7 +64,7 @@ public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAnd
     int lastLineIssue = Integer.MIN_VALUE;
     for (Integer line : commentedOutLines) {
       if (line != lastLineIssue + 1) {
-        addIssue(line, "Remove this commented out code.");
+        addLineIssue(this, "Remove this commented out code.", line);
       }
       lastLineIssue = line;
     }

@@ -23,14 +23,11 @@ import com.sonar.sslr.api.AstNode;
 
 import java.util.regex.Pattern;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "S2068",
@@ -38,8 +35,6 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   priority = Priority.CRITICAL,
   tags = {Tags.SECURITY, Tags.CWE, Tags.OWASP_A2, Tags.SANS_TOP25_POROUS})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.SECURITY_FEATURES)
-@SqaleConstantRemediation("30min")
 public class HardCodedCredentialsCheck extends JavaPropertiesCheck {
 
   private static final Pattern HARD_CODED_USERNAME = Pattern.compile(".*(login|username).*", Pattern.CASE_INSENSITIVE);
@@ -53,10 +48,10 @@ public class HardCodedCredentialsCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (HARD_CODED_USERNAME.matcher(node.getTokenValue()).matches()) {
-      addIssue(node, "Remove this hard-coded username.");
+      addIssue(this, "Remove this hard-coded username.", node);
     }
     if (HARD_CODED_PASSWORD.matcher(node.getTokenValue()).matches()) {
-      addIssue(node, "Remove this hard-coded password.");
+      addIssue(this, "Remove this hard-coded password.", node);
     }
   }
 

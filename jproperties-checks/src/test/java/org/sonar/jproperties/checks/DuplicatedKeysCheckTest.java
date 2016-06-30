@@ -19,26 +19,27 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.base.Charsets;
+
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.JavaPropertiesConfiguration;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class DuplicatedKeysCheckTest {
 
-  private final static String MESSAGE = "Remove the duplicated key ";
-  private DuplicatedKeysCheck check = new DuplicatedKeysCheck();
-
   @Test
   public void should_find_some_duplicated_keys_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedKeys.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(2).withMessage(MESSAGE + "\"myproperty\".").next()
-      .atLine(4).withMessage(MESSAGE + "\"myproperty2\".").next()
-      .atLine(5).withMessage(MESSAGE + "\"myproperty\".").next()
-      .atLine(7).withMessage(MESSAGE + "\"my\\=property\".").noMore();
+    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), new File("src/test/resources/checks/duplicatedKeys.properties"));
+  }
+
+  @Test
+  public void should_find_some_duplicated_keys_and_raise_issues_on_UTF8_with_BOM_file() {
+    JavaPropertiesCheckVerifier.verify(
+      new DuplicatedKeysCheck(),
+      new File("src/test/resources/checks/duplicatedKeysUTF8WithBOM.properties"),
+      new JavaPropertiesConfiguration(Charsets.UTF_8));
   }
 
 }

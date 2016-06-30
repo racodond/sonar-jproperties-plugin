@@ -27,26 +27,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = DuplicatedKeysAcrossFilesCheck.RULE_KEY,
   name = "Duplicated keys across files should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
-@SqaleConstantRemediation("5min")
 public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public static final String RULE_KEY = "duplicated-keys-across-files";
 
-  private Map<String, List<FileLine>> keys = new HashMap<>();
+  private Map<String, List<FileNode>> keys = new HashMap<>();
 
   @Override
   public void init() {
@@ -56,18 +51,18 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
   @Override
   public void visitNode(AstNode node) {
     if (keys.containsKey(node.getTokenValue())) {
-      keys.get(node.getTokenValue()).add(new FileLine(getContext().getFile(), node.getTokenLine()));
+      keys.get(node.getTokenValue()).add(new FileNode(getContext().getFile(), node));
     } else {
-      keys.put(node.getTokenValue(), Lists.newArrayList(new FileLine(getContext().getFile(), node.getTokenLine())));
+      keys.put(node.getTokenValue(), Lists.newArrayList(new FileNode(getContext().getFile(), node)));
     }
   }
 
-  public Map<String, List<FileLine>> getKeys() {
+  public Map<String, List<FileNode>> getKeys() {
     return keys;
   }
 
   @VisibleForTesting
-  public void setKeys(Map<String, List<FileLine>> keys) {
+  public void setKeys(Map<String, List<FileNode>> keys) {
     this.keys = keys;
   }
 

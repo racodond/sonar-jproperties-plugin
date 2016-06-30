@@ -22,19 +22,14 @@ package org.sonar.jproperties.checks;
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstAndTokenVisitor;
 import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
 
-import java.util.Iterator;
 import java.util.regex.Pattern;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "comment-convention",
@@ -42,8 +37,6 @@ import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
 @ActivatedByDefault
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("1min")
 public class CommentConventionCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
   private static final String DEFAULT_FORMAT = "#";
@@ -64,13 +57,10 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
 
   @Override
   public void visitToken(Token token) {
-    Iterator iterator = token.getTrivia().iterator();
-    while (iterator.hasNext()) {
-      Trivia trivia = (Trivia) iterator.next();
-      if (trivia.isComment() && pattern.matcher(trivia.getToken().getOriginalValue()).matches()) {
-        addIssue(trivia.getToken().getLine(), "Use starting comment token '" + startingCommentToken + "' instead.");
-      }
-    }
+    token.getTrivia()
+      .stream()
+      .filter(t -> t.isComment() && pattern.matcher(t.getToken().getOriginalValue()).matches())
+      .forEach(t -> addLineIssue(this, "Use starting comment token '" + startingCommentToken + "' instead.", t.getToken().getLine()));
   }
 
   @VisibleForTesting

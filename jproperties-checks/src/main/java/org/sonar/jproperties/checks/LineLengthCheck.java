@@ -20,7 +20,6 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
@@ -29,22 +28,17 @@ import java.text.MessageFormat;
 import java.util.List;
 import javax.annotation.Nullable;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "line-length",
   name = "Lines should not be too long",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class LineLengthCheck extends JavaPropertiesCheck {
 
@@ -60,17 +54,17 @@ public class LineLengthCheck extends JavaPropertiesCheck {
   public void visitFile(@Nullable AstNode astNode) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
+      lines = Files.readLines(getContext().getFile(), getCharset());
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:line-length, error while reading " + getContext().getFile(), e);
     }
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);
       if (line.length() > maximumLineLength) {
-        addIssue(i + 1,
-          MessageFormat.format("The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
-            line.length(),
-            maximumLineLength));
+        addLineIssue(
+          this,
+          MessageFormat.format("The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.", line.length(), maximumLineLength),
+          i + 1);
       }
     }
   }

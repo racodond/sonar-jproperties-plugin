@@ -23,24 +23,22 @@ import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.AstNode;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "maximum-number-keys",
   name = "Number of keys should be reduced",
   priority = Priority.MAJOR,
   tags = {Tags.BRAIN_OVERLOAD})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ARCHITECTURE_CHANGEABILITY)
-@SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class TooManyKeysCheck extends JavaPropertiesCheck {
 
@@ -52,7 +50,7 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
     defaultValue = "" + DEFAULT_THRESHOLD)
   private int numberKeys = DEFAULT_THRESHOLD;
 
-  private int currentKey;
+  private final List<AstNode> keyNodes = new ArrayList<>();
 
   @Override
   public void init() {
@@ -61,19 +59,20 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
 
   @Override
   public void visitFile(AstNode astNode) {
-    currentKey = 0;
+    keyNodes.clear();
   }
 
   @Override
   public void visitNode(AstNode astNode) {
-    currentKey++;
+    keyNodes.add(astNode);
   }
 
   @Override
   public void leaveFile(AstNode astNode) {
-    if (currentKey > numberKeys) {
-      addIssueOnFile(MessageFormat.format("Reduce the number of keys. The number of "
-        + "keys is {0} greater than {1} authorized.", currentKey, numberKeys));
+    if (keyNodes.size() > numberKeys) {
+      PreciseIssue issue = addFileIssue(this, MessageFormat.format("Reduce the number of keys. The number of "
+        + "keys is {0}, greater than {1} authorized.", keyNodes.size(), numberKeys));
+      keyNodes.subList(numberKeys, keyNodes.size()).stream().forEach(n -> issue.addSecondaryLocation("+1", n));
     }
   }
 

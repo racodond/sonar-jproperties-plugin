@@ -22,27 +22,13 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class HardCodedCredentialsCheckTest {
 
-  private static final String MESSAGE_PASSWORD = "Remove this hard-coded password.";
-  private static final String MESSAGE_USERNAME = "Remove this hard-coded username.";
-
   @Test
   public void should_find_some_hard_coded_credentials_and_raise_some_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/hardCodedCredentials.properties"),
-      new HardCodedCredentialsCheck());
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage(MESSAGE_USERNAME)
-      .next().atLine(3).withMessage(MESSAGE_USERNAME)
-      .next().atLine(4).withMessage(MESSAGE_PASSWORD)
-      .next().atLine(5).withMessage(MESSAGE_PASSWORD)
-      .next().atLine(6).withMessage(MESSAGE_PASSWORD)
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(new HardCodedCredentialsCheck(), new File("src/test/resources/checks/hardCodedCredentials.properties"));
   }
 
 }

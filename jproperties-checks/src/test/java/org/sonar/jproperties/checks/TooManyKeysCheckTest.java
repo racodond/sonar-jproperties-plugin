@@ -22,35 +22,27 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class TooManyKeysCheckTest {
 
-  private final String PATH = "src/test/resources/checks/tooManyKeys.properties";
   private TooManyKeysCheck check = new TooManyKeysCheck();
 
   @Test
   public void should_contain_more_than_30_keys_and_raise_an_issue() {
     check.setNumberKeys(30);
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .withMessage("Reduce the number of keys. The number of keys is 50 greater than 30 authorized.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys30.properties"));
   }
 
   @Test
   public void should_contain_exactly_50_keys_and_not_raise_an_issue() {
     check.setNumberKeys(50);
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys50.properties"));
   }
 
   @Test
   public void should_contain_fewer_than_200_keys_and_not_raise_an_issue() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys50.properties"));
   }
 
 }

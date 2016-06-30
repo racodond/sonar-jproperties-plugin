@@ -20,51 +20,35 @@
 package org.sonar.jproperties.checks;
 
 import java.io.File;
-import java.util.regex.PatternSyntaxException;
 
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class DuplicatedValuesCheckTest {
 
+  private DuplicatedValuesCheck check = new DuplicatedValuesCheck();
+
   @Test
   public void should_find_some_duplicated_values_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(
-      new File("src/test/resources/checks/duplicatedValues.properties"),
-      new DuplicatedValuesCheck());
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(3).withMessage("Merge keys \"key1, key2, key3\" that have the same value \"blabla\".")
-      .next().atLine(10).withMessage("Merge keys \"long1, long2, cut1, cut2\" that have the same value \"SonarQube is an open platform to manage code quali...\".")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValues.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_void_regular_expression_of_values_to_ignore() {
-    DuplicatedValuesCheck check = new DuplicatedValuesCheck();
     check.setValuesToIgnore("");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedValues.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(3).withMessage("Merge keys \"key1, key2, key3\" that have the same value \"blabla\".")
-      .next().atLine(10).withMessage("Merge keys \"long1, long2, cut1, cut2\" that have the same value \"SonarQube is an open platform to manage code quali...\".")
-      .next().atLine(29).withMessage("Merge keys \"myprop1, myprop2\" that have the same value \"true\".")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValuesCustom1.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_custom_regular_expression_of_values_to_ignore() {
-    DuplicatedValuesCheck check = new DuplicatedValuesCheck();
     check.setValuesToIgnore("(?i)(BLABLA|abc|true|false)");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedValues.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(10).withMessage("Merge keys \"long1, long2, cut1, cut2\" that have the same value \"SonarQube is an open platform to manage code quali...\".")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValuesCustom2.properties"));
+
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_values_to_ignore_regular_expression_is_not_valid() {
-    DuplicatedValuesCheck check = new DuplicatedValuesCheck();
     check.setValuesToIgnore("(");
     JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedValues.properties"), check);
   }

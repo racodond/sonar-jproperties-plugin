@@ -19,23 +19,27 @@
  */
 package org.sonar.plugins.jproperties;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.sonar.api.Plugin;
+import org.sonar.api.utils.Version;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class JavaPropertiesPluginTest {
 
-  private JavaPropertiesPlugin plugin;
-
-  @Before
-  public void setUp() throws Exception {
-    plugin = new JavaPropertiesPlugin();
+  @Test
+  public void should_get_the_right_version() throws Exception {
+    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
+    new JavaPropertiesPlugin().define(context);
+    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
+    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
   }
 
   @Test
-  public void testGetExtensions() throws Exception {
-    assertThat(plugin.getExtensions().size()).isEqualTo(5);
+  public void should_get_the_right_number_of_extensions() throws Exception {
+    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
+    new JavaPropertiesPlugin().define(context);
+    assertThat(context.getExtensions()).hasSize(4);
   }
 
 }

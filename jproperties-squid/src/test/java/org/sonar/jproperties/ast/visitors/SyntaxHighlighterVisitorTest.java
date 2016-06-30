@@ -23,118 +23,133 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.Mockito;
 import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.source.Highlightable;
+import org.sonar.api.batch.fs.internal.DefaultFileSystem;
+import org.sonar.api.batch.fs.internal.DefaultInputFile;
+import org.sonar.api.batch.sensor.highlighting.TypeOfText;
+import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
+import org.sonar.jproperties.JavaPropertiesConfiguration;
+import org.sonar.squidbridge.SquidAstVisitorContext;
 
+import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.sonar.api.batch.sensor.highlighting.TypeOfText.*;
 
 public class SyntaxHighlighterVisitorTest {
 
+  private SensorContextTester sensorContext;
+  private File file;
+  private DefaultInputFile inputFile;
+  private Charset charset;
+
   @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
-  private final SonarComponents sonarComponents = Mockito.mock(SonarComponents.class);
-  private final Highlightable highlightable = Mockito.mock(Highlightable.class);
-  private final Highlightable.HighlightingBuilder highlighting = Mockito.mock(Highlightable.HighlightingBuilder.class);
-  private final SyntaxHighlighterVisitor syntaxHighlighterVisitor = new SyntaxHighlighterVisitor(sonarComponents);
-
-  private List<String> lines;
-  private String eol;
-
-  @Before
-  public void setUp() {
-    InputFile inputFile = mock(InputFile.class);
-    Mockito.when(sonarComponents.inputFileFor(Mockito.any(File.class))).thenReturn(inputFile);
-    Mockito.when(sonarComponents.highlightableFor(inputFile)).thenReturn(highlightable);
-    Mockito.when(highlightable.newHighlighting()).thenReturn(highlighting);
-  }
+  public final TemporaryFolder tempFolder = new TemporaryFolder();
 
   @Test
   public void parse_error() throws Exception {
-    File file = temporaryFolder.newFile();
-    Files.write("ParseError", file, Charsets.ISO_8859_1);
-    JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-
-    Mockito.verifyZeroInteractions(highlightable);
-  }
-
-  @Test
-  public void test_LF() throws Exception {
-    eol = "\n";
-    File file = getTestFileWithProperEndLineCharacters(eol);
-    JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.ISO_8859_1);
-
-    Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
-    Mockito.verify(highlighting).done();
-    Mockito.verifyNoMoreInteractions(highlighting);
-  }
-
-  @Test
-  public void test_CR_LF() throws Exception {
-    eol = "\r\n";
-    File file = getTestFileWithProperEndLineCharacters(eol);
-    JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.ISO_8859_1);
-
-    Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
-    Mockito.verify(highlighting).done();
-    Mockito.verifyNoMoreInteractions(highlighting);
-  }
-
-  @Test
-  public void test_CR() throws Exception {
-    eol = "\r";
-    File file = getTestFileWithProperEndLineCharacters(eol);
-    JavaPropertiesAstScanner.scanSingleFile(file, syntaxHighlighterVisitor);
-    lines = Files.readLines(file, Charsets.ISO_8859_1);
-
-    Mockito.verify(highlighting).highlight(offset(1, 1), offset(1, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(2, 1), offset(2, 11), "cppd");
-    Mockito.verify(highlighting).highlight(offset(3, 1), offset(3, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(3, 11), offset(3, 14), "p");
-    Mockito.verify(highlighting).highlight(offset(4, 1), offset(4, 10), "k");
-    Mockito.verify(highlighting).highlight(offset(4, 12), offset(4, 16), "p");
-    Mockito.verify(highlighting).done();
-    Mockito.verifyNoMoreInteractions(highlighting);
-  }
-
-  private int offset(int line, int column) {
-    int result = 0;
-    for (int i = 0; i < line - 1; i++) {
-      result += lines.get(i).length() + eol.length();
+    setUp(Charsets.ISO_8859_1);
+    highlight("ParseError");
+    for (int i = 0; i < 10; i++) {
+      assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, i)).isEmpty();
     }
-    result += column - 1;
-    return result;
   }
 
-  private File getTestFileWithProperEndLineCharacters(String endLineCharacter) throws Exception {
-    File testFile = temporaryFolder.newFile();
-    Files.write(
-      Files.toString(new File("src/test/resources/syntaxHighlight.properties"), Charsets.ISO_8859_1)
-        .replaceAll("\\r\\n", "\n")
-        .replaceAll("\\r", "\n")
-        .replaceAll("\\n", endLineCharacter),
-      testFile, Charsets.ISO_8859_1);
-    return testFile;
+  @Test
+  public void empty_input() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("");
+    assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, 0)).isEmpty();
+  }
+
+  @Test
+  public void key() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n def=def...def");
+    assertHighlighting(1, 0, 3, KEYWORD);
+    assertHighlighting(2, 1, 3, KEYWORD);
+  }
+
+  @Test
+  public void value() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n def=def...def");
+    assertHighlighting(1, 5, 9, PREPROCESS_DIRECTIVE);
+    assertHighlighting(2, 5, 9, PREPROCESS_DIRECTIVE);
+  }
+
+  @Test
+  public void comment_hash() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("# blabla");
+    assertHighlighting(1, 0, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_hash2() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n # blabla");
+    assertHighlighting(2, 1, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_exclamation_mark() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("! blabla");
+    assertHighlighting(1, 0, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_exclamation_mark2() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n ! blabla");
+    assertHighlighting(2, 1, 8, COMMENT);
+  }
+
+  @Test
+  public void byte_order_mark() throws Exception {
+    setUp(Charsets.UTF_8);
+    highlight("\ufeffabc: abc...abc");
+    assertHighlighting(1, 0, 3, KEYWORD);
+  }
+
+  private void highlight(String string) throws Exception {
+    inputFile.initMetadata(string);
+    Files.write(string, file, charset);
+    JavaPropertiesAstScanner.scanSingleFileWithCustomConfiguration(file, sensorContext, new JavaPropertiesConfiguration(charset));
+  }
+
+  private void setUp(Charset charset) throws IOException {
+    this.charset = charset;
+    DefaultFileSystem fileSystem = new DefaultFileSystem(tempFolder.getRoot());
+    fileSystem.setEncoding(charset);
+    file = tempFolder.newFile();
+    inputFile = new DefaultInputFile("moduleKey", file.getName())
+      .setLanguage("jproperties")
+      .setType(InputFile.Type.MAIN);
+    fileSystem.add(inputFile);
+
+    sensorContext = SensorContextTester.create(tempFolder.getRoot());
+    sensorContext.setFileSystem(fileSystem);
+
+    SquidAstVisitorContext visitorContext = mock(SquidAstVisitorContext.class);
+    when(visitorContext.getFile()).thenReturn(file);
+  }
+
+  private void assertHighlighting(int line, int column, int length, TypeOfText type) {
+    for (int i = column; i < column + length; i++) {
+      List<TypeOfText> typeOfTexts = sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), line, i);
+      assertThat(typeOfTexts).hasSize(1);
+      assertThat(typeOfTexts.get(0)).isEqualTo(type);
+    }
   }
 
 }

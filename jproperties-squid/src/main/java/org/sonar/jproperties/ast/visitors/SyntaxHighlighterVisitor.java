@@ -19,38 +19,38 @@
  */
 package org.sonar.jproperties.ast.visitors;
 
-import com.google.common.base.Charsets;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.sonar.sslr.api.*;
 
-import java.io.IOException;
-import java.util.List;
+import java.nio.charset.Charset;
 import java.util.Map;
+import javax.annotation.Nullable;
 
-import org.sonar.api.batch.fs.InputFile;
-import org.sonar.api.source.Highlightable;
+import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
+import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.SquidAstVisitor;
 import org.sonar.sslr.parser.LexerlessGrammar;
 
 public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> implements AstAndTokenVisitor {
 
-  private static final Map<AstNodeType, String> TYPES = ImmutableMap.<AstNodeType, String>builder()
-    .put(JavaPropertiesGrammar.KEY, "k")
-    .put(JavaPropertiesGrammar.ELEMENT, "p")
+  private static final Map<AstNodeType, TypeOfText> TYPES = ImmutableMap.<AstNodeType, TypeOfText>builder()
+    .put(JavaPropertiesGrammar.KEY, TypeOfText.KEYWORD)
+    .put(JavaPropertiesGrammar.ELEMENT, TypeOfText.PREPROCESS_DIRECTIVE)
     .build();
 
-  private final SonarComponents sonarComponents;
+  private final SensorContext sensorContext;
+  private final Charset charset;
+  private final FileSystem fileSystem;
+  private NewHighlighting highlighting;
+  private SourceFileOffsets sourceFileOffsets;
 
-  private Highlightable.HighlightingBuilder highlighting;
-  private List<Integer> lineStart;
-
-  public SyntaxHighlighterVisitor(SonarComponents sonarComponents) {
-    this.sonarComponents = Preconditions.checkNotNull(sonarComponents);
+  public SyntaxHighlighterVisitor(SensorContext sensorContext, Charset charset) {
+    this.sensorContext = sensorContext;
+    this.fileSystem = sensorContext.fileSystem();
+    this.charset = charset;
   }
 
   @Override
@@ -61,63 +61,44 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
   }
 
   @Override
-  public void visitFile(AstNode astNode) {
+  public void visitFile(@Nullable AstNode astNode) {
     if (astNode == null) {
       // parse error
       return;
     }
-
-    InputFile inputFile = sonarComponents.inputFileFor(getContext().getFile());
-    Preconditions.checkNotNull(inputFile);
-    highlighting = sonarComponents.highlightableFor(inputFile).newHighlighting();
-
-    lineStart = Lists.newArrayList();
-    final String content;
-    try {
-      content = Files.toString(getContext().getFile(), Charsets.ISO_8859_1);
-    } catch (IOException e) {
-      throw Throwables.propagate(e);
-    }
-    lineStart.add(0);
-    for (int i = 0; i < content.length(); i++) {
-      if (content.charAt(i) == '\n' || (content.charAt(i) == '\r' && i + 1 < content.length() && content.charAt(i + 1) != '\n')) {
-        lineStart.add(i + 1);
-      }
-    }
+    highlighting = sensorContext.newHighlighting().onFile(fileSystem.inputFile(fileSystem.predicates().is(getContext().getFile())));
+    sourceFileOffsets = new SourceFileOffsets(getContext().getFile(), charset);
   }
 
   @Override
   public void visitNode(AstNode astNode) {
-    highlighting.highlight(astNode.getFromIndex(), astNode.getToIndex(), TYPES.get(astNode.getType()));
+    highlighting
+      .highlight(
+        sourceFileOffsets.startOffset(astNode),
+        sourceFileOffsets.endOffset(astNode),
+        TYPES.get(astNode.getType()));
   }
 
   @Override
   public void visitToken(Token token) {
     for (Trivia trivia : token.getTrivia()) {
       if (trivia.isComment()) {
-        Token triviaToken = trivia.getToken();
-        int offset = getOffset(triviaToken.getLine(), triviaToken.getColumn());
-        highlighting.highlight(offset, offset + triviaToken.getValue().length(), "cppd");
+        highlighting
+          .highlight(
+            sourceFileOffsets.startOffset(trivia.getToken()),
+            sourceFileOffsets.endOffset(trivia.getToken()),
+            TypeOfText.COMMENT);
       }
     }
   }
 
-  /**
-   * @param line starts from 1
-   * @param column starts from 0
-   */
-  private int getOffset(int line, int column) {
-    return lineStart.get(line - 1) + column;
-  }
-
   @Override
-  public void leaveFile(AstNode astNode) {
+  public void leaveFile(@Nullable AstNode astNode) {
     if (astNode == null) {
       // parse error
       return;
     }
-
-    highlighting.done();
+    highlighting.save();
   }
 
 }

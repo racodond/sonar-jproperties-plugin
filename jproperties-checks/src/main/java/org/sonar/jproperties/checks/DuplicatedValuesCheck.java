@@ -22,29 +22,27 @@ package org.sonar.jproperties.checks;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
-import org.sonar.api.server.rule.RulesDefinition;
-import org.sonar.check.Priority;
-import org.sonar.check.Rule;
-import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
-import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
+
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.jproperties.issue.PreciseIssue;
+import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
 
 @Rule(
   key = "duplicated-values",
   name = "Different keys having the same value should be merged",
   priority = Priority.MAJOR,
   tags = {Tags.PITFALL})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
-@SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
@@ -55,7 +53,6 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
   private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
   private static final String DEFAULT_VALUES_TO_IGNORE = "(?i)(true|false|yes|no|0|1|-1)";
   private Map<String, List<AstNode>> elementsMap = new HashMap<>();
-
 
   @VisibleForTesting
   public void setValuesToIgnore(String valuesToIgnore) {
@@ -77,9 +74,9 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
         String value = getValueWithoutLineBreak(node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getTokenValue());
         if (!value.matches(valuesToIgnore)) {
           if (elementsMap.containsKey(value)) {
-            elementsMap.get(value).add(node.getFirstChild(JavaPropertiesGrammar.KEY));
+            elementsMap.get(value).add(node);
           } else {
-            elementsMap.put(value, Lists.newArrayList(node.getFirstChild(JavaPropertiesGrammar.KEY)));
+            elementsMap.put(value, Lists.newArrayList(node));
           }
         }
       }
@@ -91,23 +88,24 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
     if (node.is(JavaPropertiesGrammar.PROPERTIES)) {
       for (Map.Entry<String, List<AstNode>> entry : elementsMap.entrySet()) {
         if (entry.getValue().size() > 1) {
-          addIssue(
-            entry.getValue().get(0),
-            "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".");
+          PreciseIssue issue = addIssue(
+            this,
+            "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".",
+            entry.getValue().get(0).getFirstChild(JavaPropertiesGrammar.KEY));
+          for (int i = 1; i < entry.getValue().size(); i++) {
+            issue.addSecondaryLocation("Duplicated value", entry.getValue().get(i).getFirstChild(JavaPropertiesGrammar.KEY));
+          }
         }
       }
     }
   }
 
-  private static String getCommaSeparatedListOfDuplicatedKeys(List<AstNode> keyNodes) {
-    StringBuilder keys = new StringBuilder();
-    for (AstNode keyNode : keyNodes) {
-      if (keys.length() != 0) {
-        keys.append(", ");
-      }
-      keys.append(keyNode.getTokenValue());
-    }
-    return keys.toString();
+  private static String getCommaSeparatedListOfDuplicatedKeys(List<AstNode> elementNodes) {
+    return elementNodes
+      .stream()
+      .map(n -> n.getFirstChild(JavaPropertiesGrammar.KEY).getTokenValue())
+      .sorted()
+      .collect(Collectors.joining(", "));
   }
 
   private static String getFiftyCharacterValue(String value) {

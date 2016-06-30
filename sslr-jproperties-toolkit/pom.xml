@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>sslr-jproperties-toolkit</artifactId>
-  <name>Java Properties :: SSLR Toolkit</name>
+  <name>Java Properties Plugin :: SSLR Toolkit</name>
 
   <dependencies>
     <dependency>

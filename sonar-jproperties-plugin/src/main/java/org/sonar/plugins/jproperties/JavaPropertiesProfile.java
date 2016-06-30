@@ -39,6 +39,6 @@ public class JavaPropertiesProfile extends ProfileDefinition {
   @Override
   public RulesProfile createProfile(ValidationMessages messages) {
     AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
-    return annotationBasedProfileBuilder.build(JavaProperties.KEY, SONARQUBE_WAY_PROFILE_NAME, JavaProperties.KEY, CheckList.getChecks(), messages);
+    return annotationBasedProfileBuilder.build(JavaPropertiesLanguage.KEY, SONARQUBE_WAY_PROFILE_NAME, JavaPropertiesLanguage.KEY, CheckList.getChecks(), messages);
   }
 }

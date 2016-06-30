@@ -23,8 +23,7 @@ import java.io.File;
 
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class SeparatorConventionCheckTest {
 
@@ -32,26 +31,13 @@ public class SeparatorConventionCheckTest {
 
   @Test
   public void should_find_separators_not_following_equals_convention_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionEquals.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(3).withMessage("Use '=' as separator instead.")
-      .next().atLine(4).withMessage("Remove the whitespaces between the key and the separator.")
-      .next().atLine(5).withMessage("Remove the whitespaces between the separator and the value.")
-      .next().atLine(6).withMessage("Use '=' as separator instead.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/separatorConventionEquals.properties"));
   }
 
   @Test
   public void should_find_separators_not_following_colon_convention_and_raise_issues() {
     check.setSeparator(":");
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionColon.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(3).withMessage("Use ':' as separator instead.")
-      .next().atLine(4).withMessage("Add a whitespace between the separator and the value.")
-      .next().atLine(4).withMessage("Remove the whitespaces between the key and the separator.")
-      .next().atLine(5).withMessage("Leave one single whitespace between the separator and the value.")
-      .next().atLine(7).withMessage("Use ':' as separator instead.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/separatorConventionColon.properties"));
   }
 
   @Test(expected = IllegalStateException.class)

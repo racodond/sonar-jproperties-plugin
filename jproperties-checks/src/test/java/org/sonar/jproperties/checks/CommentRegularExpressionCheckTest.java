@@ -36,7 +36,7 @@ public class CommentRegularExpressionCheckTest {
   public void should_match_some_comments_and_raise_issues() {
     String message = "Stop annotating lines with WTF! Detail what is wrong instead.";
     check.regularExpression = "(?i).*WTF.*";
-    check.message = message;
+    check.message = "Stop annotating lines with WTF! Detail what is wrong instead.";
     SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
     CheckMessagesVerifier.verify(file.getCheckMessages()).next()
       .atLine(1).withMessage(message).next()
@@ -53,7 +53,7 @@ public class CommentRegularExpressionCheckTest {
   }
 
   @Test(expected = SonarException.class)
-  public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_regular_expression_is_not_valid() {
+  public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
     check.regularExpression = "(";
     check.message = "blabla";
     JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);

@@ -22,41 +22,21 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class LineLengthCheckTest {
 
-  private final String PATH = "src/test/resources/checks/lineLength.properties";
   private LineLengthCheck check = new LineLengthCheck();
 
   @Test
   public void should_not_find_any_line_longer_than_the_default_value_120() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/lineLength120.properties"));
   }
 
   @Test
   public void should_find_one_line_longer_than_50_characters_and_raise_an_issue() {
     check.setMaximumLineLength(50);
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage("The line contains 51 characters which is greater than 50 authorized.")
-      .next().atLine(4).withMessage("The line contains 51 characters which is greater than 50 authorized.")
-      .noMore();
-  }
-
-  @Test
-  public void should_find_two_lines_longer_than_30_characters_and_raise_issues() {
-    check.setMaximumLineLength(30);
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages())
-      .next().atLine(2).withMessage("The line contains 51 characters which is greater than 30 authorized.")
-      .next().atLine(3).withMessage("The line contains 50 characters which is greater than 30 authorized.")
-      .next().atLine(4).withMessage("The line contains 51 characters which is greater than 30 authorized.")
-      .next().atLine(5).withMessage("The line contains 34 characters which is greater than 30 authorized.")
-      .noMore();
+    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/lineLength50.properties"));
   }
 
 }

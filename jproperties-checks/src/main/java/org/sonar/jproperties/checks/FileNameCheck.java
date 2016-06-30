@@ -26,22 +26,17 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import javax.annotation.Nullable;
 
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "S1578",
   name = "File names should comply with a naming convention",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("10min")
 @ActivatedByDefault
 public class FileNameCheck extends JavaPropertiesCheck {
 
@@ -61,7 +56,7 @@ public class FileNameCheck extends JavaPropertiesCheck {
   @Override
   public void visitFile(@Nullable AstNode astNode) {
     if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
-      addIssueOnFile("Rename this file to match this regular expression: " + format);
+      addFileIssue(this, "Rename this file to match this regular expression: " + format);
     }
   }
 

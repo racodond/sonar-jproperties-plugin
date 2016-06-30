@@ -20,6 +20,7 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.collect.Lists;
+import com.sonar.sslr.api.AstNode;
 
 import java.io.File;
 import java.util.HashMap;
@@ -30,49 +31,67 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class DuplicatedKeysAcrossFilesCheckTest {
 
   @Test
   public void analyze_one_single_file() {
     DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
     JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedKeysAcrossFiles.properties"), check);
+
     Assert.assertNotNull(check.getKeys());
     Assert.assertEquals(check.getKeys().size(), 2);
+
     Assert.assertTrue(check.getKeys().containsKey("myproperty1"));
     Assert.assertNotNull(check.getKeys().get("myproperty1"));
     Assert.assertEquals(check.getKeys().get("myproperty1").size(), 1);
     Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getLine(), 1);
+    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getNode().getTokenLine(), 1);
+
     Assert.assertTrue(check.getKeys().containsKey("myproperty2"));
     Assert.assertEquals(check.getKeys().get("myproperty2").size(), 1);
     Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getLine(), 2);
+    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getNode().getTokenLine(), 2);
   }
 
   @Test
   public void analyze_several_files() {
     DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
-    Map<String, List<FileLine>> keys = new HashMap<>();
-    keys.put("myproperty1", Lists.newArrayList(new FileLine(new File("src/test/resources/checks/keys.properties"), 2)));
-    keys.put("myproperty3", Lists.newArrayList(new FileLine(new File("src/test/resources/checks/keys.properties"), 4)));
+    Map<String, List<FileNode>> keys = new HashMap<>();
+
+    AstNode node1 = mock(AstNode.class);
+    when(node1.getTokenLine()).thenReturn(2);
+
+    AstNode node3 = mock(AstNode.class);
+    when(node3.getTokenLine()).thenReturn(4);
+
+    keys.put("myproperty1", Lists.newArrayList(new FileNode(new File("src/test/resources/checks/keys.properties"), node1)));
+    keys.put("myproperty3", Lists.newArrayList(new FileNode(new File("src/test/resources/checks/keys.properties"), node3)));
     check.setKeys(keys);
+
     JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedKeysAcrossFiles.properties"), check);
     Assert.assertNotNull(check.getKeys());
     Assert.assertEquals(check.getKeys().size(), 3);
+
     Assert.assertTrue(check.getKeys().containsKey("myproperty1"));
     Assert.assertNotNull(check.getKeys().get("myproperty1"));
     Assert.assertEquals(check.getKeys().get("myproperty1").size(), 2);
     Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getFile().getPath(), "src/test/resources/checks/keys.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getLine(), 2);
+    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getNode().getTokenLine(), 2);
     Assert.assertEquals(check.getKeys().get("myproperty1").get(1).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(1).getLine(), 1);
+    Assert.assertEquals(check.getKeys().get("myproperty1").get(1).getNode().getTokenLine(), 1);
+
     Assert.assertTrue(check.getKeys().containsKey("myproperty3"));
     Assert.assertEquals(check.getKeys().get("myproperty3").size(), 1);
     Assert.assertEquals(check.getKeys().get("myproperty3").get(0).getFile().getPath(), "src/test/resources/checks/keys.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty3").get(0).getLine(), 4);
+    Assert.assertEquals(check.getKeys().get("myproperty3").get(0).getNode().getTokenLine(), 4);
+
     Assert.assertTrue(check.getKeys().containsKey("myproperty2"));
     Assert.assertEquals(check.getKeys().get("myproperty2").size(), 1);
     Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getLine(), 2);
+    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getNode().getTokenLine(), 2);
   }
+
 }

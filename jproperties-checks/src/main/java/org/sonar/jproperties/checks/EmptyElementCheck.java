@@ -20,22 +20,17 @@
 package org.sonar.jproperties.checks;
 
 import com.sonar.sslr.api.AstNode;
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "empty-element",
   name = "Property with empty value should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.PITFALL})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.DATA_RELIABILITY)
-@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class EmptyElementCheck extends JavaPropertiesCheck {
 
@@ -47,7 +42,7 @@ public class EmptyElementCheck extends JavaPropertiesCheck {
   @Override
   public void visitNode(AstNode astNode) {
     if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) == null) {
-      addIssue(astNode, "Remove this property whose value is empty.");
+      addIssue(this, "Remove this property whose value is empty.", astNode.getFirstChild(JavaPropertiesGrammar.KEY));
     }
   }
 

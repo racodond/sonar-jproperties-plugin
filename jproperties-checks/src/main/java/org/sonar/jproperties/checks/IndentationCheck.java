@@ -20,22 +20,17 @@
 package org.sonar.jproperties.checks;
 
 import com.sonar.sslr.api.AstNode;
-import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
-import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 
 @Rule(
   key = "indentation",
   name = "All property definitions should start at column 1",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
-@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.READABILITY)
-@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class IndentationCheck extends JavaPropertiesCheck {
 
@@ -47,7 +42,7 @@ public class IndentationCheck extends JavaPropertiesCheck {
   @Override
   public void leaveNode(AstNode node) {
     if (node.getToken().getColumn() != 0) {
-      addIssue(node, "Remove the whitespaces before the key.");
+      addIssue(this, "Remove the whitespaces before the key.", node);
     }
   }
 

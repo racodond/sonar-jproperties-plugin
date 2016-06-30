@@ -19,12 +19,23 @@
  */
 package org.sonar.jproperties;
 
+import java.nio.charset.Charset;
+
 public class JavaPropertiesConfiguration {
 
+  private final Charset charset;
   private boolean ignoreHeaderComments;
+
+  public JavaPropertiesConfiguration(Charset charset) {
+    this.charset = charset;
+  }
 
   public void ignoreHeaderComments(boolean ignoreHeaderComments) {
     this.ignoreHeaderComments = ignoreHeaderComments;
+  }
+
+  public Charset getCharset() {
+    return charset;
   }
 
   public boolean ignoreHeaderComments() {

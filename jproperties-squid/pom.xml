@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jproperties-squid</artifactId>
-  <name>Java Properties :: Squid</name>
+  <name>Java Properties Plugin :: Squid</name>
 
   <dependencies>
     <dependency>

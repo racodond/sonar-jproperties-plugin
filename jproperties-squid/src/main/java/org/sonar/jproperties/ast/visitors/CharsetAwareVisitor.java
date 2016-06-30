@@ -17,26 +17,12 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.jproperties.checks;
+package org.sonar.jproperties.ast.visitors;
 
-import java.io.File;
+import java.nio.charset.Charset;
 
-public class FileLine {
+public interface CharsetAwareVisitor {
 
-  private final File file;
-  private final int line;
-
-  public FileLine(File file, int line) {
-    this.file = file;
-    this.line = line;
-  }
-
-  public File getFile() {
-    return file;
-  }
-
-  public int getLine() {
-    return line;
-  }
+  void setCharset(Charset charset);
 
 }

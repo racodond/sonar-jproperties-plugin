@@ -22,30 +22,13 @@ package org.sonar.jproperties.checks;
 import java.io.File;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class TodoTagPresenceCheckTest {
 
-  private final static String MESSAGE = "Complete the task associated to this TODO comment.";
-  private TodoTagPresenceCheck check = new TodoTagPresenceCheck();
-
   @Test
-  public void should_contain_todo_tags_and_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/todo.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(1).withMessage(MESSAGE).next()
-      .atLine(2).withMessage(MESSAGE).next()
-      .atLine(3).withMessage(MESSAGE).next()
-      .atLine(4).withMessage(MESSAGE).next()
-      .atLine(5).withMessage(MESSAGE).noMore();
-  }
-
-  @Test
-  public void should_not_contain_todo_tags_and_not_raise_issues() {
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/emptyElement.properties"), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+  public void test() {
+    JavaPropertiesCheckVerifier.verify(new TodoTagPresenceCheck(), new File("src/test/resources/checks/todo.properties"));
   }
 
 }
