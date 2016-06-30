@@ -65,9 +65,6 @@
     <license.title>SonarQube Java Properties Plugin</license.title>
     <license.owner>David RACODON</license.owner>
     <license.mailto>david.racodon@gmail.com</license.mailto>
-
-    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
-
     <sonar.version>5.6</sonar.version>
     <sslr.version>1.21</sslr.version>
   </properties>
