@@ -19,7 +19,7 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
 
 ## Notes
 
- * Java properties files are expected to be encoded in ISO-8859-1 as stated in Java specifications. During analysis, the following error may indicate that the file is not encoded in ISO-8859-1:
+ * The following kind of error may indicate that you did not properly set the `sonar.sourceEncoding` property. Prior to version 2.0, only ISO-8859-1 was supported.
  
         Caused by: java.lang.IllegalArgumentException: Unable to highlight file \[moduleKey=xxx, relative=xxx, basedir=xxx\] from offset 808 to offset 876
          at org.sonar.api.batch.sensor.highlighting.internal.DefaultHighlighting.highlight(DefaultHighlighting.java:85)
