@@ -19,7 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-class Tags {
+final class Tags {
 
   public static final String BRAIN_OVERLOAD = "brain-overload";
   public static final String BUG = "bug";

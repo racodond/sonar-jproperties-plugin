@@ -40,7 +40,7 @@ import org.sonar.jproperties.issue.PreciseIssueLocation;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;
 
-public class JavaPropertiesCheckVerifier {
+public final class JavaPropertiesCheckVerifier {
 
   private static final String UNSUPPORTED_TYPE_OF_ISSUE = "Unsupported type of issue.";
 

@@ -49,7 +49,7 @@ public class SyntaxHighlighterVisitor extends SquidAstVisitor<LexerlessGrammar> 
 
   public SyntaxHighlighterVisitor(SensorContext sensorContext, Charset charset) {
     this.sensorContext = sensorContext;
-    this.fileSystem = sensorContext.fileSystem();
+    fileSystem = sensorContext.fileSystem();
     this.charset = charset;
   }
 

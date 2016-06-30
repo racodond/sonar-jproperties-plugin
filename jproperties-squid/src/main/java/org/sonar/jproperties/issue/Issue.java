@@ -20,5 +20,4 @@
 package org.sonar.jproperties.issue;
 
 public interface Issue {
-
 }
