@@ -20,32 +20,23 @@
 package org.sonar.plugins.jproperties;
 
 import org.junit.Test;
-import org.sonar.api.config.Settings;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
 
 public class JavaPropertiesLanguageTest {
 
   @Test
   public void language_key_and_name() {
-    JavaPropertiesLanguage javaProperties = new JavaPropertiesLanguage(mock(Settings.class));
+    JavaPropertiesLanguage javaProperties = new JavaPropertiesLanguage();
     assertThat(javaProperties.getKey()).isEqualTo("jproperties");
     assertThat(javaProperties.getName()).isEqualTo("Java Properties");
   }
 
   @Test
-  public void default_suffixes() {
-    JavaPropertiesLanguage javaProperties = new JavaPropertiesLanguage(mock(Settings.class));
-    assertThat(javaProperties.getFileSuffixes()).containsOnly("properties");
-  }
-
-  @Test
-  public void custom_suffixes() {
-    Settings settings = new Settings();
-    settings.setProperty("sonar.javaProperties.file.suffixes", ".foo,bar");
-    JavaPropertiesLanguage javaProperties = new JavaPropertiesLanguage(settings);
-    assertThat(javaProperties.getFileSuffixes()).containsOnly(".foo", "bar");
+  public void file_suffix() {
+    JavaPropertiesLanguage javaProperties = new JavaPropertiesLanguage();
+    assertThat(javaProperties.getFileSuffixes()).hasSize(1);
+    assertThat(javaProperties.getFileSuffixes()[0]).isEqualTo("properties");
   }
 
 }

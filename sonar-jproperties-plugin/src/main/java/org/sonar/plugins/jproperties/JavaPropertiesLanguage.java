@@ -19,28 +19,19 @@
  */
 package org.sonar.plugins.jproperties;
 
-import org.apache.commons.lang.StringUtils;
-import org.sonar.api.config.Settings;
 import org.sonar.api.resources.AbstractLanguage;
 
 public class JavaPropertiesLanguage extends AbstractLanguage {
 
   public static final String KEY = "jproperties";
 
-  private final Settings settings;
-
-  public JavaPropertiesLanguage(Settings settings) {
+  public JavaPropertiesLanguage() {
     super(KEY, "Java Properties");
-    this.settings = settings;
   }
 
   @Override
   public String[] getFileSuffixes() {
-    String[] suffixes = settings.getStringArray(JavaPropertiesPlugin.FILE_SUFFIXES_KEY);
-    if (suffixes == null || suffixes.length == 0) {
-      suffixes = StringUtils.split(JavaPropertiesPlugin.FILE_SUFFIXES_DEFAULT_VALUE, ",");
-    }
-    return suffixes;
+    return new String[] {"properties"};
   }
 
 }

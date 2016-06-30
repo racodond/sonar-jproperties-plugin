@@ -20,22 +20,8 @@
 package org.sonar.plugins.jproperties;
 
 import org.sonar.api.Plugin;
-import org.sonar.api.Properties;
-import org.sonar.api.Property;
 
-@Properties({
-  @Property(
-    key = JavaPropertiesPlugin.FILE_SUFFIXES_KEY,
-    defaultValue = JavaPropertiesPlugin.FILE_SUFFIXES_DEFAULT_VALUE,
-    name = "File Suffixes",
-    description = "Comma-separated list of suffixes for files to analyze. To not filter, leave the list empty.",
-    global = true,
-    project = true)
-})
 public class JavaPropertiesPlugin implements Plugin {
-
-  public static final String FILE_SUFFIXES_KEY = "sonar.javaProperties.file.suffixes";
-  public static final String FILE_SUFFIXES_DEFAULT_VALUE = "properties";
 
   @Override
   public void define(Context context) {
