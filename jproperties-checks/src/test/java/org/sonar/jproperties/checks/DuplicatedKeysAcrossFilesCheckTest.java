@@ -36,24 +36,29 @@ import static org.mockito.Mockito.when;
 
 public class DuplicatedKeysAcrossFilesCheckTest {
 
+  private static final String TEST_DIRECTORY = "src/test/resources/checks/duplicated-keys-across-files/";
+
   @Test
   public void analyze_one_single_file() {
     DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedKeysAcrossFiles.properties"), check);
+    JavaPropertiesAstScanner.scanSingleFile(new File(TEST_DIRECTORY + "keys.properties"), check);
 
     Assert.assertNotNull(check.getKeys());
-    Assert.assertEquals(check.getKeys().size(), 2);
+    Assert.assertEquals(2, check.getKeys().size());
 
-    Assert.assertTrue(check.getKeys().containsKey("myproperty1"));
-    Assert.assertNotNull(check.getKeys().get("myproperty1"));
-    Assert.assertEquals(check.getKeys().get("myproperty1").size(), 1);
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getNode().getTokenLine(), 1);
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate1"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate1"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate1").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate1").get(0).getFile().getPath());
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate1").get(0).getNode().getTokenLine());
 
-    Assert.assertTrue(check.getKeys().containsKey("myproperty2"));
-    Assert.assertEquals(check.getKeys().get("myproperty2").size(), 1);
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getNode().getTokenLine(), 2);
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate2"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate2"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate2").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate2").get(0).getFile().getPath());
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate2").get(0).getNode().getTokenLine());
+
+    Assert.assertFalse(check.getKeys().containsKey("the.key.to.translate3"));
   }
 
   @Test
@@ -67,31 +72,104 @@ public class DuplicatedKeysAcrossFilesCheckTest {
     AstNode node3 = mock(AstNode.class);
     when(node3.getTokenLine()).thenReturn(4);
 
-    keys.put("myproperty1", Lists.newArrayList(new FileNode(new File("src/test/resources/checks/keys.properties"), node1)));
-    keys.put("myproperty3", Lists.newArrayList(new FileNode(new File("src/test/resources/checks/keys.properties"), node3)));
+    keys.put("the.key.to.translate1", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys2.properties"), node1)));
+    keys.put("the.key.to.translate3", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys2.properties"), node3)));
     check.setKeys(keys);
 
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedKeysAcrossFiles.properties"), check);
+    JavaPropertiesAstScanner.scanSingleFile(new File(TEST_DIRECTORY + "keys.properties"), check);
     Assert.assertNotNull(check.getKeys());
-    Assert.assertEquals(check.getKeys().size(), 3);
+    Assert.assertEquals(3, check.getKeys().size());
 
-    Assert.assertTrue(check.getKeys().containsKey("myproperty1"));
-    Assert.assertNotNull(check.getKeys().get("myproperty1"));
-    Assert.assertEquals(check.getKeys().get("myproperty1").size(), 2);
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getFile().getPath(), "src/test/resources/checks/keys.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(0).getNode().getTokenLine(), 2);
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(1).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty1").get(1).getNode().getTokenLine(), 1);
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate1"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate1"));
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate1").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys2.properties", check.getKeys().get("the.key.to.translate1").get(0).getFile().getPath());
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate1").get(0).getNode().getTokenLine());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate1").get(1).getFile().getPath());
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate1").get(1).getNode().getTokenLine());
 
-    Assert.assertTrue(check.getKeys().containsKey("myproperty3"));
-    Assert.assertEquals(check.getKeys().get("myproperty3").size(), 1);
-    Assert.assertEquals(check.getKeys().get("myproperty3").get(0).getFile().getPath(), "src/test/resources/checks/keys.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty3").get(0).getNode().getTokenLine(), 4);
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate3"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate3"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate3").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys2.properties", check.getKeys().get("the.key.to.translate3").get(0).getFile().getPath());
+    Assert.assertEquals(4, check.getKeys().get("the.key.to.translate3").get(0).getNode().getTokenLine());
 
-    Assert.assertTrue(check.getKeys().containsKey("myproperty2"));
-    Assert.assertEquals(check.getKeys().get("myproperty2").size(), 1);
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getFile().getPath(), "src/test/resources/checks/duplicatedKeysAcrossFiles.properties");
-    Assert.assertEquals(check.getKeys().get("myproperty2").get(0).getNode().getTokenLine(), 2);
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate2"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate3"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate2").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate2").get(0).getFile().getPath());
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate2").get(0).getNode().getTokenLine());
+  }
+
+  @Test
+  public void analyze_i18n_file_language() {
+    DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
+    Map<String, List<FileNode>> keys = new HashMap<>();
+
+    AstNode node1 = mock(AstNode.class);
+    when(node1.getTokenLine()).thenReturn(2);
+
+    AstNode node3 = mock(AstNode.class);
+    when(node3.getTokenLine()).thenReturn(4);
+
+    keys.put("the.key.to.translate1", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys.properties"), node1)));
+    keys.put("the.key.to.translate3", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys.properties"), node3)));
+    check.setKeys(keys);
+
+    JavaPropertiesAstScanner.scanSingleFile(new File(TEST_DIRECTORY + "keys_fr.properties"), check);
+
+    Assert.assertNotNull(check.getKeys());
+    Assert.assertEquals(2, check.getKeys().size());
+
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate1"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate1"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate1").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate1").get(0).getFile().getPath());
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate1").get(0).getNode().getTokenLine());
+
+    Assert.assertFalse(check.getKeys().containsKey("the.key.to.translate2"));
+
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate3"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate3"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate3").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate3").get(0).getFile().getPath());
+    Assert.assertEquals(4, check.getKeys().get("the.key.to.translate3").get(0).getNode().getTokenLine());
+  }
+
+
+  @Test
+  public void analyze_i18n_file_language_and_country() {
+    DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
+    Map<String, List<FileNode>> keys = new HashMap<>();
+
+    AstNode node1 = mock(AstNode.class);
+    when(node1.getTokenLine()).thenReturn(2);
+
+    AstNode node3 = mock(AstNode.class);
+    when(node3.getTokenLine()).thenReturn(4);
+
+    keys.put("the.key.to.translate1", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys.properties"), node1)));
+    keys.put("the.key.to.translate3", Lists.newArrayList(new FileNode(new File(TEST_DIRECTORY + "keys.properties"), node3)));
+    check.setKeys(keys);
+
+    JavaPropertiesAstScanner.scanSingleFile(new File(TEST_DIRECTORY + "keys_fr_FR.properties"), check);
+
+    Assert.assertNotNull(check.getKeys());
+    Assert.assertEquals(2, check.getKeys().size());
+
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate1"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate1"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate1").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate1").get(0).getFile().getPath());
+    Assert.assertEquals(2, check.getKeys().get("the.key.to.translate1").get(0).getNode().getTokenLine());
+
+    Assert.assertFalse(check.getKeys().containsKey("the.key.to.translate2"));
+
+    Assert.assertTrue(check.getKeys().containsKey("the.key.to.translate3"));
+    Assert.assertNotNull(check.getKeys().get("the.key.to.translate3"));
+    Assert.assertEquals(1, check.getKeys().get("the.key.to.translate3").size());
+    Assert.assertEquals(TEST_DIRECTORY + "keys.properties", check.getKeys().get("the.key.to.translate3").get(0).getFile().getPath());
+    Assert.assertEquals(4, check.getKeys().get("the.key.to.translate3").get(0).getNode().getTokenLine());
   }
 
 }

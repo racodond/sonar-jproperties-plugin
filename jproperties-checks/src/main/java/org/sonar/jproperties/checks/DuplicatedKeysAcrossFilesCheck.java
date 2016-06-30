@@ -23,14 +23,16 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.AstNode;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
@@ -39,10 +41,17 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
 @SqaleConstantRemediation("5min")
+@ActivatedByDefault
 public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public static final String RULE_KEY = "duplicated-keys-across-files";
 
+  private static final Set<String> LOCALES = Arrays.asList(DateFormat.getAvailableLocales())
+    .stream()
+    .map(Object::toString)
+    .collect(Collectors.toSet());
+
+  private boolean fileToCheck = false;
   private Map<String, List<FileNode>> keys = new HashMap<>();
 
   @Override
@@ -51,11 +60,19 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
   }
 
   @Override
+  public void visitFile(@Nullable AstNode astNode) {
+    String fileName = getContext().getFile().getName();
+    fileToCheck = LOCALES.stream().noneMatch(l -> fileName.endsWith("_" + l + ".properties"));
+  }
+
+  @Override
   public void visitNode(AstNode node) {
-    if (keys.containsKey(node.getTokenValue())) {
-      keys.get(node.getTokenValue()).add(new FileNode(getContext().getFile(), node));
-    } else {
-      keys.put(node.getTokenValue(), Lists.newArrayList(new FileNode(getContext().getFile(), node)));
+    if (fileToCheck) {
+      if (keys.containsKey(node.getTokenValue())) {
+        keys.get(node.getTokenValue()).add(new FileNode(getContext().getFile(), node));
+      } else {
+        keys.put(node.getTokenValue(), Lists.newArrayList(new FileNode(getContext().getFile(), node)));
+      }
     }
   }
 
