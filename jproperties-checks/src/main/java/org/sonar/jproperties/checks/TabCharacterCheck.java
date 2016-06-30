@@ -19,7 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
@@ -43,7 +42,7 @@ public class TabCharacterCheck extends JavaPropertiesCheck {
   public void visitFile(AstNode astNode) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
+      lines = Files.readLines(getContext().getFile(), getCharset());
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:tab-character, error while reading " + getContext().getFile(), e);
     }

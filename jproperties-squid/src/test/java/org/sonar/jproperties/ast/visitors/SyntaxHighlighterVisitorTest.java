@@ -24,9 +24,9 @@ import com.google.common.io.Files;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -36,6 +36,7 @@ import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.jproperties.JavaPropertiesAstScanner;
+import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.squidbridge.SquidAstVisitorContext;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -48,14 +49,88 @@ public class SyntaxHighlighterVisitorTest {
   private SensorContextTester sensorContext;
   private File file;
   private DefaultInputFile inputFile;
+  private Charset charset;
 
   @Rule
   public final TemporaryFolder tempFolder = new TemporaryFolder();
 
-  @Before
-  public void setUp() throws IOException {
+  @Test
+  public void parse_error() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("ParseError");
+    for (int i = 0; i < 10; i++) {
+      assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, i)).isEmpty();
+    }
+  }
+
+  @Test
+  public void empty_input() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("");
+    assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, 0)).isEmpty();
+  }
+
+  @Test
+  public void key() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n def=def...def");
+    assertHighlighting(1, 0, 3, KEYWORD);
+    assertHighlighting(2, 1, 3, KEYWORD);
+  }
+
+  @Test
+  public void value() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n def=def...def");
+    assertHighlighting(1, 5, 9, PREPROCESS_DIRECTIVE);
+    assertHighlighting(2, 5, 9, PREPROCESS_DIRECTIVE);
+  }
+
+  @Test
+  public void comment_hash() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("# blabla");
+    assertHighlighting(1, 0, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_hash2() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n # blabla");
+    assertHighlighting(2, 1, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_exclamation_mark() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("! blabla");
+    assertHighlighting(1, 0, 8, COMMENT);
+  }
+
+  @Test
+  public void comment_exclamation_mark2() throws Exception {
+    setUp(Charsets.ISO_8859_1);
+    highlight("abc: abc...abc\n ! blabla");
+    assertHighlighting(2, 1, 8, COMMENT);
+  }
+
+  @Test
+  public void byte_order_mark() throws Exception {
+    setUp(Charsets.UTF_8);
+    highlight("\ufeffabc: abc...abc");
+    assertHighlighting(1, 0, 3, KEYWORD);
+  }
+
+  private void highlight(String string) throws Exception {
+    inputFile.initMetadata(string);
+    Files.write(string, file, charset);
+    JavaPropertiesAstScanner.scanSingleFileWithCustomConfiguration(file, sensorContext, new JavaPropertiesConfiguration(charset));
+  }
+
+  private void setUp(Charset charset) throws IOException {
+    this.charset = charset;
     DefaultFileSystem fileSystem = new DefaultFileSystem(tempFolder.getRoot());
-    fileSystem.setEncoding(Charsets.UTF_8);
+    fileSystem.setEncoding(charset);
     file = tempFolder.newFile();
     inputFile = new DefaultInputFile("moduleKey", file.getName())
       .setLanguage("jproperties")
@@ -67,64 +142,6 @@ public class SyntaxHighlighterVisitorTest {
 
     SquidAstVisitorContext visitorContext = mock(SquidAstVisitorContext.class);
     when(visitorContext.getFile()).thenReturn(file);
-  }
-
-  @Test
-  public void parse_error() throws Exception {
-    highlight("ParseError");
-    for (int i = 0; i < 10; i++) {
-      assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, i)).isEmpty();
-    }
-  }
-
-  @Test
-  public void empty_input() throws Exception {
-    highlight("");
-    assertThat(sensorContext.highlightingTypeAt("moduleKey:" + file.getName(), 1, 0)).isEmpty();
-  }
-
-  @Test
-  public void key() throws Exception {
-    highlight("abc: abc...abc\n def=def...def");
-    assertHighlighting(1, 0, 3, KEYWORD);
-    assertHighlighting(2, 1, 3, KEYWORD);
-  }
-
-  @Test
-  public void value() throws Exception {
-    highlight("abc: abc...abc\n def=def...def");
-    assertHighlighting(1, 5, 9, PREPROCESS_DIRECTIVE);
-    assertHighlighting(2, 5, 9, PREPROCESS_DIRECTIVE);
-  }
-
-  @Test
-  public void comment_hash() throws Exception {
-    highlight("# blabla");
-    assertHighlighting(1, 0, 8, COMMENT);
-  }
-
-  @Test
-  public void comment_hash2() throws Exception {
-    highlight("abc: abc...abc\n # blabla");
-    assertHighlighting(2, 1, 8, COMMENT);
-  }
-
-  @Test
-  public void comment_exclamation_mark() throws Exception {
-    highlight("! blabla");
-    assertHighlighting(1, 0, 8, COMMENT);
-  }
-
-  @Test
-  public void comment_exclamation_mark2() throws Exception {
-    highlight("abc: abc...abc\n ! blabla");
-    assertHighlighting(2, 1, 8, COMMENT);
-  }
-
-  private void highlight(String string) throws Exception {
-    inputFile.initMetadata(string);
-    Files.write(string, file, Charsets.UTF_8);
-    JavaPropertiesAstScanner.scanSingleFile(file, sensorContext);
   }
 
   private void assertHighlighting(int line, int column, int length, TypeOfText type) {

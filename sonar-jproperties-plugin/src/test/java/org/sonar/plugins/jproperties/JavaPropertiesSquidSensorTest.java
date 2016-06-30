@@ -22,6 +22,7 @@ package org.sonar.plugins.jproperties;
 import com.google.common.base.Charsets;
 
 import java.io.File;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
@@ -55,22 +56,30 @@ public class JavaPropertiesSquidSensorTest {
   }
 
   @Test
-  public void should_execute_and_compute_valid_measures() {
+  public void should_execute_and_compute_valid_measures_on_ISO_8859_1_file() {
     String relativePath = "myProperties.properties";
-    inputFile(relativePath);
-
+    inputFile(relativePath, Charsets.ISO_8859_1);
     createCssSquidSensor().execute(context);
-
-    String key = "moduleKey:" + relativePath;
-
-    assertThat(context.measure(key, CoreMetrics.NCLOC).value()).isEqualTo(6);
-    assertThat(context.measure(key, CoreMetrics.STATEMENTS).value()).isEqualTo(6);
-    assertThat(context.measure(key, CoreMetrics.COMMENT_LINES).value()).isEqualTo(4);
+    assertMeasure("moduleKey:" + relativePath);
   }
 
   @Test
-  public void should_execute_and_save_issues() throws Exception {
-    inputFile("myProperties.properties");
+  public void should_execute_and_compute_valid_measures_on_UTF8_with_BOM_file() {
+    String relativePath = "myPropertiesUTF8WithBOM.properties";
+    inputFile(relativePath, Charsets.UTF_8);
+    createCssSquidSensor().execute(context);
+    assertMeasure("moduleKey:" + relativePath);
+  }
+
+  private void assertMeasure(String key) {
+    assertThat(context.measure(key, CoreMetrics.NCLOC).value()).isEqualTo(7);
+    assertThat(context.measure(key, CoreMetrics.STATEMENTS).value()).isEqualTo(7);
+    assertThat(context.measure(key, CoreMetrics.COMMENT_LINES).value()).isEqualTo(3);
+  }
+
+  @Test
+  public void should_execute_and_save_issues_on_UTF8_with_BOM_file() throws Exception {
+    inputFile("myPropertiesUTF8WithBOM.properties", Charsets.UTF_8);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
       .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
@@ -85,11 +94,28 @@ public class JavaPropertiesSquidSensorTest {
     assertThat(context.allIssues()).hasSize(3);
   }
 
+  @Test
+  public void should_execute_and_save_issues_on_ISO_8859_1_file() throws Exception {
+    inputFile("myProperties.properties", Charsets.ISO_8859_1);
+
+    ActiveRules activeRules = (new ActiveRulesBuilder())
+        .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
+        .activate()
+        .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
+        .activate()
+        .build();
+    checkFactory = new CheckFactory(activeRules);
+
+    createCssSquidSensor().execute(context);
+
+    assertThat(context.allIssues()).hasSize(3);
+  }
+
   private JavaPropertiesSquidSensor createCssSquidSensor() {
     return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
   }
 
-  private DefaultInputFile inputFile(String relativePath) {
+  private DefaultInputFile inputFile(String relativePath, Charset charset) {
     DefaultInputFile inputFile = new DefaultInputFile("moduleKey", relativePath)
       .setModuleBaseDir(baseDir.toPath())
       .setType(InputFile.Type.MAIN)
@@ -97,7 +123,7 @@ public class JavaPropertiesSquidSensorTest {
 
     context.fileSystem().add(inputFile);
 
-    return inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), Charsets.ISO_8859_1));
+    return inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), charset));
   }
 
 }

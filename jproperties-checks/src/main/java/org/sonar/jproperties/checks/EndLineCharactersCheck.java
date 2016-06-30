@@ -20,7 +20,6 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
@@ -67,7 +66,7 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
 
   private boolean fileContainsIllegalEndLineCharacters() {
     try {
-      String fileContent = Files.toString(getContext().getFile(), Charsets.ISO_8859_1);
+      String fileContent = Files.toString(getContext().getFile(), getCharset());
       return "CR".equals(endLineCharacters) && Pattern.compile("(?s)\n").matcher(fileContent).find()
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();

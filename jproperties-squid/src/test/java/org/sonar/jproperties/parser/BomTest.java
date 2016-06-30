@@ -17,29 +17,27 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.jproperties.checks;
-
-import com.google.common.base.Charsets;
-
-import java.io.File;
+package org.sonar.jproperties.parser;
 
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
-import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
+import org.sonar.sslr.parser.LexerlessGrammar;
 
-public class DuplicatedKeysCheckTest {
+import static org.sonar.sslr.tests.Assertions.assertThat;
+
+public class BomTest extends TestBase {
+
+  private LexerlessGrammar b = JavaPropertiesGrammar.createGrammar();
 
   @Test
-  public void should_find_some_duplicated_keys_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), new File("src/test/resources/checks/duplicatedKeys.properties"));
+  public void should_match_bom() {
+    assertThat(b.rule(JavaPropertiesGrammar.BOM))
+      .matches("\uFEFF");
   }
 
   @Test
-  public void should_find_some_duplicated_keys_and_raise_issues_on_UTF8_with_BOM_file() {
-    JavaPropertiesCheckVerifier.verify(
-      new DuplicatedKeysCheck(),
-      new File("src/test/resources/checks/duplicatedKeysUTF8WithBOM.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_8));
+  public void should_not_match_bom() {
+    assertThat(b.rule(JavaPropertiesGrammar.BOM))
+      .notMatches("uFEFF");
   }
 
 }

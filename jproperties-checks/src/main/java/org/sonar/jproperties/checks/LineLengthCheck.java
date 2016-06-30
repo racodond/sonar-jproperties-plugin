@@ -20,7 +20,6 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.sonar.sslr.api.AstNode;
 
@@ -55,7 +54,7 @@ public class LineLengthCheck extends JavaPropertiesCheck {
   public void visitFile(@Nullable AstNode astNode) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), Charsets.ISO_8859_1);
+      lines = Files.readLines(getContext().getFile(), getCharset());
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:line-length, error while reading " + getContext().getFile(), e);
     }
