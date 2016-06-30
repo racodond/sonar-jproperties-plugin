@@ -40,10 +40,9 @@
   </developers>
 
   <modules>
-    <module>jproperties-squid</module>
-    <module>sslr-jproperties-toolkit</module>
-    <module>jproperties-checks</module>
     <module>sonar-jproperties-plugin</module>
+    <module>jproperties-squid</module>
+    <module>jproperties-checks</module>
     <module>jproperties-checks-testkit</module>
   </modules>
 
