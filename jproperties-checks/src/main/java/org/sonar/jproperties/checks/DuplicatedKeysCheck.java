@@ -32,12 +32,14 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "duplicated-keys",
   name = "Duplicated keys should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
+@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class DuplicatedKeysCheck extends JavaPropertiesCheck {
 

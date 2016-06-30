@@ -29,12 +29,14 @@ import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.AstScannerExceptionHandler;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "S2260",
   name = "Java Properties parser failure",
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
+@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class ParsingErrorCheck extends JavaPropertiesCheck implements AstScannerExceptionHandler {
 

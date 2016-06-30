@@ -33,12 +33,14 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "maximum-number-keys",
   name = "Number of keys should be reduced",
   priority = Priority.MAJOR,
   tags = {Tags.BRAIN_OVERLOAD})
+@SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class TooManyKeysCheck extends JavaPropertiesCheck {
 

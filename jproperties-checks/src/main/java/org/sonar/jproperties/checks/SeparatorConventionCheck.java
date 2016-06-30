@@ -27,12 +27,14 @@ import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "separator-convention",
   name = "Separators should follow a convention",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class SeparatorConventionCheck extends JavaPropertiesCheck {
 

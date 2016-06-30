@@ -31,12 +31,14 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "S1578",
   name = "File names should comply with a naming convention",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("10min")
 @ActivatedByDefault
 public class FileNameCheck extends JavaPropertiesCheck {
 

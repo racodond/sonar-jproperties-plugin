@@ -25,11 +25,13 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "S1134",
   name = "\"FIXME\" tags should be handled",
   priority = Priority.INFO)
+@SqaleConstantRemediation("15min")
 @ActivatedByDefault
 public class FixmeTagPresenceCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 

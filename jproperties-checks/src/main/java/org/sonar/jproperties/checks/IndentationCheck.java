@@ -25,12 +25,14 @@ import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "indentation",
   name = "All property definitions should start at column 1",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class IndentationCheck extends JavaPropertiesCheck {
 

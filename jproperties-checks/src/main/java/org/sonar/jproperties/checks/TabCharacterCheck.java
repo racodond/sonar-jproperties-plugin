@@ -29,12 +29,14 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "tab-character",
   name = "Tabulation characters should not be used",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("2min")
 @ActivatedByDefault
 public class TabCharacterCheck extends JavaPropertiesCheck {
 

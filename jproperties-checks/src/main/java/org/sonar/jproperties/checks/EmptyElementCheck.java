@@ -25,12 +25,14 @@ import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "empty-element",
   name = "Property with empty value should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.PITFALL})
+@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class EmptyElementCheck extends JavaPropertiesCheck {
 

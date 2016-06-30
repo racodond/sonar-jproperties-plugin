@@ -30,12 +30,14 @@ import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "comment-convention",
   name = "All comments should be formatted consistently",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("1min")
 @ActivatedByDefault
 public class CommentConventionCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 

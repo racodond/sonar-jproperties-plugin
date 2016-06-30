@@ -31,12 +31,14 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = DuplicatedKeysAcrossFilesCheck.RULE_KEY,
   name = "Duplicated keys across files should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
+@SqaleConstantRemediation("5min")
 public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
 
   public static final String RULE_KEY = "duplicated-keys-across-files";

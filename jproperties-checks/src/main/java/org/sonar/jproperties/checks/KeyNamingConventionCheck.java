@@ -31,12 +31,14 @@ import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "key-naming-convention",
   name = "Keys should follow a naming convention",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class KeyNamingConventionCheck extends JavaPropertiesCheck {
 

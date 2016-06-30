@@ -31,12 +31,14 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "end-line-characters",
   name = "End-line characters should be consistent",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
+@SqaleConstantRemediation("5min")
 public class EndLineCharactersCheck extends JavaPropertiesCheck {
 
   private static final String DEFAULT_FORMAT = "LF";

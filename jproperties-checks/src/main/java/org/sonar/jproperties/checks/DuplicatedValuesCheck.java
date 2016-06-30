@@ -37,12 +37,14 @@ import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.jproperties.issue.PreciseIssue;
 import org.sonar.jproperties.parser.JavaPropertiesGrammar;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "duplicated-values",
   name = "Different keys having the same value should be merged",
   priority = Priority.MAJOR,
   tags = {Tags.PITFALL})
+@SqaleConstantRemediation("30min")
 @ActivatedByDefault
 public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 

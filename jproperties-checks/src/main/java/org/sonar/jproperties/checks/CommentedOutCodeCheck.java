@@ -32,12 +32,14 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "commented-out-code",
   name = "Sections of code should not be commented out",
   priority = Priority.MAJOR,
   tags = {Tags.UNUSED})
+@SqaleConstantRemediation("5min")
 @ActivatedByDefault
 public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
 
