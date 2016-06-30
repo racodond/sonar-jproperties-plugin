@@ -19,16 +19,40 @@
  */
 package org.sonar.jproperties.checks;
 
+import com.google.common.base.Charsets;
+
 import java.io.File;
 
 import org.junit.Test;
+import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class IndentationCheckTest {
 
   @Test
   public void should_find_some_keys_that_are_not_properly_indented_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new IndentationCheck(), new File("src/test/resources/checks/indentation.properties"));
+    JavaPropertiesCheckVerifier.verify(new IndentationCheck(), new File("src/test/resources/checks/indentation/indentation.properties"));
+  }
+
+  @Test
+  public void should_find_an_issue_on_the_first_line_on_ISO_8859_1_file() {
+    JavaPropertiesCheckVerifier.verify(new IndentationCheck(), new File("src/test/resources/checks/indentation/indentationIssueFirstLine.properties"));
+  }
+
+  @Test
+  public void should_find_some_keys_that_are_not_properly_indented_and_raise_issues_on_UTF8_file_with_BOM() {
+    JavaPropertiesCheckVerifier.verify(
+      new IndentationCheck(),
+      new File("src/test/resources/checks/indentation/indentationUTF8WithBOM.properties"),
+      new JavaPropertiesConfiguration(Charsets.UTF_8));
+  }
+
+  @Test
+  public void should_find_an_issue_on_the_first_line_on_UTF8_file_with_BOM() {
+    JavaPropertiesCheckVerifier.verify(
+      new IndentationCheck(),
+      new File("src/test/resources/checks/indentation/indentationUTF8WithBOMIssueFirstLine.properties"),
+      new JavaPropertiesConfiguration(Charsets.UTF_8));
   }
 
 }
