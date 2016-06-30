@@ -34,6 +34,7 @@ public final class CheckList {
   @SuppressWarnings("rawtypes")
   public static Collection<Class> getChecks() {
     return ImmutableList.<Class>of(
+      BOMCheck.class,
       CommentConventionCheck.class,
       CommentedOutCodeCheck.class,
       CommentRegularExpressionCheck.class,
