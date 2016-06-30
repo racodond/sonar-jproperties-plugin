@@ -11,7 +11,7 @@
   <artifactId>sonar-jproperties-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
 
-  <name>Java Properties :: SonarQube Plugin</name>
+  <name>SonarQube Java Properties Plugin :: SonarQube Plugin</name>
   <description>Enables analysis of Java Properties files.</description>
   <url>https://github.com/racodond/sonar-jproperties-plugin</url>
 
