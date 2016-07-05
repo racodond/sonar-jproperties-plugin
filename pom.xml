@@ -41,7 +41,7 @@
 
   <modules>
     <module>sonar-jproperties-plugin</module>
-    <module>jproperties-squid</module>
+    <module>jproperties-frontend</module>
     <module>jproperties-checks</module>
     <module>jproperties-checks-testkit</module>
   </modules>
@@ -73,7 +73,7 @@
     <dependencies>
       <dependency>
         <groupId>${project.groupId}</groupId>
-        <artifactId>jproperties-squid</artifactId>
+        <artifactId>jproperties-frontend</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>jproperties-squid</artifactId>
+      <artifactId>jproperties-frontend</artifactId>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
