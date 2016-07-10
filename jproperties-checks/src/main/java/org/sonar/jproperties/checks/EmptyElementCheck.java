@@ -19,11 +19,10 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstNode;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.PropertyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -34,17 +33,12 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.PITFALL})
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class EmptyElementCheck extends JavaPropertiesCheck {
+public class EmptyElementCheck extends DoubleDispatchVisitorCheck {
 
   @Override
-  public void init() {
-    subscribeTo(JavaPropertiesGrammar.PROPERTY);
-  }
-
-  @Override
-  public void visitNode(AstNode astNode) {
-    if (astNode.getFirstChild(JavaPropertiesGrammar.ELEMENT) == null) {
-      addIssue(this, "Remove this property whose value is empty.", astNode.getFirstChild(JavaPropertiesGrammar.KEY));
+  public void visitProperty(PropertyTree tree) {
+    if (tree.value() == null) {
+      addPreciseIssue(tree, "Remove this property whose value is empty.");
     }
   }
 

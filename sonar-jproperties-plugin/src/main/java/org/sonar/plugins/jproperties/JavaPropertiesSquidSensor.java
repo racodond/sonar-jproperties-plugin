@@ -20,49 +20,62 @@
 package org.sonar.plugins.jproperties;
 
 import com.google.common.collect.Lists;
+import com.sonar.sslr.api.RecognitionException;
+import com.sonar.sslr.api.typed.ActionParser;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.InputFile.Type;
 import org.sonar.api.batch.rule.CheckFactory;
-import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.batch.sensor.Sensor;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.measures.CoreMetrics;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
-import org.sonar.jproperties.api.JavaPropertiesMetric;
+import org.sonar.api.batch.sensor.issue.NewIssue;
+import org.sonar.api.batch.sensor.issue.NewIssueLocation;
+import org.sonar.api.rule.RuleKey;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 import org.sonar.jproperties.checks.CheckList;
-import org.sonar.jproperties.issue.Issue;
-import org.sonar.jproperties.issue.PreciseIssue;
-import org.sonar.squidbridge.AstScanner;
-import org.sonar.squidbridge.SquidAstVisitor;
-import org.sonar.squidbridge.api.SourceCode;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.SquidCheck;
-import org.sonar.squidbridge.indexer.QueryByType;
-import org.sonar.sslr.parser.LexerlessGrammar;
+import org.sonar.jproperties.checks.ParsingErrorCheck;
+import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
+import org.sonar.jproperties.visitors.CharsetAwareVisitor;
+import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
+import org.sonar.jproperties.visitors.SyntaxHighlighterVisitor;
+import org.sonar.jproperties.visitors.metrics.MetricsVisitor;
+import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.Tree;
+import org.sonar.plugins.jproperties.api.visitors.TreeVisitor;
+import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
+import org.sonar.squidbridge.api.AnalysisException;
 
 public class JavaPropertiesSquidSensor implements Sensor {
 
-  private final CheckFactory checkFactory;
+  private static final Logger LOG = Loggers.get(JavaPropertiesSquidSensor.class);
 
-  private SensorContext sensorContext;
   private final FileSystem fileSystem;
+  private final JavaPropertiesChecks checks;
+  private final ActionParser<Tree> parser;
   private final FilePredicate mainFilePredicate;
+  private IssueSaver issueSaver;
+  private RuleKey parsingErrorRuleKey = null;
 
   public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
-    this.checkFactory = checkFactory;
     this.fileSystem = fileSystem;
+
     this.mainFilePredicate = fileSystem.predicates().and(
       fileSystem.predicates().hasType(InputFile.Type.MAIN),
       fileSystem.predicates().hasLanguage(JavaPropertiesLanguage.KEY));
+
+    this.parser = JavaPropertiesParserBuilder.createParser(fileSystem.encoding());
+
+    this.checks = JavaPropertiesChecks.createJavaPropertiestCheck(checkFactory)
+      .addChecks(CheckList.REPOSITORY_KEY, CheckList.getChecks());
   }
 
   @Override
@@ -75,62 +88,83 @@ public class JavaPropertiesSquidSensor implements Sensor {
 
   @Override
   public void execute(SensorContext sensorContext) {
-    this.sensorContext = sensorContext;
+    List<TreeVisitor> treeVisitors = Lists.newArrayList();
+    treeVisitors.addAll(checks.visitorChecks());
+    treeVisitors.add(new SyntaxHighlighterVisitor(sensorContext));
+    treeVisitors.add(new MetricsVisitor(sensorContext));
 
-    Checks<SquidCheck> checks = checkFactory.<SquidCheck>create(JavaPropertiesLanguage.KEY).addAnnotatedChecks((Iterable) CheckList.getChecks());
-    Collection<SquidCheck> checkList = checks.all();
+    setParsingErrorCheckIfActivated(treeVisitors);
 
-    Set<Issue> issues = new HashSet<>();
-
-    AstScanner<LexerlessGrammar> scanner = JavaPropertiesAstScanner.create(
-      sensorContext,
-      new JavaPropertiesConfiguration(fileSystem.encoding()),
-      issues,
-      checkList.toArray(new SquidAstVisitor[checkList.size()]));
-    scanner.scanFiles(Lists.newArrayList(fileSystem.files(mainFilePredicate)));
-
-    Collection<SourceCode> squidSourceFiles = scanner.getIndex().search(new QueryByType(SourceFile.class));
-    save(squidSourceFiles, checks, issues);
-  }
-
-  private void save(Collection<SourceCode> squidSourceFiles, Checks<SquidCheck> checks, Set<Issue> issues) {
-    for (SourceCode squidSourceFile : squidSourceFiles) {
-      SourceFile squidFile = (SourceFile) squidSourceFile;
-      InputFile sonarFile = fileSystem.inputFile(fileSystem.predicates().hasAbsolutePath(squidFile.getKey()));
-      saveMeasures(sonarFile, squidFile);
+    issueSaver = new IssueSaver(sensorContext, checks);
+    List<Issue> issues = new ArrayList<>();
+    for (InputFile inputFile : fileSystem.inputFiles(mainFilePredicate)) {
+      issues.addAll(analyzeFile(sensorContext, inputFile, treeVisitors));
     }
-    ProjectChecks projectChecks = new ProjectChecks(checks, issues);
-    projectChecks.checkProjectIssues();
-    saveIssues(checks, issues);
+    saveSingleFileIssues(issues);
+    saveCrossFileIssues();
   }
 
-  private void saveMeasures(InputFile sonarFile, SourceFile squidFile) {
-    sensorContext.<Integer>newMeasure()
-      .on(sonarFile)
-      .forMetric(CoreMetrics.NCLOC)
-      .withValue(squidFile.getInt(JavaPropertiesMetric.LINES_OF_CODE))
-      .save();
-
-    sensorContext.<Integer>newMeasure()
-      .on(sonarFile)
-      .forMetric(CoreMetrics.STATEMENTS)
-      .withValue(squidFile.getInt(JavaPropertiesMetric.STATEMENTS))
-      .save();
-
-    sensorContext.<Integer>newMeasure()
-      .on(sonarFile)
-      .forMetric(CoreMetrics.COMMENT_LINES)
-      .withValue(squidFile.getInt(JavaPropertiesMetric.COMMENT_LINES))
-      .save();
+  private List<Issue> analyzeFile(SensorContext sensorContext, InputFile inputFile, List<TreeVisitor> visitors) {
+    try {
+      PropertiesTree propertiesTree = (PropertiesTree) parser.parse(new File(inputFile.absolutePath()));
+      return scanFile(inputFile, propertiesTree, visitors);
+    } catch (RecognitionException e) {
+      LOG.error("Unable to parse file: " + inputFile.absolutePath());
+      LOG.error(e.getMessage());
+      processRecognitionException(e, sensorContext, inputFile);
+    } catch (Exception e) {
+      throw new AnalysisException("Unable to analyse file: " + inputFile.absolutePath(), e);
+    }
+    return new ArrayList<>();
   }
 
-  private void saveIssues(Checks<SquidCheck> checks, Set<Issue> issues) {
-    // TODO: Try and remove TestIssue to avoid this ugly if
-    for (Issue issue : issues) {
-      if (issue instanceof PreciseIssue) {
-        ((PreciseIssue) issue).save(checks, sensorContext);
+  private List<Issue> scanFile(InputFile inputFile, PropertiesTree propertiesTree, List<TreeVisitor> visitors) {
+    JavaPropertiesVisitorContext context = new JavaPropertiesVisitorContext(propertiesTree, inputFile.file());
+    List<Issue> issues = new ArrayList<>();
+    for (TreeVisitor visitor : visitors) {
+      if (visitor instanceof CharsetAwareVisitor) {
+        ((CharsetAwareVisitor) visitor).setCharset(fileSystem.encoding());
+      }
+      if (visitor instanceof JavaPropertiesCheck) {
+        issues.addAll(((JavaPropertiesCheck) visitor).scanFile(context));
       } else {
-        throw new IllegalStateException("Unsupported type of issue to be saved.");
+        visitor.scanTree(context);
+      }
+    }
+    return issues;
+  }
+
+  private void saveSingleFileIssues(List<Issue> issues) {
+    for (Issue issue : issues) {
+      issueSaver.saveIssue(issue);
+    }
+  }
+
+  private void saveCrossFileIssues() {
+    new CrossFileChecks(issueSaver).saveCrossFileIssues();
+  }
+
+  private void processRecognitionException(RecognitionException e, SensorContext sensorContext, InputFile inputFile) {
+    if (parsingErrorRuleKey != null) {
+      NewIssue newIssue = sensorContext.newIssue();
+
+      NewIssueLocation primaryLocation = newIssue.newLocation()
+        .message(e.getMessage())
+        .on(inputFile)
+        .at(inputFile.selectLine(e.getLine()));
+
+      newIssue
+        .forRule(parsingErrorRuleKey)
+        .at(primaryLocation)
+        .save();
+    }
+  }
+
+  private void setParsingErrorCheckIfActivated(List<TreeVisitor> treeVisitors) {
+    for (TreeVisitor check : treeVisitors) {
+      if (check instanceof ParsingErrorCheck) {
+        parsingErrorRuleKey = checks.ruleKeyFor((JavaPropertiesCheck) check);
+        break;
       }
     }
   }

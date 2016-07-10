@@ -20,12 +20,15 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sonar.sslr.api.AstNode;
+
+import java.util.Arrays;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.PropertyTree;
+import org.sonar.plugins.jproperties.api.tree.SeparatorTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -36,60 +39,62 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class SeparatorConventionCheck extends JavaPropertiesCheck {
+public class SeparatorConventionCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT_FORMAT = "=";
 
   @RuleProperty(
     key = "Separator",
     description = "Allowed values: ':', '='",
-    defaultValue = "" + DEFAULT_FORMAT)
+    defaultValue = DEFAULT_FORMAT)
   private String separator = DEFAULT_FORMAT;
 
   @Override
-  public void init() {
-    validateSeparatorParameter();
-    subscribeTo(JavaPropertiesGrammar.PROPERTY);
+  public void visitSeparator(SeparatorTree tree) {
+    if (!tree.text().equals(separator)) {
+      addPreciseIssue(tree, "Use '" + separator + "' as separator instead.");
+    }
   }
 
   @Override
-  public void leaveNode(AstNode node) {
-    if (!node.getFirstChild(JavaPropertiesGrammar.SEPARATOR).getTokenValue().equals(separator)) {
-      addIssue(this, "Use '" + separator + "' as separator instead.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
-      return;
-    }
+  public void visitProperty(PropertyTree tree) {
+    int separatorPosition = tree.separator().separatorToken().column();
+    int keyLastCharacter = tree.key().value().endColumn();
+    String separatorChar = tree.separator().text();
 
-    int separatorPosition = node.getFirstChild(JavaPropertiesGrammar.SEPARATOR).getToken().getColumn();
-    int keyLastCharacter = node.getFirstChild(JavaPropertiesGrammar.KEY).getTokenValue().length() + node.getFirstChild(JavaPropertiesGrammar.KEY).getToken().getColumn();
     if (separatorPosition > keyLastCharacter) {
-      addIssue(this, "Remove the whitespaces between the key and the separator.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
+      addPreciseIssue(tree.separator(), "Remove the whitespaces between the key and the separator.");
     }
 
-    if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
-      int elementFirstCharacter = node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getToken().getColumn();
-      if ("=".equals(separator) && elementFirstCharacter > separatorPosition + 1) {
-        addIssue(this, "Remove the whitespaces between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
+    if (tree.value() != null && separator.equals(separatorChar)) {
+      int elementFirstCharacter = tree.value().value().column();
+      if (SeparatorTree.Separator.EQUALS.getValue().equals(separatorChar)
+        && elementFirstCharacter > separatorPosition + 1) {
+        addPreciseIssue(tree.separator(), "Remove the whitespaces between the separator and the value.");
       }
-      if (":".equals(separator)) {
+      if (SeparatorTree.Separator.COLON.getValue().equals(separatorChar)) {
         if (elementFirstCharacter == separatorPosition + 1) {
-          addIssue(this, "Add a whitespace between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
+          addPreciseIssue(tree.separator(), "Add a whitespace between the separator and the value.");
         } else if (elementFirstCharacter > separatorPosition + 2) {
-          addIssue(this, "Leave one single whitespace between the separator and the value.", node.getFirstChild(JavaPropertiesGrammar.SEPARATOR));
+          addPreciseIssue(tree.separator(), "Leave one single whitespace between the separator and the value.");
         }
       }
+    }
+    super.visitProperty(tree);
+  }
+
+  @Override
+  public void validateParameters() {
+    if (!Arrays.asList("=", ":").contains(separator)) {
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + " (" + this.getClass().getAnnotation(Rule.class).name() + "): separator parameter is not valid.\nActual: \""
+        + separator + "\"\nExpected: '=' or ':'");
     }
   }
 
   @VisibleForTesting
   public void setSeparator(String separator) {
     this.separator = separator;
-  }
-
-  private void validateSeparatorParameter() {
-    if (!"=".equals(separator) && !":".equals(separator)) {
-      throw new IllegalStateException("Check jproperties:separator-convention - separator parameter is not valid.\nActual: '"
-        + separator + "'\nExpected: '=' or ':'");
-    }
   }
 
 }

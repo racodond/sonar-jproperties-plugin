@@ -19,33 +19,25 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
 import org.apache.commons.lang.StringUtils;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 
-public class CommentContainsPatternChecker {
-  private final JavaPropertiesCheck check;
+public class CommentContainsPatternChecker extends DoubleDispatchVisitorCheck {
+
   private final String pattern;
   private final String message;
 
-  public CommentContainsPatternChecker(JavaPropertiesCheck check, String pattern, String message) {
-    this.check = check;
+  public CommentContainsPatternChecker(String pattern, String message) {
     this.pattern = pattern;
     this.message = message;
   }
 
-  public void visitToken(Token token) {
-    for (Trivia trivia : token.getTrivia()) {
-      String comment = trivia.getToken().getOriginalValue();
-      if (StringUtils.containsIgnoreCase(comment, pattern)) {
-        String[] lines = comment.split("\r\n?|\n");
-        for (int i = 0; i < lines.length; i++) {
-          if (StringUtils.containsIgnoreCase(lines[i], pattern) && !isLetterAround(lines[i], pattern)) {
-            check.addLineIssue(check, message, trivia.getToken().getLine() + i);
-          }
-        }
-      }
+  @Override
+  public void visitComment(SyntaxTrivia trivia) {
+    String comment = trivia.text();
+    if (StringUtils.containsIgnoreCase(comment, pattern) && !isLetterAround(comment, pattern)) {
+      addPreciseIssue(trivia, message);
     }
   }
 

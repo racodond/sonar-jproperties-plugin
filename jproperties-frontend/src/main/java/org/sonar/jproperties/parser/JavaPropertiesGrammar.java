@@ -19,48 +19,52 @@
  */
 package org.sonar.jproperties.parser;
 
-import com.sonar.sslr.api.GenericTokenType;
-import org.sonar.sslr.grammar.GrammarRuleKey;
-import org.sonar.sslr.grammar.LexerlessGrammarBuilder;
-import org.sonar.sslr.parser.LexerlessGrammar;
+import com.sonar.sslr.api.typed.GrammarBuilder;
+import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
+import org.sonar.plugins.jproperties.api.tree.*;
 
-public enum JavaPropertiesGrammar implements GrammarRuleKey {
+public class JavaPropertiesGrammar {
 
-  PROPERTIES,
-  PROPERTY,
-  KEY,
-  ELEMENT,
-  SEPARATOR,
-  COLON_SEPARATOR,
-  EQUALS_SEPARATOR,
-  WHITESPACES_WITHOUT_LINE_BREAK,
-  WHITESPACES_AND_COMMENTS,
-  BOM,
-  EOF;
+  private final GrammarBuilder<InternalSyntaxToken> b;
+  private final TreeFactory f;
 
-  public static LexerlessGrammar createGrammar() {
-    LexerlessGrammarBuilder b = LexerlessGrammarBuilder.create();
-    syntax(b);
-    b.setRootRule(PROPERTIES);
-    return b.build();
+  public JavaPropertiesGrammar(GrammarBuilder<InternalSyntaxToken> b, TreeFactory f) {
+    this.b = b;
+    this.f = f;
   }
 
-  private static void syntax(LexerlessGrammarBuilder b) {
-    b.rule(PROPERTIES).is(WHITESPACES_AND_COMMENTS, b.optional(BOM), b.zeroOrMore(PROPERTY), WHITESPACES_AND_COMMENTS, EOF);
-    b.rule(PROPERTY).is(WHITESPACES_AND_COMMENTS, KEY, SEPARATOR, b.optional(ELEMENT));
-    b.rule(SEPARATOR).is(b.firstOf(COLON_SEPARATOR, EQUALS_SEPARATOR));
-    b.rule(EOF).is(b.token(GenericTokenType.EOF, b.endOfInput())).skip();
-    b.rule(WHITESPACES_WITHOUT_LINE_BREAK).is(b.skippedTrivia(b.regexp("(?<!\\\\)[ \\t\\x0B\\f]+"))).skip();
-    b.rule(WHITESPACES_AND_COMMENTS).is(b.zeroOrMore(
-      b.firstOf(
-        b.skippedTrivia(b.regexp("(?<!\\\\)[\\s]+")),
-        b.commentTrivia(b.regexp("#[^\\n\\r]*+|(?<!\\\\)![^\\n\\r]*+")))))
-      .skip();
-    b.rule(COLON_SEPARATOR).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.nextNot("\\"), ":");
-    b.rule(EQUALS_SEPARATOR).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.nextNot("\\"), "=");
-    b.rule(KEY).is(b.optional(WHITESPACES_AND_COMMENTS), b.regexp("([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+"));
-    b.rule(ELEMENT).is(b.optional(WHITESPACES_WITHOUT_LINE_BREAK), b.regexp("[^\\n\\r]+((?<=\\\\)\\r?\\n[^\\n\\r]*)*"));
-    b.rule(BOM).is("\ufeff");
+  public PropertiesTree PROPERTIES() {
+    return b.<PropertiesTree>nonterminal(JavaPropertiesLexicalGrammar.PROPERTIES).is(
+      f.properties(
+        b.optional(b.token(JavaPropertiesLexicalGrammar.BOM)),
+        b.zeroOrMore(PROPERTY()),
+        b.token(JavaPropertiesLexicalGrammar.EOF)));
+  }
+
+  public PropertyTree PROPERTY() {
+    return b.<PropertyTree>nonterminal(JavaPropertiesLexicalGrammar.PROPERTY).is(
+      f.property(
+        KEY(),
+        SEPARATOR(),
+        b.optional(VALUE())));
+  }
+
+  public KeyTree KEY() {
+    return b.<KeyTree>nonterminal(JavaPropertiesLexicalGrammar.KEY).is(
+      f.key(b.token(JavaPropertiesLexicalGrammar.KEY_LITERAL)));
+  }
+
+  public SeparatorTree SEPARATOR() {
+    return b.<SeparatorTree>nonterminal(JavaPropertiesLexicalGrammar.SEPARATOR).is(
+      f.separator(
+        b.firstOf(
+          b.token(JavaPropertiesLexicalGrammar.EQUALS_SEPARATOR),
+          b.token(JavaPropertiesLexicalGrammar.COLON_SEPARATOR))));
+  }
+
+  public ValueTree VALUE() {
+    return b.<ValueTree>nonterminal(JavaPropertiesLexicalGrammar.VALUE).is(
+      f.value(b.token(JavaPropertiesLexicalGrammar.VALUE_LITERAL)));
   }
 
 }

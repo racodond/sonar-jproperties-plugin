@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class CommentConventionCheckTest {
@@ -31,30 +28,30 @@ public class CommentConventionCheckTest {
 
   @Test
   public void should_only_contain_comments_starting_with_hash_token_and_not_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsHashOnly.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
   }
 
   @Test
   public void should_only_contain_comments_starting_with_exclamation_mark_token_and_not_raise_issues() {
     check.setStartingCommentToken("!");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsExclamationMarkOnly.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsExclamationMarkOnly.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_exclamation_mark_token_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashAndExclamationMark.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_hash_token_and_raise_issues() {
     check.setStartingCommentToken("!");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/commentsExclamationMarkAndHash.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsExclamationMarkAndHash.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_starting_comment_token_parameter_is_not_valid() {
     check.setStartingCommentToken("abc");
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/commentsHashAndExclamationMark.properties"), check);
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
   }
 
 }

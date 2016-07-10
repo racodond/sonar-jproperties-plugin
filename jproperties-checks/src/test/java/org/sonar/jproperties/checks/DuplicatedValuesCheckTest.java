@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class DuplicatedValuesCheckTest {
@@ -31,26 +28,26 @@ public class DuplicatedValuesCheckTest {
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValues.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValues.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_void_regular_expression_of_values_to_ignore() {
     check.setValuesToIgnore("");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValuesCustom1.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom1.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_custom_regular_expression_of_values_to_ignore() {
     check.setValuesToIgnore("(?i)(BLABLA|abc|true|false)");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/duplicatedValuesCustom2.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
 
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_values_to_ignore_regular_expression_is_not_valid() {
     check.setValuesToIgnore("(");
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/duplicatedValues.properties"), check);
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
   }
 
 }

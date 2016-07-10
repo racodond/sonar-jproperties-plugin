@@ -20,18 +20,18 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.io.Files;
-import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.jproperties.visitors.CharsetAwareVisitor;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import javax.annotation.Nullable;
 
 @Rule(
   key = "tab-character",
@@ -40,22 +40,30 @@ import javax.annotation.Nullable;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("2min")
 @ActivatedByDefault
-public class TabCharacterCheck extends JavaPropertiesCheck {
+public class TabCharacterCheck extends DoubleDispatchVisitorCheck implements CharsetAwareVisitor {
+
+  private Charset charset;
 
   @Override
-  public void visitFile(@Nullable AstNode astNode) {
+  public void visitProperties(PropertiesTree tree) {
     List<String> lines;
     try {
-      lines = Files.readLines(getContext().getFile(), getCharset());
+      lines = Files.readLines(getContext().getFile(), charset);
     } catch (IOException e) {
-      throw new IllegalStateException("Check jproperties:tab-character, error while reading " + getContext().getFile(), e);
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + ": Error while reading " + getContext().getFile(), e);
     }
     for (String line : lines) {
       if (line.contains("\t")) {
-        addFileIssue(this, "Replace all tab characters in this file by sequences of whitespaces.");
+        addFileIssue("Replace all tab characters in this file by sequences of whitespaces.");
         break;
       }
     }
+  }
+
+  @Override
+  public void setCharset(Charset charset) {
+    this.charset = charset;
   }
 
 }

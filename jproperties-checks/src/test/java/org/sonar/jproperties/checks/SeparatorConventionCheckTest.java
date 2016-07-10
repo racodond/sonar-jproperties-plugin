@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class SeparatorConventionCheckTest {
@@ -31,18 +28,19 @@ public class SeparatorConventionCheckTest {
 
   @Test
   public void should_find_separators_not_following_equals_convention_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/separatorConventionEquals.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionEquals.properties"));
   }
 
   @Test
   public void should_find_separators_not_following_colon_convention_and_raise_issues() {
     check.setSeparator(":");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/separatorConventionColon.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_separator_parameter_is_not_valid() {
     check.setSeparator("abc");
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/separatorConventionEquals.properties"), check);
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
   }
+
 }

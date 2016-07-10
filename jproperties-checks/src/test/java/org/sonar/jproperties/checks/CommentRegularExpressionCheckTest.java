@@ -19,17 +19,12 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.api.utils.SonarException;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
-import org.sonar.squidbridge.api.SourceFile;
-import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class CommentRegularExpressionCheckTest {
 
-  private final String PATH = "src/test/resources/checks/commentRegularExpression.properties";
+  private final static String TEST_FILE_RELATIVE_PATH = "commentRegularExpression.properties";
   private CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
 
   @Test
@@ -37,26 +32,29 @@ public class CommentRegularExpressionCheckTest {
     String message = "Stop annotating lines with WTF! Detail what is wrong instead.";
     check.regularExpression = "(?i).*WTF.*";
     check.message = "Stop annotating lines with WTF! Detail what is wrong instead.";
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).next()
-      .atLine(1).withMessage(message).next()
-      .atLine(2).withMessage(message).next()
-      .atLine(3).withMessage(message).noMore();
+
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+      .next().atLine(1).withMessage(message)
+      .next().atLine(2).withMessage(message)
+      .next().atLine(3).withMessage(message)
+      .noMore();
   }
 
   @Test
   public void should_not_match_any_comments_and_not_raise_issues() {
     check.regularExpression = "blabla";
     check.message = "blabla";
-    SourceFile file = JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
-    CheckMessagesVerifier.verify(file.getCheckMessages()).noMore();
+
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+      .noMore();
   }
 
-  @Test(expected = SonarException.class)
+  @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
     check.regularExpression = "(";
     check.message = "blabla";
-    JavaPropertiesAstScanner.scanSingleFile(new File(PATH), check);
+
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
   }
 
 }

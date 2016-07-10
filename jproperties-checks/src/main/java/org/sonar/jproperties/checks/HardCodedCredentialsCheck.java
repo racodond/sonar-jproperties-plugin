@@ -19,14 +19,12 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstNode;
-
 import java.util.regex.Pattern;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -37,23 +35,18 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.SECURITY, Tags.CWE, Tags.OWASP_A2, Tags.SANS_TOP25_POROUS})
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
-public class HardCodedCredentialsCheck extends JavaPropertiesCheck {
+public class HardCodedCredentialsCheck extends DoubleDispatchVisitorCheck {
 
   private static final Pattern HARD_CODED_USERNAME = Pattern.compile(".*(login|username).*", Pattern.CASE_INSENSITIVE);
   private static final Pattern HARD_CODED_PASSWORD = Pattern.compile(".*(password|passwd|pwd).*", Pattern.CASE_INSENSITIVE);
 
   @Override
-  public void init() {
-    subscribeTo(JavaPropertiesGrammar.KEY);
-  }
-
-  @Override
-  public void leaveNode(AstNode node) {
-    if (HARD_CODED_USERNAME.matcher(node.getTokenValue()).matches()) {
-      addIssue(this, "Remove this hard-coded username.", node);
+  public void visitKey(KeyTree tree) {
+    if (HARD_CODED_USERNAME.matcher(tree.text()).matches()) {
+      addPreciseIssue(tree, "Remove this hard-coded username.");
     }
-    if (HARD_CODED_PASSWORD.matcher(node.getTokenValue()).matches()) {
-      addIssue(this, "Remove this hard-coded password.", node);
+    if (HARD_CODED_PASSWORD.matcher(tree.text()).matches()) {
+      addPreciseIssue(tree, "Remove this hard-coded password.");
     }
   }
 

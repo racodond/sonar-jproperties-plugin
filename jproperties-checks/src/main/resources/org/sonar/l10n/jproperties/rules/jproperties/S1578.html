@@ -1,23 +1,28 @@
 <p>
-  Shared coding conventions allow teams to collaborate effectively. This rule checks that all file names match a provided regular expression.
+    Shared coding conventions allow teams to collaborate effectively. This rule checks that all file names match a
+    provided regular expression.
 </p>
-<p>As Java properties files are used in a large variety of ways and by many frameworks, it might sometimes be tricky to enforce a
-  strict file naming convention. However, the default regular expression has been designed to match as closely as possible the
-  following guidelines:
+<p>
+    As Java properties files are used in a large variety of ways and by many frameworks, it might sometimes be tricky to
+    enforce a
+    strict file naming convention. However, the default regular expression has been designed to match as closely as
+    possible the
+    following guidelines:
+</p>
 <ul>
-<li>Suffix files with <code>.properties</code></li>
-<li>Only use letters, digits, '_' and '-' characters</li>
-<li>Refrain from using '_' and '-' characters. Only use them when mandatory such as in i18n Java resource bundles.</li>
-<li>Extensively use Camel Case. For example, prefer:
+    <li>Suffix files with <code>.properties</code></li>
+    <li>Only use letters, digits, '_' and '-' characters</li>
+    <li>Refrain from using '_' and '-' characters. Only use them when mandatory such as in i18n Java resource bundles.
+    </li>
+    <li>Extensively use Camel Case. For example, prefer:
 <pre>
 myProperties.properties
 </pre>
-to
+        to
 <pre>
 myproperties.properties
 my_properties.properties
 </pre>
-</li>
+    </li>
 </ul>
-</p>
 

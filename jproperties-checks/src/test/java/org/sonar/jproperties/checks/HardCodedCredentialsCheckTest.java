@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -28,7 +26,7 @@ public class HardCodedCredentialsCheckTest {
 
   @Test
   public void should_find_some_hard_coded_credentials_and_raise_some_issues() {
-    JavaPropertiesCheckVerifier.verify(new HardCodedCredentialsCheck(), new File("src/test/resources/checks/hardCodedCredentials.properties"));
+    JavaPropertiesCheckVerifier.verify(new HardCodedCredentialsCheck(), TestUtils.getTestFile("hardCodedCredentials.properties"));
   }
 
 }

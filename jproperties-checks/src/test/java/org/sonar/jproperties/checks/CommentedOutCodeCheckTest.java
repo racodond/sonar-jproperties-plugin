@@ -19,13 +19,8 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.collect.ImmutableList;
-
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
-import org.sonar.jproperties.checks.verifier.TestIssue;
 
 public class CommentedOutCodeCheckTest {
 
@@ -33,35 +28,34 @@ public class CommentedOutCodeCheckTest {
 
   @Test
   public void should_find_commented_out_code_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(
-      new CommentedOutCodeCheck(),
-      new File("src/test/resources/checks/commentedOutCode.properties"),
-      ImmutableList.of(
-        new TestIssue(3).message(MESSAGE),
-        new TestIssue(5).message(MESSAGE),
-        new TestIssue(7).message(MESSAGE),
-        new TestIssue(9).message(MESSAGE),
-        new TestIssue(11).message(MESSAGE),
-        new TestIssue(13).message(MESSAGE),
-        new TestIssue(15).message(MESSAGE),
-        new TestIssue(17).message(MESSAGE),
-        new TestIssue(19).message(MESSAGE),
-        new TestIssue(21).message(MESSAGE),
-        new TestIssue(23).message(MESSAGE),
-        new TestIssue(25).message(MESSAGE),
-        new TestIssue(27).message(MESSAGE),
-        new TestIssue(29).message(MESSAGE),
-        new TestIssue(31).message(MESSAGE),
-        new TestIssue(33).message(MESSAGE),
-        new TestIssue(35).message(MESSAGE),
-        new TestIssue(37).message(MESSAGE),
-        new TestIssue(39).message(MESSAGE),
-        new TestIssue(41).message(MESSAGE),
-        new TestIssue(43).message(MESSAGE),
-        new TestIssue(45).message(MESSAGE),
-        new TestIssue(57).message(MESSAGE),
-        new TestIssue(60).message(MESSAGE),
-        new TestIssue(68).message(MESSAGE)));
+
+    JavaPropertiesCheckVerifier.issues(new CommentedOutCodeCheck(), TestUtils.getTestFile("commentedOutCode.properties"))
+      .next().atLine(3).withMessage(MESSAGE)
+      .next().atLine(5).withMessage(MESSAGE)
+      .next().atLine(7).withMessage(MESSAGE)
+      .next().atLine(9).withMessage(MESSAGE)
+      .next().atLine(11).withMessage(MESSAGE)
+      .next().atLine(13).withMessage(MESSAGE)
+      .next().atLine(15).withMessage(MESSAGE)
+      .next().atLine(17).withMessage(MESSAGE)
+      .next().atLine(19).withMessage(MESSAGE)
+      .next().atLine(21).withMessage(MESSAGE)
+      .next().atLine(23).withMessage(MESSAGE)
+      .next().atLine(25).withMessage(MESSAGE)
+      .next().atLine(27).withMessage(MESSAGE)
+      .next().atLine(29).withMessage(MESSAGE)
+      .next().atLine(31).withMessage(MESSAGE)
+      .next().atLine(33).withMessage(MESSAGE)
+      .next().atLine(35).withMessage(MESSAGE)
+      .next().atLine(37).withMessage(MESSAGE)
+      .next().atLine(39).withMessage(MESSAGE)
+      .next().atLine(41).withMessage(MESSAGE)
+      .next().atLine(43).withMessage(MESSAGE)
+      .next().atLine(45).withMessage(MESSAGE)
+      .next().atLine(57).withMessage(MESSAGE)
+      .next().atLine(60).withMessage(MESSAGE)
+      .next().atLine(68).withMessage(MESSAGE)
+      .noMore();
   }
 
 }

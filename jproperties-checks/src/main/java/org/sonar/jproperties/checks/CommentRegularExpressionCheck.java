@@ -19,19 +19,22 @@
  */
 package org.sonar.jproperties.checks;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
+import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.RuleTemplate;
-import org.sonar.squidbridge.checks.AbstractCommentRegularExpressionCheck;
-import org.sonar.sslr.parser.LexerlessGrammar;
 
 @Rule(
   key = "comment-regular-expression",
   name = "Regular expression on comment",
   priority = Priority.MAJOR)
 @RuleTemplate
-public class CommentRegularExpressionCheck extends AbstractCommentRegularExpressionCheck<LexerlessGrammar> {
+public class CommentRegularExpressionCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT_REGULAR_EXPRESSION = ".*";
   private static final String DEFAULT_MESSAGE = "The regular expression matches this comment.";
@@ -49,13 +52,21 @@ public class CommentRegularExpressionCheck extends AbstractCommentRegularExpress
   public String message = DEFAULT_MESSAGE;
 
   @Override
-  public String getRegularExpression() {
-    return regularExpression;
+  public void visitComment(SyntaxTrivia trivia) {
+    if (trivia.text().matches(regularExpression)) {
+      addPreciseIssue(trivia, message);
+    }
   }
 
   @Override
-  public String getMessage() {
-    return message;
+  public void validateParameters() {
+    try {
+      Pattern.compile(regularExpression);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + " (" + this.getClass().getAnnotation(Rule.class).name() + "): regularExpression parameter \""
+        + regularExpression + "\" is not a valid regular expression.", exception);
+    }
   }
 
 }

@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -28,7 +26,7 @@ public class FixmeTagPresenceCheckTest {
 
   @Test
   public void should_contain_fixme_tags_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new FixmeTagPresenceCheck(), new File("src/test/resources/checks/fixme.properties"));
+    JavaPropertiesCheckVerifier.verify(new FixmeTagPresenceCheck(), TestUtils.getTestFile("fixme.properties"));
   }
 
 }

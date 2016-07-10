@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -31,18 +29,18 @@ public class TooManyKeysCheckTest {
   @Test
   public void should_contain_more_than_30_keys_and_raise_an_issue() {
     check.setNumberKeys(30);
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys30.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("tooManyKeys30.properties"));
   }
 
   @Test
   public void should_contain_exactly_50_keys_and_not_raise_an_issue() {
     check.setNumberKeys(50);
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys50.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("tooManyKeys50.properties"));
   }
 
   @Test
   public void should_contain_fewer_than_200_keys_and_not_raise_an_issue() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/tooManyKeys50.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("tooManyKeys50.properties"));
   }
 
 }

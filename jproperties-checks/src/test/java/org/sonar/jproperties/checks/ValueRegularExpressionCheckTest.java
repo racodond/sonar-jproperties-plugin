@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class ValueRegularExpressionCheckTest {
@@ -33,21 +30,21 @@ public class ValueRegularExpressionCheckTest {
   public void should_match_some_values_and_raise_issues() {
     check.regularExpression = "^(?s)myvalue.*";
     check.message = "Find out values starting with 'myvalue'";
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/valueRegularExpression.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpression.properties"));
   }
 
   @Test
   public void should_not_match_any_keys_and_not_raise_issues() {
     check.regularExpression = "^blabla.*";
     check.message = "Find out values starting with 'blabla'";
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/valueRegularExpressionNoMatch.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpressionNoMatch.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
     check.regularExpression = "(";
     check.message = "blabla";
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/valueRegularExpressionNoMatch.properties"), check);
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpressionNoMatch.properties"));
   }
 
 }

@@ -20,16 +20,13 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
 import java.io.File;
-import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
-import org.sonar.jproperties.checks.verifier.TestIssue;
 
 public class EndLineCharactersCheckTest {
 
@@ -38,89 +35,77 @@ public class EndLineCharactersCheckTest {
   @Test
   public void should_find_only_crlf_and_not_raise_any_issues() throws Exception {
     check.setEndLineCharacters("CRLF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r\n"),
-      Collections.EMPTY_LIST);
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r\n"))
+      .noMore();
   }
 
   @Test
   public void should_find_only_cr_and_not_raise_any_issues() throws Exception {
     check.setEndLineCharacters("CR");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r"),
-      Collections.EMPTY_LIST);
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r"))
+      .noMore();
   }
 
   @Test
   public void should_find_only_lf_and_not_raise_any_issues() throws Exception {
     check.setEndLineCharacters("LF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\n"),
-      Collections.EMPTY_LIST);
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\n"))
+      .noMore();
   }
 
   @Test
   public void crlf_should_find_lf_and_raise_issues() throws Exception {
     check.setEndLineCharacters("CRLF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\n"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'CRLF' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\n"))
+      .next().withMessage("Set all end-line characters to 'CRLF' in this file.")
+      .noMore();
   }
 
   @Test
   public void crlf_should_find_cr_and_raise_issues() throws Exception {
     check.setEndLineCharacters("CRLF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'CRLF' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r"))
+      .next().withMessage("Set all end-line characters to 'CRLF' in this file.")
+      .noMore();
   }
 
   @Test
   public void cr_should_find_crlf_and_raise_issues() throws Exception {
     check.setEndLineCharacters("CR");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r\n"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'CR' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r\n"))
+      .next().withMessage("Set all end-line characters to 'CR' in this file.")
+      .noMore();
   }
 
   @Test
   public void cr_should_find_lf_and_raise_issues() throws Exception {
     check.setEndLineCharacters("CR");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\n"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'CR' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\n"))
+      .next().withMessage("Set all end-line characters to 'CR' in this file.")
+      .noMore();
   }
 
   @Test
   public void lf_should_find_crlf_and_raise_issues() throws Exception {
     check.setEndLineCharacters("LF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r\n"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'LF' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r\n"))
+      .next().withMessage("Set all end-line characters to 'LF' in this file.")
+      .noMore();
   }
 
   @Test
   public void lf_should_find_cr_and_raise_issues() throws Exception {
     check.setEndLineCharacters("LF");
-    JavaPropertiesCheckVerifier.verify(
-      check,
-      getTestFileWithProperEndLineCharacters("\r"),
-      ImmutableList.of(new TestIssue(0).message("Set all end-line characters to 'LF' in this file.")));
+    JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r"))
+      .next().withMessage("Set all end-line characters to 'LF' in this file.")
+      .noMore();
   }
 
   private File getTestFileWithProperEndLineCharacters(String endLineCharacter) throws Exception {
     TemporaryFolder temporaryFolder = new TemporaryFolder();
     File testFile = temporaryFolder.newFile();
     Files.write(
-      Files.toString(new File("src/test/resources/checks/endLineCharacters.properties"), Charsets.ISO_8859_1)
+      Files.toString(TestUtils.getTestFile("endLineCharacters.properties"), Charsets.ISO_8859_1)
         .replaceAll("\\r\\n", "\n")
         .replaceAll("\\r", "\n")
         .replaceAll("\\n", endLineCharacter),

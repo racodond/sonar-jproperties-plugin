@@ -20,7 +20,6 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sonar.sslr.api.AstNode;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -28,8 +27,8 @@ import java.util.regex.PatternSyntaxException;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -40,40 +39,39 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class KeyNamingConventionCheck extends JavaPropertiesCheck {
+public class KeyNamingConventionCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT_FORMAT = "^[A-Za-z][.A-Za-z0-9]*$";
+
   @RuleProperty(
     key = "Format",
     description = "Regular expression used to check the key against",
-    defaultValue = "" + DEFAULT_FORMAT)
+    defaultValue = DEFAULT_FORMAT)
   private String format = DEFAULT_FORMAT;
 
   @Override
-  public void init() {
-    validateFormatParameter();
-    subscribeTo(JavaPropertiesGrammar.KEY);
+  public void visitKey(KeyTree tree) {
+    if (!tree.text().matches(format)) {
+      addPreciseIssue(tree, "Rename key \"" + tree.text() + "\" to match the regular expression: " + format);
+    }
   }
 
   @Override
-  public void leaveNode(AstNode node) {
-    if (!node.getTokenValue().matches(format)) {
-      addIssue(this, "Rename key \"" + node.getTokenValue() + "\" to match the regular expression: " + format, node);
+  public void validateParameters() {
+    try {
+      Pattern.compile(format);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException(
+        "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+          + " (" + this.getClass().getAnnotation(Rule.class).name() + "): format parameter \""
+          + format + "\" is not a valid regular expression.",
+        exception);
     }
   }
 
   @VisibleForTesting
   public void setFormat(String format) {
     this.format = format;
-  }
-
-  private void validateFormatParameter() {
-    try {
-      Pattern.compile(format);
-    } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:key-naming-convention - format parameter \""
-        + format + "\" is not a valid regular expression.", exception);
-    }
   }
 
 }

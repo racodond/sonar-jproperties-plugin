@@ -21,30 +21,27 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
 
 import java.text.DateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
-  key = DuplicatedKeysAcrossFilesCheck.RULE_KEY,
+  key = "duplicated-keys-across-files",
   name = "Duplicated keys across files should be removed",
   priority = Priority.CRITICAL,
   tags = {Tags.BUG})
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
-
-  public static final String RULE_KEY = "duplicated-keys-across-files";
+public class DuplicatedKeysAcrossFilesCheck extends DoubleDispatchVisitorCheck {
 
   private static final Set<String> LOCALES = Arrays.asList(DateFormat.getAvailableLocales())
     .stream()
@@ -52,36 +49,32 @@ public class DuplicatedKeysAcrossFilesCheck extends JavaPropertiesCheck {
     .collect(Collectors.toSet());
 
   private boolean fileToCheck = false;
-  private Map<String, List<FileNode>> keys = new HashMap<>();
+  private Map<String, List<FileKeyTree>> keys = new HashMap<>();
 
   @Override
-  public void init() {
-    subscribeTo(JavaPropertiesGrammar.KEY);
-  }
-
-  @Override
-  public void visitFile(@Nullable AstNode astNode) {
+  public void visitProperties(PropertiesTree tree) {
     String fileName = getContext().getFile().getName();
     fileToCheck = LOCALES.stream().noneMatch(l -> fileName.endsWith("_" + l + ".properties"));
+    super.visitProperties(tree);
   }
 
   @Override
-  public void visitNode(AstNode node) {
+  public void visitKey(KeyTree tree) {
     if (fileToCheck) {
-      if (keys.containsKey(node.getTokenValue())) {
-        keys.get(node.getTokenValue()).add(new FileNode(getContext().getFile(), node));
+      if (keys.containsKey(tree.text())) {
+        keys.get(tree.text()).add(new FileKeyTree(getContext().getFile(), tree));
       } else {
-        keys.put(node.getTokenValue(), Lists.newArrayList(new FileNode(getContext().getFile(), node)));
+        keys.put(tree.text(), Lists.newArrayList(new FileKeyTree(getContext().getFile(), tree)));
       }
     }
   }
 
-  public Map<String, List<FileNode>> getKeys() {
+  public Map<String, List<FileKeyTree>> getKeys() {
     return keys;
   }
 
   @VisibleForTesting
-  public void setKeys(Map<String, List<FileNode>> keys) {
+  public void setKeys(Map<String, List<FileKeyTree>> keys) {
     this.keys = keys;
   }
 

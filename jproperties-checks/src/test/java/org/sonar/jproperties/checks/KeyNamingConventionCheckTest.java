@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class KeyNamingConventionCheckTest {
@@ -31,19 +28,19 @@ public class KeyNamingConventionCheckTest {
 
   @Test
   public void should_find_some_keys_that_do_not_follow_the_default_naming_convention_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyNamingConvention.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConvention.properties"));
   }
 
   @Test
   public void should_find_some_keys_that_do_not_follow_a_custom_naming_convention_and_raise_issues() {
     check.setFormat("a.*");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/keyNamingConventionCustom.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
     check.setFormat("(");
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/keyNamingConvention.properties"), check);
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
   }
 
 }
