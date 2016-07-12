@@ -19,7 +19,9 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
 
 ## Notes
 
- * The following kind of error may indicate that you did not properly set the `sonar.sourceEncoding` property. Prior to version 2.0, only ISO-8859-1 was supported.
+ * The following kind of error may indicate that:
+  * You did not properly set the `sonar.sourceEncoding` property. Prior to version 2.0, only ISO-8859-1 was supported.
+  * Or that the last line of your file is missing a line ending character (LF / CR / CRLF)
  
         Caused by: java.lang.IllegalArgumentException: Unable to highlight file \[moduleKey=xxx, relative=xxx, basedir=xxx\] from offset 808 to offset 876
          at org.sonar.api.batch.sensor.highlighting.internal.DefaultHighlighting.highlight(DefaultHighlighting.java:85)
