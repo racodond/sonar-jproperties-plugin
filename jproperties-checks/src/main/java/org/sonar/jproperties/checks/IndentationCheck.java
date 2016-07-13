@@ -19,14 +19,10 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstNode;
-
-import javax.annotation.Nullable;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -37,47 +33,13 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class IndentationCheck extends JavaPropertiesCheck {
-
-  private boolean hasBom = false;
+public class IndentationCheck extends DoubleDispatchVisitorCheck {
 
   @Override
-  public void init() {
-    subscribeTo(JavaPropertiesGrammar.BOM);
-    subscribeTo(JavaPropertiesGrammar.KEY);
-  }
-
-  @Override
-  public void visitFile(@Nullable AstNode astNode) {
-    hasBom = false;
-  }
-
-  @Override
-  public void visitNode(AstNode astNode) {
-    if (astNode.is(JavaPropertiesGrammar.BOM)) {
-      hasBom = true;
+  public void visitKey(KeyTree tree) {
+    if (tree.value().column() != 0) {
+      addPreciseIssue(tree, "Remove the whitespaces before the key.");
     }
-  }
-
-  @Override
-  public void leaveNode(AstNode astNode) {
-    if (astNode.is(JavaPropertiesGrammar.KEY)) {
-      if (astNode.getTokenLine() == 1) {
-        if (hasBom && astNode.getToken().getColumn() != 1) {
-          createIssue(astNode);
-        } else if (!hasBom && astNode.getToken().getColumn() != 0) {
-          createIssue(astNode);
-        }
-      } else {
-        if (astNode.getToken().getColumn() != 0) {
-          createIssue(astNode);
-        }
-      }
-    }
-  }
-
-  private void createIssue(AstNode astNode) {
-    addIssue(this, "Remove the whitespaces before the key.", astNode);
   }
 
 }

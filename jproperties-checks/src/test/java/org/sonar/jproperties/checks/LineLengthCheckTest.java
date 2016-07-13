@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -30,13 +28,17 @@ public class LineLengthCheckTest {
 
   @Test
   public void should_not_find_any_line_longer_than_the_default_value_120() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/lineLength120.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("lineLength.properties"))
+      .noMore();
   }
 
   @Test
   public void should_find_one_line_longer_than_50_characters_and_raise_an_issue() {
     check.setMaximumLineLength(50);
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/lineLength50.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("lineLength.properties"))
+      .next().atLine(3).withMessage("The line contains 51 characters which is greater than 50 authorized.")
+      .next().atLine(6).withMessage("The line contains 51 characters which is greater than 50 authorized.")
+      .noMore();
   }
 
 }

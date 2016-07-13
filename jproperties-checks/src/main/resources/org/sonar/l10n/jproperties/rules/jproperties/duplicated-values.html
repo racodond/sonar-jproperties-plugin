@@ -1,10 +1,15 @@
-<p>Defining several keys holding the same value may be confusing. It may also lead to issues when one key's value is changed
-    but not the others'. Thus, you should check those keys and merge them if it makes sense.</p>
-<p>Note that this check may be valuable for properties files containing keys internationalizing your web interface but
+<p>
+    Defining several keys holding the same value may be confusing. It may also lead to issues when one key's value is
+    changed but not the others'. Thus, you should check those keys and merge them if it makes sense.
+</p>
+<p>
+    Note that this check may be valuable for properties files containing keys internationalizing your web interface but
     might not for framework configuration files for example. Thus, you might want to precisely define the scope of this
-    rule. See <a href="http://docs.sonarqube.org/display/SONAR/Narrowing+the+Focus#NarrowingtheFocus-IgnoreIssues">exclusions</a>.</p>
+    rule. See <a href="http://docs.sonarqube.org/display/SONAR/Narrowing+the+Focus#NarrowingtheFocus-IgnoreIssues">exclusions</a>.
+</p>
+
 <h2>Noncompliant Code Example</h2>
-Those three keys hold the same value:
+<p>Those three keys hold the same value:</p>
 <pre>
 description=SonarQube is an open platform to manage code quality. As such, it covers the 7 axes of code quality.
 sonarqube.description=SonarQube is an open platform to manage code quality. As such, it covers the 7 axes of code quality.

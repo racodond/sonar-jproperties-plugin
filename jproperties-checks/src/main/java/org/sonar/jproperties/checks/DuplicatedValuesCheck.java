@@ -21,7 +21,6 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.sonar.sslr.api.AstNode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +32,11 @@ import java.util.stream.Collectors;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.issue.PreciseIssue;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.PropertyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
+import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -46,15 +47,16 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.PITFALL})
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
-public class DuplicatedValuesCheck extends JavaPropertiesCheck {
+public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
+
+  private static final String DEFAULT_VALUES_TO_IGNORE = "(?i)(true|false|yes|no|0|1|-1)";
+  private final Map<String, List<KeyTree>> valuesMap = new HashMap<>();
 
   @RuleProperty(
     key = "valuesToIgnore",
-    description = "Regular expression of values to ignore. See http://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html for detailed regular expression syntax.",
-    defaultValue = "" + DEFAULT_VALUES_TO_IGNORE)
+    description = "Regular expression of values to ignore. See http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html for detailed regular expression syntax.",
+    defaultValue = DEFAULT_VALUES_TO_IGNORE)
   private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
-  private static final String DEFAULT_VALUES_TO_IGNORE = "(?i)(true|false|yes|no|0|1|-1)";
-  private Map<String, List<AstNode>> elementsMap = new HashMap<>();
 
   @VisibleForTesting
   public void setValuesToIgnore(String valuesToIgnore) {
@@ -62,50 +64,52 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
   }
 
   @Override
-  public void init() {
-    validateValuesToIgnoreParameter();
-    subscribeTo(JavaPropertiesGrammar.PROPERTIES, JavaPropertiesGrammar.PROPERTY);
-  }
-
-  @Override
-  public void visitNode(AstNode node) {
-    if (node.is(JavaPropertiesGrammar.PROPERTIES)) {
-      elementsMap.clear();
-    } else {
-      if (node.getFirstChild(JavaPropertiesGrammar.ELEMENT) != null) {
-        String value = getValueWithoutLineBreak(node.getFirstChild(JavaPropertiesGrammar.ELEMENT).getTokenValue());
-        if (!value.matches(valuesToIgnore)) {
-          if (elementsMap.containsKey(value)) {
-            elementsMap.get(value).add(node);
-          } else {
-            elementsMap.put(value, Lists.newArrayList(node));
-          }
+  public void visitProperties(PropertiesTree tree) {
+    valuesMap.clear();
+    super.visitProperties(tree);
+    for (Map.Entry<String, List<KeyTree>> entry : valuesMap.entrySet()) {
+      if (entry.getValue().size() > 1) {
+        PreciseIssue issue = addPreciseIssue(
+          entry.getValue().get(0),
+          "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".");
+        for (int i = 1; i < entry.getValue().size(); i++) {
+          issue.secondary(entry.getValue().get(i), "Duplicated value");
         }
       }
     }
   }
 
   @Override
-  public void leaveNode(AstNode node) {
-    if (node.is(JavaPropertiesGrammar.PROPERTIES)) {
-      for (Map.Entry<String, List<AstNode>> entry : elementsMap.entrySet()) {
-        if (entry.getValue().size() > 1) {
-          PreciseIssue issue = addIssue(
-            this,
-            "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".",
-            entry.getValue().get(0).getFirstChild(JavaPropertiesGrammar.KEY));
-          for (int i = 1; i < entry.getValue().size(); i++) {
-            issue.addSecondaryLocation("Duplicated value", entry.getValue().get(i).getFirstChild(JavaPropertiesGrammar.KEY));
-          }
+  public void visitProperty(PropertyTree tree) {
+    if (tree.value() != null) {
+      String value = getValueWithoutLineBreak(tree.value().text());
+      if (!value.matches(valuesToIgnore)) {
+        if (valuesMap.containsKey(value)) {
+          valuesMap.get(value).add(tree.key());
+        } else {
+          valuesMap.put(value, Lists.newArrayList(tree.key()));
         }
       }
     }
   }
 
-  private static String getCommaSeparatedListOfDuplicatedKeys(List<AstNode> elementNodes) {
-    return elementNodes
+  @Override
+  public void validateParameters() {
+    try {
+      Pattern.compile(valuesToIgnore);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException(
+        "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key() + " ("
+          + this.getClass().getAnnotation(Rule.class).name() + "): valuesToIgnore parameter \""
+          + valuesToIgnore + "\" is not a valid regular expression.",
+        exception);
+    }
+  }
+
+  private static String getCommaSeparatedListOfDuplicatedKeys(List<KeyTree> keyTrees) {
+    return keyTrees
       .stream()
-      .map(n -> n.getFirstChild(JavaPropertiesGrammar.KEY).getTokenValue())
+      .map(KeyTree::text)
       .sorted()
       .collect(Collectors.joining(", "));
   }
@@ -116,15 +120,6 @@ public class DuplicatedValuesCheck extends JavaPropertiesCheck {
 
   private static String getValueWithoutLineBreak(String value) {
     return value.replaceAll("\\\\\\n\\s*", "");
-  }
-
-  private void validateValuesToIgnoreParameter() {
-    try {
-      Pattern.compile(valuesToIgnore);
-    } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:duplicated-values - valuesToIgnore parameter \""
-        + valuesToIgnore + "\" is not a valid regular expression.", exception);
-    }
   }
 
 }

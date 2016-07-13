@@ -19,16 +19,14 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstNode;
-
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.RuleTemplate;
 
 @Rule(
@@ -36,7 +34,7 @@ import org.sonar.squidbridge.annotations.RuleTemplate;
   name = "Regular expression on key",
   priority = Priority.MAJOR)
 @RuleTemplate
-public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
+public class KeyRegularExpressionCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT_REGULAR_EXPRESSION = ".*";
   private static final String DEFAULT_MESSAGE = "The regular expression matches this key.";
@@ -54,23 +52,19 @@ public class KeyRegularExpressionCheck extends JavaPropertiesCheck {
   public String message = DEFAULT_MESSAGE;
 
   @Override
-  public void init() {
-    validateRegularExpressionParameter();
-    subscribeTo(JavaPropertiesGrammar.KEY);
-  }
-
-  @Override
-  public void leaveNode(AstNode node) {
-    if (node.getTokenValue().matches(regularExpression)) {
-      addIssue(this, message, node);
+  public void visitKey(KeyTree tree) {
+    if (tree.text().matches(regularExpression)) {
+      addPreciseIssue(tree, message);
     }
   }
 
-  private void validateRegularExpressionParameter() {
+  @Override
+  public void validateParameters() {
     try {
       Pattern.compile(regularExpression);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:key-regular-expression - regularExpression parameter \""
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + " (" + this.getClass().getAnnotation(Rule.class).name() + "): regularExpression parameter \""
         + regularExpression + "\" is not a valid regular expression.", exception);
     }
   }

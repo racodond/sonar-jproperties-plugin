@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -28,7 +26,7 @@ public class TodoTagPresenceCheckTest {
 
   @Test
   public void test() {
-    JavaPropertiesCheckVerifier.verify(new TodoTagPresenceCheck(), new File("src/test/resources/checks/todo.properties"));
+    JavaPropertiesCheckVerifier.verify(new TodoTagPresenceCheck(), TestUtils.getTestFile("todo.properties"));
   }
 
 }

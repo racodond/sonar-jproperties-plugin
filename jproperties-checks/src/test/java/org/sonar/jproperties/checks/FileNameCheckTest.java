@@ -19,10 +19,7 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesAstScanner;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class FileNameCheckTest {
@@ -31,30 +28,36 @@ public class FileNameCheckTest {
 
   @Test
   public void should_follow_the_default_naming_convention_and_not_raise_an_issue() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/fileNameOK.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/fileNameOK.properties"))
+      .noMore();
   }
 
   @Test
   public void should_not_follow_the_default_naming_convention_and_raise_an_issue() {
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/file_name.ko.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ko.properties"))
+      .next().withMessage("Rename this file to match the regular expression: ^[A-Za-z][-_A-Za-z0-9]*\\.properties$")
+      .noMore();
   }
 
   @Test
   public void should_follow_a_custom_naming_convention_and_not_raise_an_issue() {
     check.setFormat("^[a-z][._a-z]+\\.properties$");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/file_name.ok.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties"))
+      .noMore();
   }
 
   @Test
   public void should_not_follow_a_custom_naming_convention_and_raise_an_issue() {
     check.setFormat("^[a-z]+\\.properties$");
-    JavaPropertiesCheckVerifier.verify(check, new File("src/test/resources/checks/file_name.kocustom.properties"));
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.kocustom.properties"))
+      .next().withMessage("Rename this file to match the regular expression: ^[a-z]+\\.properties$")
+      .noMore();
   }
 
   @Test(expected = IllegalStateException.class)
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
     check.setFormat("(");
-    JavaPropertiesAstScanner.scanSingleFile(new File("src/test/resources/checks/fileNameOK.properties"), check);
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties")).noMore();
   }
 
 }

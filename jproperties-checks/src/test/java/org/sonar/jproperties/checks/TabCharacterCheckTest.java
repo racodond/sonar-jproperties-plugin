@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -28,12 +26,15 @@ public class TabCharacterCheckTest {
 
   @Test
   public void should_find_tab_characters_and_raise_an_issue() {
-    JavaPropertiesCheckVerifier.verify(new TabCharacterCheck(), new File("src/test/resources/checks/tabCharacter.properties"));
+    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), TestUtils.getTestFile("tabCharacter.properties"))
+      .next().withMessage("Replace all tab characters in this file by sequences of whitespaces.")
+      .noMore();
   }
 
   @Test
   public void should_not_find_tab_characters_and_not_raise_an_issue() {
-    JavaPropertiesCheckVerifier.verify(new TabCharacterCheck(), new File("src/test/resources/checks/noTabCharacter.properties"));
+    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), TestUtils.getTestFile("noTabCharacter.properties"))
+      .noMore();
   }
 
 }

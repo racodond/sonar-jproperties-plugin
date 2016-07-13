@@ -20,11 +20,7 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.base.Charsets;
-
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class BOMCheckTest {
@@ -33,29 +29,29 @@ public class BOMCheckTest {
   public void should_find_that_the_UTF8_file_starts_with_a_BOM_and_raise_an_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      new File("src/test/resources/checks/bom/utf8WithBOM.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_8));
+      TestUtils.getTestFile("bom/utf8WithBOM.properties"),
+      Charsets.UTF_8);
   }
 
   @Test
   public void should_find_that_the_UTF8_file_does_not_start_with_a_BOM_and_not_raise_any_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      new File("src/test/resources/checks/bom/utf8.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_8));
+      TestUtils.getTestFile("bom/utf8.properties"),
+      Charsets.UTF_8);
   }
 
   @Test
   public void should_find_that_the_UTF16_files_start_with_a_BOM_but_not_raise_any_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      new File("src/test/resources/checks/bom/utf16BE.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_16BE));
+      TestUtils.getTestFile("bom/utf16BE.properties"),
+      Charsets.UTF_16BE);
 
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      new File("src/test/resources/checks/bom/utf16LE.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_16LE));
+      TestUtils.getTestFile("bom/utf16LE.properties"),
+      Charsets.UTF_16LE);
   }
 
 }

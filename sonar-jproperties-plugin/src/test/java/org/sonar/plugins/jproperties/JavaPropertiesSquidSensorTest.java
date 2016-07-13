@@ -23,6 +23,7 @@ import com.google.common.base.Charsets;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.Collection;
 
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
@@ -33,6 +34,7 @@ import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
+import org.sonar.api.batch.sensor.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.jproperties.checks.CheckList;
@@ -49,7 +51,7 @@ public class JavaPropertiesSquidSensorTest {
   @Test
   public void should_create_a_valid_sensor_descriptor() {
     DefaultSensorDescriptor descriptor = new DefaultSensorDescriptor();
-    createCssSquidSensor().describe(descriptor);
+    createJavaPropertiesSquidSensor().describe(descriptor);
     assertThat(descriptor.name()).isEqualTo("Java Properties Squid Sensor");
     assertThat(descriptor.languages()).containsOnly("jproperties");
     assertThat(descriptor.type()).isEqualTo(InputFile.Type.MAIN);
@@ -59,7 +61,7 @@ public class JavaPropertiesSquidSensorTest {
   public void should_execute_and_compute_valid_measures_on_ISO_8859_1_file() {
     String relativePath = "myProperties.properties";
     inputFile(relativePath, Charsets.ISO_8859_1);
-    createCssSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor().execute(context);
     assertMeasure("moduleKey:" + relativePath);
   }
 
@@ -67,7 +69,7 @@ public class JavaPropertiesSquidSensorTest {
   public void should_execute_and_compute_valid_measures_on_UTF8_with_BOM_file() {
     String relativePath = "myPropertiesUTF8WithBOM.properties";
     inputFile(relativePath, Charsets.UTF_8);
-    createCssSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor().execute(context);
     assertMeasure("moduleKey:" + relativePath);
   }
 
@@ -89,7 +91,7 @@ public class JavaPropertiesSquidSensorTest {
       .build();
     checkFactory = new CheckFactory(activeRules);
 
-    createCssSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor().execute(context);
 
     assertThat(context.allIssues()).hasSize(3);
   }
@@ -106,12 +108,32 @@ public class JavaPropertiesSquidSensorTest {
       .build();
     checkFactory = new CheckFactory(activeRules);
 
-    createCssSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor().execute(context);
 
     assertThat(context.allIssues()).hasSize(3);
   }
 
-  private JavaPropertiesSquidSensor createCssSquidSensor() {
+  @Test
+  public void parsing_error() {
+    String relativePath = "parsingError.properties";
+    inputFile(relativePath, Charsets.ISO_8859_1);
+
+    ActiveRules activeRules = (new ActiveRulesBuilder())
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "S2260"))
+      .activate()
+      .build();
+
+    checkFactory = new CheckFactory(activeRules);
+
+    context.setActiveRules(activeRules);
+    createJavaPropertiesSquidSensor().execute(context);
+    Collection<Issue> issues = context.allIssues();
+    assertThat(issues).hasSize(1);
+    Issue issue = issues.iterator().next();
+    assertThat(issue.primaryLocation().textRange().start().line()).isEqualTo(2);
+  }
+
+  private JavaPropertiesSquidSensor createJavaPropertiesSquidSensor() {
     return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
   }
 
@@ -121,6 +143,7 @@ public class JavaPropertiesSquidSensorTest {
       .setType(InputFile.Type.MAIN)
       .setLanguage(JavaPropertiesLanguage.KEY);
 
+    context.fileSystem().setEncoding(charset);
     context.fileSystem().add(inputFile);
 
     inputFile.initMetadata(new FileMetadata().readMetadata(inputFile.file(), charset));

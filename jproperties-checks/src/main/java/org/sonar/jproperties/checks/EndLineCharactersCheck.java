@@ -21,16 +21,18 @@ package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
-import com.sonar.sslr.api.AstNode;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.regex.Pattern;
-import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.jproperties.visitors.CharsetAwareVisitor;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
@@ -39,26 +41,37 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("5min")
-public class EndLineCharactersCheck extends JavaPropertiesCheck {
+public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implements CharsetAwareVisitor {
 
   private static final String DEFAULT_FORMAT = "LF";
+  private Charset charset;
 
   @RuleProperty(
     key = "End-line character",
     description = "Allowed values: 'CR', 'CRLF', 'LF'",
-    defaultValue = "" + DEFAULT_FORMAT)
+    defaultValue = DEFAULT_FORMAT)
   private String endLineCharacters = DEFAULT_FORMAT;
 
   @Override
-  public void init() {
-    validateEndLineCharactersParameter();
+  public void visitProperties(PropertiesTree tree) {
+    if (fileContainsIllegalEndLineCharacters()) {
+      addFileIssue("Set all end-line characters to '" + endLineCharacters + "' in this file.");
+    }
   }
 
   @Override
-  public void visitFile(@Nullable AstNode astNode) {
-    if (fileContainsIllegalEndLineCharacters()) {
-      addFileIssue(this, "Set all end-line characters to '" + endLineCharacters + "' in this file.");
+  public void validateParameters() {
+    if (!Arrays.asList("CRLF", "CR", "LF").contains(endLineCharacters)) {
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + " (" + this.getClass().getAnnotation(Rule.class).name()
+        + "): endLineCharacters parameter is not valid.\nActual: '"
+        + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
     }
+  }
+
+  @Override
+  public void setCharset(Charset charset) {
+    this.charset = charset;
   }
 
   @VisibleForTesting
@@ -68,19 +81,12 @@ public class EndLineCharactersCheck extends JavaPropertiesCheck {
 
   private boolean fileContainsIllegalEndLineCharacters() {
     try {
-      String fileContent = Files.toString(getContext().getFile(), getCharset());
+      String fileContent = Files.toString(getContext().getFile(), charset);
       return "CR".equals(endLineCharacters) && Pattern.compile("(?s)\n").matcher(fileContent).find()
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:end-line-characters - File cannot be read.", e);
-    }
-  }
-
-  private void validateEndLineCharactersParameter() {
-    if (!"CRLF".equals(endLineCharacters) && !"CR".equals(endLineCharacters) && !"LF".equals(endLineCharacters)) {
-      throw new IllegalStateException("Check jproperties:end-line-characters - End-line character parameter is not valid.\nActual: '"
-        + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
     }
   }
 

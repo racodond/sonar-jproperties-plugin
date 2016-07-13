@@ -19,22 +19,17 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.AstNode;
-import com.sonar.sslr.api.Token;
-import com.sonar.sslr.api.Trivia;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import javax.annotation.Nullable;
 
 @Rule(
   key = "commented-out-code",
@@ -43,34 +38,29 @@ import javax.annotation.Nullable;
   tags = {Tags.UNUSED})
 @SqaleConstantRemediation("5min")
 @ActivatedByDefault
-public class CommentedOutCodeCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
+public class CommentedOutCodeCheck extends DoubleDispatchVisitorCheck {
 
-  private static final Pattern commentedOutCodePattern = Pattern.compile("^(#|!){1}[ \\t\\x0B\\f]*(?!(?i)todo)(?!(?i)fixme)([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
-  private List<Integer> commentedOutLines;
-
-  @Override
-  public void visitFile(@Nullable AstNode astNode) {
-    commentedOutLines = new ArrayList<>();
-  }
+  private static final Pattern commentedOutCodePattern = Pattern
+    .compile("^(#|!){1}[ \\t\\x0B\\f]*(?!(?i)todo)(?!(?i)fixme)([^=:\\s]|(?<=\\\\)\\ |(?<=\\\\)\\=|(?<=\\\\)\\:)+[ \\t\\x0B\\f]*(:|=){1}.*$");
+  private final List<SyntaxTrivia> commentedOutCode = new ArrayList<>();
 
   @Override
-  public void visitToken(Token token) {
-    for (Trivia trivia : token.getTrivia()) {
-      String comment = trivia.getToken().getOriginalValue();
-      if (commentedOutCodePattern.matcher(comment).matches()) {
-        commentedOutLines.add(trivia.getToken().getLine());
+  public void visitProperties(PropertiesTree tree) {
+    commentedOutCode.clear();
+    super.visitProperties(tree);
+    int lastLineIssue = Integer.MIN_VALUE;
+    for (SyntaxTrivia trivia : commentedOutCode) {
+      if (trivia.line() != lastLineIssue + 1) {
+        addPreciseIssue(trivia, "Remove this commented out code.");
       }
+      lastLineIssue = trivia.line();
     }
   }
 
   @Override
-  public void leaveFile(@Nullable AstNode astNode) {
-    int lastLineIssue = Integer.MIN_VALUE;
-    for (Integer line : commentedOutLines) {
-      if (line != lastLineIssue + 1) {
-        addLineIssue(this, "Remove this commented out code.", line);
-      }
-      lastLineIssue = line;
+  public void visitComment(SyntaxTrivia trivia) {
+    if (commentedOutCodePattern.matcher(trivia.text()).matches()) {
+      commentedOutCode.add(trivia);
     }
   }
 

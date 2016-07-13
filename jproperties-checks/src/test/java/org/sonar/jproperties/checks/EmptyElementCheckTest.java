@@ -19,8 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
@@ -28,7 +26,7 @@ public class EmptyElementCheckTest {
 
   @Test
   public void should_find_some_empty_elements_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new EmptyElementCheck(), new File("src/test/resources/checks/emptyElement.properties"));
+    JavaPropertiesCheckVerifier.verify(new EmptyElementCheck(), TestUtils.getTestFile("emptyElement.properties"));
   }
 
 }

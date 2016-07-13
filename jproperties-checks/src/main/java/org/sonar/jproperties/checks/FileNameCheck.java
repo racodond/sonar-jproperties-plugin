@@ -20,16 +20,15 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sonar.sslr.api.AstNode;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -40,7 +39,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class FileNameCheck extends JavaPropertiesCheck {
+public class FileNameCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT = "^[A-Za-z][-_A-Za-z0-9]*\\.properties$";
 
@@ -51,14 +50,9 @@ public class FileNameCheck extends JavaPropertiesCheck {
   private String format = DEFAULT;
 
   @Override
-  public void init() {
-    validateFormatParameter();
-  }
-
-  @Override
-  public void visitFile(@Nullable AstNode astNode) {
-    if (!Pattern.compile(format).matcher(getContext().getFile().getName()).matches()) {
-      addFileIssue(this, "Rename this file to match this regular expression: " + format);
+  public void visitProperties(PropertiesTree tree) {
+    if (!getContext().getFile().getName().matches(format)) {
+      addFileIssue("Rename this file to match the regular expression: " + format);
     }
   }
 
@@ -67,12 +61,16 @@ public class FileNameCheck extends JavaPropertiesCheck {
     this.format = format;
   }
 
-  private void validateFormatParameter() {
+  @Override
+  public void validateParameters() {
     try {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:S1578 - format parameter \""
-        + format + "\" is not a valid regular expression.", exception);
+      throw new IllegalStateException(
+        "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+          + " (" + this.getClass().getAnnotation(Rule.class).name() + "): format parameter \""
+          + format + "\" is not a valid regular expression.",
+        exception);
     }
   }
 

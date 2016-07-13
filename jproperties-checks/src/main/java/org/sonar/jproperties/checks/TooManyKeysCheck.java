@@ -20,19 +20,18 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sonar.sslr.api.AstNode;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
-import org.sonar.jproperties.issue.PreciseIssue;
-import org.sonar.jproperties.parser.JavaPropertiesGrammar;
+import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
+import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -43,7 +42,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.BRAIN_OVERLOAD})
 @SqaleConstantRemediation("30min")
 @ActivatedByDefault
-public class TooManyKeysCheck extends JavaPropertiesCheck {
+public class TooManyKeysCheck extends DoubleDispatchVisitorCheck {
 
   private static final int DEFAULT_THRESHOLD = 200;
 
@@ -53,29 +52,24 @@ public class TooManyKeysCheck extends JavaPropertiesCheck {
     defaultValue = "" + DEFAULT_THRESHOLD)
   private int numberKeys = DEFAULT_THRESHOLD;
 
-  private final List<AstNode> keyNodes = new ArrayList<>();
+  private final List<KeyTree> keyTrees = new ArrayList<>();
 
   @Override
-  public void init() {
-    subscribeTo(JavaPropertiesGrammar.KEY);
+  public void visitKey(KeyTree tree) {
+    keyTrees.add(tree);
   }
 
   @Override
-  public void visitFile(@Nullable AstNode astNode) {
-    keyNodes.clear();
-  }
-
-  @Override
-  public void visitNode(AstNode astNode) {
-    keyNodes.add(astNode);
-  }
-
-  @Override
-  public void leaveFile(@Nullable AstNode astNode) {
-    if (keyNodes.size() > numberKeys) {
-      PreciseIssue issue = addFileIssue(this, MessageFormat.format("Reduce the number of keys. The number of "
-        + "keys is {0}, greater than {1} authorized.", keyNodes.size(), numberKeys));
-      keyNodes.subList(numberKeys, keyNodes.size()).stream().forEach(n -> issue.addSecondaryLocation("+1", n));
+  public void visitProperties(PropertiesTree tree) {
+    keyTrees.clear();
+    super.visitProperties(tree);
+    if (keyTrees.size() > numberKeys) {
+      FileIssue issue = addFileIssue(
+        MessageFormat.format(
+          "Reduce the number of keys. The number of keys is {0}, greater than {1} authorized.",
+          keyTrees.size(),
+          numberKeys));
+      keyTrees.subList(numberKeys, keyTrees.size()).stream().forEach(n -> issue.secondary(n, "+1"));
     }
   }
 

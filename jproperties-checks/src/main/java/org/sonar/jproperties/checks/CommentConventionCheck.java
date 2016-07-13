@@ -20,15 +20,16 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -39,7 +40,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class CommentConventionCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
+public class CommentConventionCheck extends DoubleDispatchVisitorCheck {
 
   private static final String DEFAULT_FORMAT = "#";
   private Pattern pattern;
@@ -47,34 +48,36 @@ public class CommentConventionCheck extends JavaPropertiesCheck implements AstAn
   @RuleProperty(
     key = "startingCommentToken",
     description = "Allowed values: '#', '!'",
-    defaultValue = "" + DEFAULT_FORMAT)
+    defaultValue = DEFAULT_FORMAT)
   private String startingCommentToken = DEFAULT_FORMAT;
 
   @Override
-  public void init() {
-    validateStartingCommentTokenParameter();
+  public void visitProperties(PropertiesTree tree) {
     String startingTokenToDisallow = "#".equals(startingCommentToken) ? "!" : "#";
     pattern = Pattern.compile("^\\" + startingTokenToDisallow + ".*");
+    super.visitProperties(tree);
   }
 
   @Override
-  public void visitToken(Token token) {
-    token.getTrivia()
-      .stream()
-      .filter(t -> t.isComment() && pattern.matcher(t.getToken().getOriginalValue()).matches())
-      .forEach(t -> addLineIssue(this, "Use starting comment token '" + startingCommentToken + "' instead.", t.getToken().getLine()));
+  public void visitComment(SyntaxTrivia trivia) {
+    if (pattern.matcher(trivia.text()).matches()) {
+      addPreciseIssue(trivia, "Use starting comment token '" + startingCommentToken + "' instead.");
+    }
+  }
+
+  @Override
+  public void validateParameters() {
+    if (!Arrays.asList("#", "!").contains(startingCommentToken)) {
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + " (" + this.getClass().getAnnotation(Rule.class).name()
+        + "): startingCommentToken parameter is not valid.\n" +
+        "Actual: '" + startingCommentToken + "'\n" + "Expected: '#' or '!'");
+    }
   }
 
   @VisibleForTesting
   public void setStartingCommentToken(String startingCommentToken) {
     this.startingCommentToken = startingCommentToken;
-  }
-
-  private void validateStartingCommentTokenParameter() {
-    if (!"#".equals(startingCommentToken) && !"!".equals(startingCommentToken)) {
-      throw new IllegalStateException("Check jproperties:comment-convention: startingCommentToken parameter is not valid.\n" +
-        "Actual: '" + startingCommentToken + "'\n" + "Expected: '#' or '!'");
-    }
   }
 
 }

@@ -33,7 +33,6 @@ final class Tags {
   public static final String SANS_TOP25_POROUS = "sans-top25-porous";
 
   private Tags() {
-    // This class only defines constants
   }
 
 }

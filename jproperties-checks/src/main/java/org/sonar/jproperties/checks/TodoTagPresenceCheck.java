@@ -19,11 +19,8 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstAndTokenVisitor;
-import com.sonar.sslr.api.Token;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -33,16 +30,10 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   priority = Priority.INFO)
 @SqaleConstantRemediation("15min")
 @ActivatedByDefault
-public class TodoTagPresenceCheck extends JavaPropertiesCheck implements AstAndTokenVisitor {
+public class TodoTagPresenceCheck extends CommentContainsPatternChecker {
 
-  private static final String PATTERN = "TODO";
-  private static final String MESSAGE = "Complete the task associated to this TODO comment.";
-
-  private final CommentContainsPatternChecker checker = new CommentContainsPatternChecker(this, PATTERN, MESSAGE);
-
-  @Override
-  public void visitToken(Token token) {
-    checker.visitToken(token);
+  public TodoTagPresenceCheck() {
+    super("TODO", "Complete the task associated to this TODO comment.");
   }
 
 }

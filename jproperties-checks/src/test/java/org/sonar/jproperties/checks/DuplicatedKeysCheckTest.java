@@ -20,26 +20,22 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.base.Charsets;
-
-import java.io.File;
-
 import org.junit.Test;
-import org.sonar.jproperties.JavaPropertiesConfiguration;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class DuplicatedKeysCheckTest {
 
   @Test
   public void should_find_some_duplicated_keys_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), new File("src/test/resources/checks/duplicatedKeys.properties"));
+    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), TestUtils.getTestFile("duplicatedKeys.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_keys_and_raise_issues_on_UTF8_with_BOM_file() {
     JavaPropertiesCheckVerifier.verify(
       new DuplicatedKeysCheck(),
-      new File("src/test/resources/checks/duplicatedKeysUTF8WithBOM.properties"),
-      new JavaPropertiesConfiguration(Charsets.UTF_8));
+      TestUtils.getTestFile("duplicatedKeysUTF8WithBOM.properties"),
+      Charsets.UTF_8);
   }
 
 }

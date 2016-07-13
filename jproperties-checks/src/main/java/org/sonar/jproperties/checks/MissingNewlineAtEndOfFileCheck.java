@@ -19,18 +19,15 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.sonar.sslr.api.AstNode;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import javax.annotation.Nullable;
 
 @Rule(
   key = "empty-line-end-of-file",
@@ -39,16 +36,17 @@ import javax.annotation.Nullable;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class MissingNewlineAtEndOfFileCheck extends JavaPropertiesCheck {
+public class MissingNewlineAtEndOfFileCheck extends DoubleDispatchVisitorCheck {
 
   @Override
-  public void visitFile(@Nullable AstNode astNode) {
+  public void visitProperties(PropertiesTree tree) {
     try (RandomAccessFile randomAccessFile = new RandomAccessFile(getContext().getFile(), "r")) {
       if (!endsWithNewline(randomAccessFile)) {
-        addFileIssue(this, "Add an empty new line at the end of this file.");
+        addFileIssue("Add an empty new line at the end of this file.");
       }
     } catch (IOException e) {
-      throw new IllegalStateException("Check jproperties:empty-line-end-of-file, error while reading " + getContext().getFile(), e);
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+        + ": Error while reading " + getContext().getFile(), e);
     }
   }
 
