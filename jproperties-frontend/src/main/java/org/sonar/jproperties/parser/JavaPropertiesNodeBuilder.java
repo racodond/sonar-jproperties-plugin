@@ -57,7 +57,6 @@ public class JavaPropertiesNodeBuilder implements NodeBuilder {
       column(hasByteOrderMark, lineColumnValue.line, lineColumnValue.column),
       lineColumnValue.value,
       createTrivias(trivias, hasByteOrderMark),
-      startIndex - (hasByteOrderMark ? 1 : 0),
       isEof,
       isByteOrderMark(input, startIndex, endIndex));
   }
@@ -86,7 +85,7 @@ public class JavaPropertiesNodeBuilder implements NodeBuilder {
   }
 
   private static boolean isByteOrderMark(Input input, int startIndex, int endIndex) {
-    return ("" + BYTE_ORDER_MARK).equals(input.substring(startIndex, endIndex));
+    return (Character.toString(BYTE_ORDER_MARK)).equals(input.substring(startIndex, endIndex));
   }
 
   private static class LineColumnValue {

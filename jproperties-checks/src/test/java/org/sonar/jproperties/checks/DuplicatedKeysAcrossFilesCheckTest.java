@@ -71,8 +71,8 @@ public class DuplicatedKeysAcrossFilesCheckTest {
 
     Map<String, List<FileKeyTree>> keys = new HashMap<>();
 
-    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate3", new ArrayList<>(), 1, false, false));
-    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), 1, false, false));
+    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate3", new ArrayList<>(), false, false));
+    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), false, false));
 
     keys.put("the.key.to.translate1", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys2.properties"), keyTree1)));
     keys.put("the.key.to.translate3", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys2.properties"), keyTree3)));
@@ -109,8 +109,8 @@ public class DuplicatedKeysAcrossFilesCheckTest {
     DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
     Map<String, List<FileKeyTree>> keys = new HashMap<>();
 
-    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate1", new ArrayList<>(), 1, false, false));
-    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), 1, false, false));
+    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate1", new ArrayList<>(), false, false));
+    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), false, false));
 
     keys.put("the.key.to.translate1", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys.properties"), keyTree1)));
     keys.put("the.key.to.translate3", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys.properties"), keyTree3)));
@@ -141,8 +141,8 @@ public class DuplicatedKeysAcrossFilesCheckTest {
     DuplicatedKeysAcrossFilesCheck check = new DuplicatedKeysAcrossFilesCheck();
     Map<String, List<FileKeyTree>> keys = new HashMap<>();
 
-    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate1", new ArrayList<>(), 1, false, false));
-    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), 1, false, false));
+    KeyTree keyTree1 = new KeyTreeImpl(new InternalSyntaxToken(2, 1, "the.key.to.translate1", new ArrayList<>(), false, false));
+    KeyTree keyTree3 = new KeyTreeImpl(new InternalSyntaxToken(4, 1, "the.key.to.translate3", new ArrayList<>(), false, false));
 
     keys.put("the.key.to.translate1", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys.properties"), keyTree1)));
     keys.put("the.key.to.translate3", Lists.newArrayList(new FileKeyTree(new File(TEST_DIRECTORY + "keys.properties"), keyTree3)));

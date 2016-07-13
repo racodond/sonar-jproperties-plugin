@@ -38,7 +38,7 @@ public class InternalSyntaxToken extends JavaPropertiesTree implements SyntaxTok
   private int endColumn;
   private final List<SyntaxTrivia> trivias;
 
-  public InternalSyntaxToken(int line, int column, String value, List<SyntaxTrivia> trivias, int startIndex, boolean isEOF, boolean isBOM) {
+  public InternalSyntaxToken(int line, int column, String value, List<SyntaxTrivia> trivias, boolean isEOF, boolean isBOM) {
     this.value = value;
     this.trivias = trivias;
     this.line = line;

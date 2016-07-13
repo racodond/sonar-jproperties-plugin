@@ -33,14 +33,14 @@ public class CommentLinesVisitor extends SubscriptionVisitor {
   private int commentLines;
   private JavaPropertiesCommentAnalyser commentAnalyser = new JavaPropertiesCommentAnalyser();
 
-  @Override
-  public List<Tree.Kind> nodesToVisit() {
-    return ImmutableList.of(Tree.Kind.TOKEN);
-  }
-
   public CommentLinesVisitor(Tree tree) {
     commentLines = 0;
     scanTree(tree);
+  }
+
+  @Override
+  public List<Tree.Kind> nodesToVisit() {
+    return ImmutableList.of(Tree.Kind.TOKEN);
   }
 
   @Override

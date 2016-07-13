@@ -58,7 +58,7 @@ public class IssueSaver {
 
   private void savePreciseIssue(PreciseIssue issue) {
     NewIssue newIssue = sensorContext.newIssue();
-    InputFile primaryFile = fileSystem.inputFile(fileSystem.predicates().is(issue.primaryLocation().file()));
+    InputFile primaryFile = Preconditions.checkNotNull(fileSystem.inputFile(fileSystem.predicates().is(issue.primaryLocation().file())));
 
     newIssue
       .forRule(ruleKey(issue.check()))
@@ -79,7 +79,7 @@ public class IssueSaver {
 
   private void saveFileIssue(FileIssue issue) {
     NewIssue newIssue = sensorContext.newIssue();
-    InputFile primaryFile = fileSystem.inputFile(fileSystem.predicates().is(issue.file()));
+    InputFile primaryFile = Preconditions.checkNotNull(fileSystem.inputFile(fileSystem.predicates().is(issue.file())));
 
     NewIssueLocation primaryLocation = newIssue.newLocation()
       .message(issue.message())
@@ -104,7 +104,7 @@ public class IssueSaver {
 
   private void saveLineIssue(LineIssue issue) {
     NewIssue newIssue = sensorContext.newIssue();
-    InputFile primaryFile = fileSystem.inputFile(fileSystem.predicates().is(issue.file()));
+    InputFile primaryFile = Preconditions.checkNotNull(fileSystem.inputFile(fileSystem.predicates().is(issue.file())));
 
     NewIssueLocation primaryLocation = newIssue.newLocation()
       .message(issue.message())

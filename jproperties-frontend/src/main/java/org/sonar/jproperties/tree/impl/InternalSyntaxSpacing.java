@@ -53,22 +53,27 @@ public class InternalSyntaxSpacing extends JavaPropertiesTree implements SyntaxS
     // Do nothing at the moment. Spacings are dropped anyway.
   }
 
+  @Override
   public int column() {
     return 0;
   }
 
+  @Override
   public int line() {
     return 0;
   }
 
+  @Override
   public int endColumn() {
     return 0;
   }
 
+  @Override
   public int endLine() {
     return 0;
   }
 
+  @Override
   public String text() {
     return "";
   }
