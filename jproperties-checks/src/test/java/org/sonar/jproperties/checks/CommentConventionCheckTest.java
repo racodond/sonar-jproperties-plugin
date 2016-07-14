@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class CommentConventionCheckTest {
 
   private CommentConventionCheck check = new CommentConventionCheck();
@@ -48,10 +50,16 @@ public class CommentConventionCheckTest {
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsExclamationMarkAndHash.properties"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_starting_comment_token_parameter_is_not_valid() {
-    check.setStartingCommentToken("abc");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
+    try {
+      check.setStartingCommentToken("abc");
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:comment-convention (All comments should be formatted consistently): "
+        + "startingCommentToken parameter is not valid.\nActual: 'abc'\nExpected: '#' or '!'");
+    }
+
   }
 
 }

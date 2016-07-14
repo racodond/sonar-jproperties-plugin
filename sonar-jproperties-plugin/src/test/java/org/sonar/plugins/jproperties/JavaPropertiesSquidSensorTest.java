@@ -37,7 +37,11 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.batch.sensor.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.rule.RuleKey;
+import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.CheckList;
+import org.sonar.jproperties.checks.CommentConventionCheck;
+import org.sonar.jproperties.checks.LineLengthCheck;
+import org.sonar.jproperties.checks.MissingNewlineAtEndOfFileCheck;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -101,20 +105,22 @@ public class JavaPropertiesSquidSensorTest {
     inputFile("myProperties.properties", Charsets.ISO_8859_1);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
       .activate()
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
+      .activate()
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, LineLengthCheck.class.getAnnotation(Rule.class).key()))
       .activate()
       .build();
     checkFactory = new CheckFactory(activeRules);
 
     createJavaPropertiesSquidSensor().execute(context);
 
-    assertThat(context.allIssues()).hasSize(3);
+    assertThat(context.allIssues()).hasSize(4);
   }
 
   @Test
-  public void parsing_error() {
+  public void should_raise_an_issue_because_the_parsing_error_rule_is_activated() {
     String relativePath = "parsingError.properties";
     inputFile(relativePath, Charsets.ISO_8859_1);
 
@@ -131,6 +137,20 @@ public class JavaPropertiesSquidSensorTest {
     assertThat(issues).hasSize(1);
     Issue issue = issues.iterator().next();
     assertThat(issue.primaryLocation().textRange().start().line()).isEqualTo(2);
+  }
+
+  @Test
+  public void should_not_raise_any_issue_because_the_parsing_error_rule_is_not_activated() {
+    String relativePath = "parsingError.properties";
+    inputFile(relativePath, Charsets.ISO_8859_1);
+
+    ActiveRules activeRules = new ActiveRulesBuilder().build();
+    checkFactory = new CheckFactory(activeRules);
+
+    context.setActiveRules(activeRules);
+    createJavaPropertiesSquidSensor().execute(context);
+    Collection<Issue> issues = context.allIssues();
+    assertThat(issues).hasSize(0);
   }
 
   private JavaPropertiesSquidSensor createJavaPropertiesSquidSensor() {

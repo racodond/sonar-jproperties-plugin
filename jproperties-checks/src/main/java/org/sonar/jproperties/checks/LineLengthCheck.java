@@ -60,30 +60,37 @@ public class LineLengthCheck extends DoubleDispatchVisitorCheck implements Chars
     try {
       lines = Files.readLines(getContext().getFile(), charset);
     } catch (IOException e) {
-      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + ": Error while reading " + getContext().getFile(), e);
+      throw new IllegalStateException(readFileErrorMessage(), e);
     }
+
     for (int i = 0; i < lines.size(); i++) {
       String line = lines.get(i);
       if (line.length() > maximumLineLength) {
-        addLineIssue(
-          i + 1,
-          MessageFormat.format(
-            "The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
-            line.length(),
-            maximumLineLength));
+        addLineIssue(i + 1, issueMessage(line.length()));
       }
     }
-  }
-
-  @VisibleForTesting
-  public void setMaximumLineLength(int maximumLineLength) {
-    this.maximumLineLength = maximumLineLength;
   }
 
   @Override
   public void setCharset(Charset charset) {
     this.charset = charset;
+  }
+
+  @VisibleForTesting
+  void setMaximumLineLength(int maximumLineLength) {
+    this.maximumLineLength = maximumLineLength;
+  }
+
+  private String issueMessage(int lineLength) {
+    return MessageFormat.format(
+      "The line contains {0,number,integer} characters which is greater than {1,number,integer} authorized.",
+      lineLength,
+      maximumLineLength);
+  }
+
+  private String readFileErrorMessage() {
+    return "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
+      + ": Error while reading " + getContext().getFile().getName();
   }
 
 }

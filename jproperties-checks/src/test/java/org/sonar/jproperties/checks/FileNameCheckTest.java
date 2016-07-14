@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class FileNameCheckTest {
 
   private FileNameCheck check = new FileNameCheck();
@@ -54,10 +56,15 @@ public class FileNameCheckTest {
       .noMore();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
-    check.setFormat("(");
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties")).noMore();
+    try {
+      check.setFormat("(");
+      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties")).noMore();
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:S1578 (File names should comply with a naming convention): " +
+        "format parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

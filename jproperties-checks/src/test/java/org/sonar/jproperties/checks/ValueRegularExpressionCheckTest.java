@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class ValueRegularExpressionCheckTest {
 
   private ValueRegularExpressionCheck check = new ValueRegularExpressionCheck();
@@ -40,11 +42,16 @@ public class ValueRegularExpressionCheckTest {
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpressionNoMatch.properties"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
-    check.regularExpression = "(";
-    check.message = "blabla";
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpressionNoMatch.properties"));
+    try {
+      check.regularExpression = "(";
+      check.message = "blabla";
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("valueRegularExpressionNoMatch.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:value-regular-expression (Regular expression on value): "
+        + "regularExpression parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

@@ -74,7 +74,7 @@ public class TooManyKeysCheck extends DoubleDispatchVisitorCheck {
   }
 
   @VisibleForTesting
-  public void setNumberKeys(int numberKeys) {
+  void setNumberKeys(int numberKeys) {
     this.numberKeys = numberKeys;
   }
 

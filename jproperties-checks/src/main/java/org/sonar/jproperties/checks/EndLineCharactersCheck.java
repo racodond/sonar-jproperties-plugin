@@ -62,10 +62,7 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
   @Override
   public void validateParameters() {
     if (!Arrays.asList("CRLF", "CR", "LF").contains(endLineCharacters)) {
-      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + " (" + this.getClass().getAnnotation(Rule.class).name()
-        + "): endLineCharacters parameter is not valid.\nActual: '"
-        + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
+      throw new IllegalStateException(paramsErrorMessage());
     }
   }
 
@@ -75,7 +72,7 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
   }
 
   @VisibleForTesting
-  public void setEndLineCharacters(String endLineCharacters) {
+  void setEndLineCharacters(String endLineCharacters) {
     this.endLineCharacters = endLineCharacters;
   }
 
@@ -86,8 +83,14 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();
     } catch (IOException e) {
-      throw new IllegalStateException("Check jproperties:end-line-characters - File cannot be read.", e);
+      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key() + ": File cannot be read.", e);
     }
+  }
+
+  private String paramsErrorMessage() {
+    return CheckUtils.paramsErrorMessage(
+      this.getClass(),
+      "endLineCharacters parameter is not valid.\nActual: '" + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
   }
 
 }

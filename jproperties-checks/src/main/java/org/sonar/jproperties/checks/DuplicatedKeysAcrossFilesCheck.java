@@ -74,7 +74,7 @@ public class DuplicatedKeysAcrossFilesCheck extends DoubleDispatchVisitorCheck {
   }
 
   @VisibleForTesting
-  public void setKeys(Map<String, List<FileKeyTree>> keys) {
+  void setKeys(Map<String, List<FileKeyTree>> keys) {
     this.keys = keys;
   }
 

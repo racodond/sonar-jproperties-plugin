@@ -63,10 +63,14 @@ public class KeyRegularExpressionCheck extends DoubleDispatchVisitorCheck {
     try {
       Pattern.compile(regularExpression);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + " (" + this.getClass().getAnnotation(Rule.class).name() + "): regularExpression parameter \""
-        + regularExpression + "\" is not a valid regular expression.", exception);
+      throw new IllegalStateException(paramsErrorMessage(), exception);
     }
+  }
+
+  private String paramsErrorMessage() {
+    return CheckUtils.paramsErrorMessage(
+      this.getClass(),
+      "regularExpression parameter \"" + regularExpression + "\" is not a valid regular expression.");
   }
 
 }

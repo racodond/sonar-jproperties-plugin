@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class CommentRegularExpressionCheckTest {
 
   private final static String TEST_FILE_RELATIVE_PATH = "commentRegularExpression.properties";
@@ -49,12 +51,16 @@ public class CommentRegularExpressionCheckTest {
       .noMore();
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
-    check.regularExpression = "(";
-    check.message = "blabla";
-
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
+    try {
+      check.regularExpression = "(";
+      check.message = "blabla";
+      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:comment-regular-expression (Regular expression on comment): "
+        + "regularExpression parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

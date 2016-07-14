@@ -54,14 +54,9 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
 
   @RuleProperty(
     key = "valuesToIgnore",
-    description = "Regular expression of values to ignore. See http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html for detailed regular expression syntax.",
+    description = "Regular expression of values to ignore. See " + CheckUtils.LINK_TO_JAVA_REGEX_PATTERN_DOC + " for detailed regular expression syntax.",
     defaultValue = DEFAULT_VALUES_TO_IGNORE)
   private String valuesToIgnore = DEFAULT_VALUES_TO_IGNORE;
-
-  @VisibleForTesting
-  public void setValuesToIgnore(String valuesToIgnore) {
-    this.valuesToIgnore = valuesToIgnore;
-  }
 
   @Override
   public void visitProperties(PropertiesTree tree) {
@@ -69,9 +64,7 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
     super.visitProperties(tree);
     for (Map.Entry<String, List<KeyTree>> entry : valuesMap.entrySet()) {
       if (entry.getValue().size() > 1) {
-        PreciseIssue issue = addPreciseIssue(
-          entry.getValue().get(0),
-          "Merge keys \"" + getCommaSeparatedListOfDuplicatedKeys(entry.getValue()) + "\" that have the same value \"" + getFiftyCharacterValue(entry.getKey()) + "\".");
+        PreciseIssue issue = addPreciseIssue(entry.getValue().get(0), issueMessage(entry));
         for (int i = 1; i < entry.getValue().size(); i++) {
           issue.secondary(entry.getValue().get(i), "Duplicated value");
         }
@@ -82,7 +75,7 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void visitProperty(PropertyTree tree) {
     if (tree.value() != null) {
-      String value = getValueWithoutLineBreak(tree.value().text());
+      String value = valueWithoutLineBreak(tree.value().text());
       if (!value.matches(valuesToIgnore)) {
         if (valuesMap.containsKey(value)) {
           valuesMap.get(value).add(tree.key());
@@ -98,15 +91,24 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
     try {
       Pattern.compile(valuesToIgnore);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException(
-        "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key() + " ("
-          + this.getClass().getAnnotation(Rule.class).name() + "): valuesToIgnore parameter \""
-          + valuesToIgnore + "\" is not a valid regular expression.",
-        exception);
+      throw new IllegalStateException(paramsErrorMessage(), exception);
     }
   }
 
-  private static String getCommaSeparatedListOfDuplicatedKeys(List<KeyTree> keyTrees) {
+  @VisibleForTesting
+  void setValuesToIgnore(String valuesToIgnore) {
+    this.valuesToIgnore = valuesToIgnore;
+  }
+
+  private String issueMessage(Map.Entry<String, List<KeyTree>> entry) {
+    return "Merge keys \""
+      + listOfDuplicatedKeys(entry.getValue())
+      + "\" that have the same value \""
+      + fiftyCharacterValue(entry.getKey())
+      + "\".";
+  }
+
+  private static String listOfDuplicatedKeys(List<KeyTree> keyTrees) {
     return keyTrees
       .stream()
       .map(KeyTree::text)
@@ -114,12 +116,18 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
       .collect(Collectors.joining(", "));
   }
 
-  private static String getFiftyCharacterValue(String value) {
+  private static String fiftyCharacterValue(String value) {
     return value.length() > 50 ? value.substring(0, 50) + "..." : value;
   }
 
-  private static String getValueWithoutLineBreak(String value) {
+  private static String valueWithoutLineBreak(String value) {
     return value.replaceAll("\\\\\\n\\s*", "");
+  }
+
+  private String paramsErrorMessage() {
+    return CheckUtils.paramsErrorMessage(
+      this.getClass(),
+      "valuesToIgnore parameter \"" + valuesToIgnore + "\" is not a valid regular expression.");
   }
 
 }

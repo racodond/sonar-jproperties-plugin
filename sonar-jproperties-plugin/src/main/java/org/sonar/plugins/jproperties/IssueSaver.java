@@ -71,6 +71,9 @@ public class IssueSaver {
     InputFile secondaryFile;
     for (IssueLocation secondary : issue.secondaryLocations()) {
       secondaryFile = fileSystem.inputFile(fileSystem.predicates().is(secondary.file()));
+      if (secondaryFile == null) {
+        secondaryFile = primaryFile;
+      }
       newIssue.addLocation(newLocation(secondaryFile, newIssue, secondary));
     }
 
@@ -96,6 +99,9 @@ public class IssueSaver {
     InputFile secondaryFile;
     for (IssueLocation secondary : issue.secondaryLocations()) {
       secondaryFile = fileSystem.inputFile(fileSystem.predicates().is(secondary.file()));
+      if (secondaryFile == null) {
+        secondaryFile = primaryFile;
+      }
       newIssue.addLocation(newLocation(secondaryFile, newIssue, secondary));
     }
 

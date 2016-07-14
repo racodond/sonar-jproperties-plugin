@@ -46,7 +46,7 @@ public class MissingNewlineAtEndOfFileCheck extends DoubleDispatchVisitorCheck {
       }
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + ": Error while reading " + getContext().getFile(), e);
+        + ": Error while reading " + getContext().getFile().getName(), e);
     }
   }
 

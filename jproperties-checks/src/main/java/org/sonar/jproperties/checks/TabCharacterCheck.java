@@ -51,7 +51,7 @@ public class TabCharacterCheck extends DoubleDispatchVisitorCheck implements Cha
       lines = Files.readLines(getContext().getFile(), charset);
     } catch (IOException e) {
       throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + ": Error while reading " + getContext().getFile(), e);
+        + ": Error while reading " + getContext().getFile().getName(), e);
     }
     for (String line : lines) {
       if (line.contains("\t")) {

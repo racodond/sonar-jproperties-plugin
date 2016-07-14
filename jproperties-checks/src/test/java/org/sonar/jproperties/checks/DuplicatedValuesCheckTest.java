@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class DuplicatedValuesCheckTest {
 
   private DuplicatedValuesCheck check = new DuplicatedValuesCheck();
@@ -41,13 +43,17 @@ public class DuplicatedValuesCheckTest {
   public void should_find_some_duplicated_values_and_raise_issues_with_custom_regular_expression_of_values_to_ignore() {
     check.setValuesToIgnore("(?i)(BLABLA|abc|true|false)");
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
-
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_values_to_ignore_regular_expression_is_not_valid() {
-    check.setValuesToIgnore("(");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
+    try {
+      check.setValuesToIgnore("(");
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:duplicated-values (Different keys having the same value should be merged): "
+        + "valuesToIgnore parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

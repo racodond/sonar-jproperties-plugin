@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class KeyNamingConventionCheckTest {
 
   private KeyNamingConventionCheck check = new KeyNamingConventionCheck();
@@ -37,10 +39,15 @@ public class KeyNamingConventionCheckTest {
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
-    check.setFormat("(");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
+    try {
+      check.setFormat("(");
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:key-naming-convention (Keys should follow a naming convention): "
+        + "format parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

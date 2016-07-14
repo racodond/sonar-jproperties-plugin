@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class KeyRegularExpressionCheckTest {
 
   private KeyRegularExpressionCheck check = new KeyRegularExpressionCheck();
@@ -40,11 +42,16 @@ public class KeyRegularExpressionCheckTest {
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_regular_expression_parameter_is_not_valid() {
-    check.regularExpression = "(";
-    check.message = "blabla";
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
+    try {
+      check.regularExpression = "(";
+      check.message = "blabla";
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:key-regular-expression (Regular expression on key): "
+        + "regularExpression parameter \"(\" is not a valid regular expression.");
+    }
   }
 
 }

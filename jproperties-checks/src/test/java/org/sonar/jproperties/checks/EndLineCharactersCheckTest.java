@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class EndLineCharactersCheckTest {
 
   private EndLineCharactersCheck check = new EndLineCharactersCheck();
@@ -99,6 +101,17 @@ public class EndLineCharactersCheckTest {
     JavaPropertiesCheckVerifier.issues(check, getTestFileWithProperEndLineCharacters("\r"))
       .next().withMessage("Set all end-line characters to 'LF' in this file.")
       .noMore();
+  }
+
+  @Test
+  public void should_throw_an_illegal_state_exception_as_the_endLineCharacters_parameter_is_not_valid() {
+    try {
+      check.setEndLineCharacters("abc");
+      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("endLineCharacters.properties")).noMore();
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:end-line-characters (End-line characters should be consistent): "
+        + "endLineCharacters parameter is not valid.\nActual: 'abc'\nExpected: 'CR' or 'CRLF' or 'LF'");
+    }
   }
 
   private File getTestFileWithProperEndLineCharacters(String endLineCharacter) throws Exception {

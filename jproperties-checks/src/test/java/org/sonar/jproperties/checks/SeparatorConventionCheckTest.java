@@ -22,6 +22,8 @@ package org.sonar.jproperties.checks;
 import org.junit.Test;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
+import static org.fest.assertions.Assertions.assertThat;
+
 public class SeparatorConventionCheckTest {
 
   private SeparatorConventionCheck check = new SeparatorConventionCheck();
@@ -37,10 +39,15 @@ public class SeparatorConventionCheckTest {
     JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test
   public void should_throw_an_illegal_state_exception_as_the_separator_parameter_is_not_valid() {
-    check.setSeparator("abc");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
+    try {
+      check.setSeparator("abc");
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).isEqualTo("Check jproperties:separator-convention (Separators should follow a convention): "
+        + "separator parameter is not valid.\nActual: \"abc\"\nExpected: '=' or ':'");
+    }
   }
 
 }

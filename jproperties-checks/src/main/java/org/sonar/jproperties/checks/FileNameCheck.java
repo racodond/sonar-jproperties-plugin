@@ -56,22 +56,20 @@ public class FileNameCheck extends DoubleDispatchVisitorCheck {
     }
   }
 
-  @VisibleForTesting
-  public void setFormat(String format) {
-    this.format = format;
-  }
-
   @Override
   public void validateParameters() {
     try {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
       throw new IllegalStateException(
-        "Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-          + " (" + this.getClass().getAnnotation(Rule.class).name() + "): format parameter \""
-          + format + "\" is not a valid regular expression.",
+        CheckUtils.paramsErrorMessage(this.getClass(), "format parameter \"" + format + "\" is not a valid regular expression."),
         exception);
     }
+  }
+
+  @VisibleForTesting
+  void setFormat(String format) {
+    this.format = format;
   }
 
 }

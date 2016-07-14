@@ -86,15 +86,19 @@ public class SeparatorConventionCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void validateParameters() {
     if (!Arrays.asList("=", ":").contains(separator)) {
-      throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
-        + " (" + this.getClass().getAnnotation(Rule.class).name() + "): separator parameter is not valid.\nActual: \""
-        + separator + "\"\nExpected: '=' or ':'");
+      throw new IllegalStateException(paramsErrorMessage());
     }
   }
 
   @VisibleForTesting
-  public void setSeparator(String separator) {
+  void setSeparator(String separator) {
     this.separator = separator;
+  }
+
+  private String paramsErrorMessage() {
+    return CheckUtils.paramsErrorMessage(
+      this.getClass(),
+      "separator parameter is not valid.\nActual: \"" + separator + "\"\nExpected: '=' or ':'");
   }
 
 }
