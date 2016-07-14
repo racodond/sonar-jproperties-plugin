@@ -30,6 +30,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
@@ -57,7 +58,7 @@ public class JavaPropertiesCheckVerifier extends SubscriptionVisitorCheck {
   /**
    * Check issues
    * @param check Check to test
-   * @param file Fil to test
+   * @param file File to test
    *
    * Example:
    * <pre>
@@ -125,7 +126,10 @@ public class JavaPropertiesCheckVerifier extends SubscriptionVisitorCheck {
     JavaPropertiesCheckVerifier checkVerifier = new JavaPropertiesCheckVerifier();
     checkVerifier.scanFile(context);
 
-    List<TestIssue> expectedIssues = checkVerifier.expectedIssues;
+    List<TestIssue> expectedIssues = checkVerifier.expectedIssues
+      .stream()
+      .sorted((i1, i2) -> Integer.compare(i1.line(), i2.line()))
+      .collect(Collectors.toList());
 
     if (check instanceof CharsetAwareVisitor) {
       ((CharsetAwareVisitor) check).setCharset(charset);

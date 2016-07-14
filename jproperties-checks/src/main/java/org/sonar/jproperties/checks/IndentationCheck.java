@@ -22,13 +22,14 @@ package org.sonar.jproperties.checks;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
   key = "indentation",
-  name = "All property definitions should start at column 1",
+  name = "All properties and comments should start at column 1",
   priority = Priority.MINOR,
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
@@ -39,6 +40,14 @@ public class IndentationCheck extends DoubleDispatchVisitorCheck {
   public void visitKey(KeyTree tree) {
     if (tree.value().column() != 0) {
       addPreciseIssue(tree, "Remove the whitespaces before the key.");
+    }
+    super.visitKey(tree);
+  }
+
+  @Override
+  public void visitComment(SyntaxTrivia tree) {
+    if (tree.column() != 0) {
+      addPreciseIssue(tree, "Remove the whitespaces before the comments.");
     }
   }
 
