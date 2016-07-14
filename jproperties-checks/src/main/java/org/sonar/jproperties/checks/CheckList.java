@@ -51,6 +51,7 @@ public final class CheckList {
       KeyRegularExpressionCheck.class,
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
+      NoPropertiesCheck.class,
       ParsingErrorCheck.class,
       SeparatorConventionCheck.class,
       TabCharacterCheck.class,
