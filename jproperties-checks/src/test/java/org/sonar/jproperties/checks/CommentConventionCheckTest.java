@@ -30,31 +30,49 @@ public class CommentConventionCheckTest {
 
   @Test
   public void should_only_contain_comments_starting_with_hash_token_and_not_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("comment-convention/commentsHashOnly.properties"));
   }
 
   @Test
   public void should_only_contain_comments_starting_with_exclamation_mark_token_and_not_raise_issues() {
     check.setStartingCommentToken("!");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsExclamationMarkOnly.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("comment-convention/commentsExclamationMarkOnly.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_exclamation_mark_token_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashAndExclamationMark.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("comment-convention/commentsHashAndExclamationMark.properties"));
   }
 
   @Test
   public void should_contain_comments_starting_with_hash_token_and_raise_issues() {
     check.setStartingCommentToken("!");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsExclamationMarkAndHash.properties"));
+    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("comment-convention/commentsExclamationMarkAndHash.properties"));
+  }
+
+  @Test
+  public void should_contain_comments_with_missing_whitespace_and_raise_some_issues_hash_token() {
+    check.setStartingCommentToken("#");
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("comment-convention/commentsHashMissingWhitespace.properties"))
+      .next().atLine(2).withMessage("Add a whitespace after the starting comment token.")
+      .next().atLine(3).withMessage("Add a whitespace after the starting comment token.")
+      .noMore();
+  }
+
+  @Test
+  public void should_contain_comments_with_missing_whitespace_and_raise_some_issues_exclamation_mark_token() {
+    check.setStartingCommentToken("!");
+    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("comment-convention/commentsExclamationMarkMissingWhitespace.properties"))
+      .next().atLine(2).withMessage("Add a whitespace after the starting comment token.")
+      .next().atLine(3).withMessage("Add a whitespace after the starting comment token.")
+      .noMore();
   }
 
   @Test
   public void should_throw_an_illegal_state_exception_as_the_starting_comment_token_parameter_is_not_valid() {
     try {
       check.setStartingCommentToken("abc");
-      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("commentsHashOnly.properties"));
+      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("comment-convention/commentsHashOnly.properties"));
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:comment-convention (All comments should be formatted consistently): "
         + "startingCommentToken parameter is not valid.\nActual: 'abc'\nExpected: '#' or '!'");
