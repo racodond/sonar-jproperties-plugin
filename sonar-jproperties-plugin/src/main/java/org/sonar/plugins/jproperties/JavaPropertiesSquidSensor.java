@@ -19,13 +19,16 @@
  */
 package org.sonar.plugins.jproperties;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.typed.ActionParser;
 
 import java.io.File;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
@@ -52,6 +55,7 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitor;
 import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
+import org.sonar.squidbridge.ProgressReport;
 import org.sonar.squidbridge.api.AnalysisException;
 
 public class JavaPropertiesSquidSensor implements Sensor {
@@ -95,24 +99,39 @@ public class JavaPropertiesSquidSensor implements Sensor {
 
     setParsingErrorCheckIfActivated(treeVisitors);
 
+    ProgressReport progressReport = new ProgressReport("Report about progress of Java Properties analyzer", TimeUnit.SECONDS.toMillis(10));
+    progressReport.start(Lists.newArrayList(fileSystem.files(mainFilePredicate)));
+
     issueSaver = new IssueSaver(sensorContext, checks);
     List<Issue> issues = new ArrayList<>();
-    for (InputFile inputFile : fileSystem.inputFiles(mainFilePredicate)) {
-      issues.addAll(analyzeFile(sensorContext, inputFile, treeVisitors));
+
+    boolean success = false;
+    try {
+      for (InputFile inputFile : fileSystem.inputFiles(mainFilePredicate)) {
+        issues.addAll(analyzeFile(sensorContext, inputFile, treeVisitors));
+        progressReport.nextFile();
+      }
+      saveSingleFileIssues(issues);
+      saveCrossFileIssues();
+      success = true;
+    } finally {
+      stopProgressReport(progressReport, success);
     }
-    saveSingleFileIssues(issues);
-    saveCrossFileIssues();
   }
 
   private List<Issue> analyzeFile(SensorContext sensorContext, InputFile inputFile, List<TreeVisitor> visitors) {
     try {
       PropertiesTree propertiesTree = (PropertiesTree) parser.parse(new File(inputFile.absolutePath()));
       return scanFile(inputFile, propertiesTree, visitors);
+
     } catch (RecognitionException e) {
+      checkInterrupted(e);
       LOG.error("Unable to parse file: " + inputFile.absolutePath());
       LOG.error(e.getMessage());
       processRecognitionException(e, sensorContext, inputFile);
+
     } catch (Exception e) {
+      checkInterrupted(e);
       throw new AnalysisException("Unable to analyse file: " + inputFile.absolutePath(), e);
     }
     return new ArrayList<>();
@@ -166,6 +185,21 @@ public class JavaPropertiesSquidSensor implements Sensor {
         parsingErrorRuleKey = checks.ruleKeyFor((JavaPropertiesCheck) check);
         break;
       }
+    }
+  }
+
+  private static void stopProgressReport(ProgressReport progressReport, boolean success) {
+    if (success) {
+      progressReport.stop();
+    } else {
+      progressReport.cancel();
+    }
+  }
+
+  private static void checkInterrupted(Exception e) {
+    Throwable cause = Throwables.getRootCause(e);
+    if (cause instanceof InterruptedException || cause instanceof InterruptedIOException) {
+      throw new AnalysisException("Analysis cancelled", e);
     }
   }
 
