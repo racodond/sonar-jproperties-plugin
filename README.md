@@ -47,6 +47,7 @@ at com.sonar.sslr.impl.ast.AstWalker.visitNode(AstWalker.java:114)
  * Duplicated keys should be removed
  * End-line characters should be consistent
  * File names should comply with a naming convention
+ * Files not defining any properties should be removed
  * Files should contain an empty new line at the end
  * Keys should follow a naming convention
  * Lines should not be too long
