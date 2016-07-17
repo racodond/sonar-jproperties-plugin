@@ -29,6 +29,7 @@ import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
@@ -50,6 +51,7 @@ import org.sonar.jproperties.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
 import org.sonar.jproperties.visitors.SyntaxHighlighterVisitor;
 import org.sonar.jproperties.visitors.metrics.MetricsVisitor;
+import org.sonar.plugins.jproperties.api.CustomJavaPropertiesRulesDefinition;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.tree.Tree;
@@ -69,7 +71,7 @@ public class JavaPropertiesSquidSensor implements Sensor {
   private IssueSaver issueSaver;
   private RuleKey parsingErrorRuleKey = null;
 
-  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
     this.fileSystem = fileSystem;
 
     this.mainFilePredicate = fileSystem.predicates().and(
@@ -79,7 +81,8 @@ public class JavaPropertiesSquidSensor implements Sensor {
     this.parser = JavaPropertiesParserBuilder.createParser(fileSystem.encoding());
 
     this.checks = JavaPropertiesChecks.createJavaPropertiestCheck(checkFactory)
-      .addChecks(CheckList.REPOSITORY_KEY, CheckList.getChecks());
+      .addChecks(CheckList.REPOSITORY_KEY, CheckList.getChecks())
+      .addCustomChecks(customRulesDefinition);
   }
 
   @Override

@@ -40,9 +40,9 @@ public class JavaPropertiesRulesDefinitionTest {
     assertThat(repository.language()).isEqualTo("jproperties");
     assertThat(repository.rules()).hasSize(CheckList.getChecks().size());
 
-    RulesDefinition.Rule alertUseRule = repository.rule(LineLengthCheck.class.getAnnotation(Rule.class).key());
-    assertThat(alertUseRule).isNotNull();
-    assertThat(alertUseRule.name()).isEqualTo(LineLengthCheck.class.getAnnotation(Rule.class).name());
+    RulesDefinition.Rule lineLengthRule = repository.rule(LineLengthCheck.class.getAnnotation(Rule.class).key());
+    assertThat(lineLengthRule).isNotNull();
+    assertThat(lineLengthRule.name()).isEqualTo(LineLengthCheck.class.getAnnotation(Rule.class).name());
   }
 
 }

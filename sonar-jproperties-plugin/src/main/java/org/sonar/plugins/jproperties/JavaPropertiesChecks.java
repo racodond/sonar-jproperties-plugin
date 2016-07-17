@@ -30,6 +30,7 @@ import javax.annotation.Nullable;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.rule.RuleKey;
+import org.sonar.plugins.jproperties.api.CustomJavaPropertiesRulesDefinition;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitor;
 
@@ -51,6 +52,16 @@ public class JavaPropertiesChecks {
       .<JavaPropertiesCheck>create(repositoryKey)
       .addAnnotatedChecks(checkClass));
 
+    return this;
+  }
+
+  public JavaPropertiesChecks addCustomChecks(@Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinitions) {
+    if (customRulesDefinitions != null) {
+
+      for (CustomJavaPropertiesRulesDefinition rulesDefinition : customRulesDefinitions) {
+        addChecks(rulesDefinition.repositoryKey(), Lists.newArrayList(rulesDefinition.checkClasses()));
+      }
+    }
     return this;
   }
 

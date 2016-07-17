@@ -154,7 +154,7 @@ public class JavaPropertiesSquidSensorTest {
   }
 
   private JavaPropertiesSquidSensor createJavaPropertiesSquidSensor() {
-    return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
+    return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory, null);
   }
 
   private void inputFile(String relativePath, Charset charset) {

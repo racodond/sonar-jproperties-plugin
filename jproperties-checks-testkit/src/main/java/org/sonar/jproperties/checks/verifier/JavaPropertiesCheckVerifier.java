@@ -92,18 +92,19 @@ public class JavaPropertiesCheckVerifier extends SubscriptionVisitorCheck {
    * # Noncompliant {{Error message for the issue on the next line}}
    * MyProperty=abc
    *
-   * # Noncompliant {{Error message}} [[effortToFix=2]] [[secondary=+2,+4]] [[sc=2;ec=6;el=+0]]
+   * # Noncompliant [[sc=2;ec=6;secondary=+2,+4]] {{Error message}}
    * ...
    * </pre>
    *
    * How to write these comments:
    * <ul>
    *   <li>Put a comment starting with "Noncompliant" if you expect an issue on the next line.</li>
-   *   <li>Optional - In double curly braces <code>{{MESSAGE}}</code> provide the expected message.</li>
    *   <li>Optional - In double brackets provide the precise issue location <code>sl, sc, ec, el</code> keywords respectively for start line, start column, end column and end line. <code>sl=+1</code> by default.</li>
    *   <li>Optional - In double brackets provide secondary locations with the <code>secondary</code> keyword.</li>
    *   <li>Optional - In double brackets provide expected effort to fix (cost) with the <code>effortToFix</code> keyword.</li>
+   *   <li>Optional - In double curly braces <code>{{MESSAGE}}</code> provide the expected message.</li>
    *   <li>To specify the line you can use relative location by putting <code>+</code> or <code>-</code>.</li>
+   *   <li>Note that the order matters: Noncompliant => Parameters => Error message</li>
    * </ul>
    *
    * Example of call:

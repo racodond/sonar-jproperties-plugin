@@ -20,6 +20,7 @@
 package org.sonar.jproperties.checks;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
 import org.sonar.jproperties.visitors.CharsetAwareVisitor;
-import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
-import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
+import org.sonar.plugins.jproperties.api.tree.Tree;
+import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
@@ -43,7 +44,7 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
   tags = {Tags.CONVENTION})
 @SqaleConstantRemediation("1min")
 @ActivatedByDefault
-public class LineLengthCheck extends DoubleDispatchVisitorCheck implements CharsetAwareVisitor {
+public class LineLengthCheck extends SubscriptionVisitorCheck implements CharsetAwareVisitor {
 
   private static final int DEFAULT_MAXIMUM_LINE_LENGTH = 120;
   private Charset charset;
@@ -55,7 +56,12 @@ public class LineLengthCheck extends DoubleDispatchVisitorCheck implements Chars
   private int maximumLineLength = DEFAULT_MAXIMUM_LINE_LENGTH;
 
   @Override
-  public void visitProperties(PropertiesTree tree) {
+  public List<Tree.Kind> nodesToVisit() {
+    return ImmutableList.of(Tree.Kind.PROPERTIES);
+  }
+
+  @Override
+  public void visitFile(Tree tree) {
     List<String> lines;
     try {
       lines = Files.readLines(getContext().getFile(), charset);
