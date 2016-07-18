@@ -62,3 +62,12 @@ at com.sonar.sslr.impl.ast.AstWalker.visitNode(AstWalker.java:114)
  * Regular expression on comment
  * Regular expression on key
  * Regular expression on value
+
+
+## Custom Checks
+
+You're thinking of new valuable rules? Version 2.1 or greater provides an API to write your own custom checks.
+A sample plugin with detailed explanations is available [here](https://github.com/racodond/sonar-jproperties-custom-rules-plugin).
+If your custom rules may benefit the community, feel free to create a pull request in order to make the rule available in the Java Properties plugin.
+
+You're thinking of new rules that may benefit the community but don't have the time or the skills to write them? Feel free to create an [issue](https://github.com/racodond/sonar-jproperties-plugin/issues) for your rules to be taken under consideration.
