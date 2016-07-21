@@ -45,7 +45,7 @@ public class KeyNamingConventionCheck extends DoubleDispatchVisitorCheck {
 
   @RuleProperty(
     key = "Format",
-    description = "Regular expression used to check the key against",
+    description = "Regular expression used to check the key against. See " + CheckUtils.LINK_TO_JAVA_REGEX_PATTERN_DOC + " for detailed regular expression syntax.",
     defaultValue = DEFAULT_FORMAT)
   private String format = DEFAULT_FORMAT;
 

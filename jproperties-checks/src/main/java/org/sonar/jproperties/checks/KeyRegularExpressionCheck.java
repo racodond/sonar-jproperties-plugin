@@ -41,7 +41,7 @@ public class KeyRegularExpressionCheck extends DoubleDispatchVisitorCheck {
 
   @RuleProperty(
     key = "regularExpression",
-    description = "The regular expression",
+    description = "The regular expression. See " + CheckUtils.LINK_TO_JAVA_REGEX_PATTERN_DOC + " for detailed regular expression syntax.",
     defaultValue = DEFAULT_REGULAR_EXPRESSION)
   public String regularExpression = DEFAULT_REGULAR_EXPRESSION;
 

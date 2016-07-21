@@ -46,7 +46,7 @@ public class FileNameCheck extends DoubleDispatchVisitorCheck {
   @RuleProperty(
     key = "format",
     defaultValue = DEFAULT,
-    description = "Regular expression that file names should match")
+    description = "Regular expression that file names should match. See " + CheckUtils.LINK_TO_JAVA_REGEX_PATTERN_DOC + " for detailed regular expression syntax.")
   private String format = DEFAULT;
 
   @Override
