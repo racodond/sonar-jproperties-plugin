@@ -43,7 +43,7 @@ public class JavaPropertiesChecks {
     this.checkFactory = checkFactory;
   }
 
-  public static JavaPropertiesChecks createJavaPropertiestCheck(CheckFactory checkFactory) {
+  public static JavaPropertiesChecks createJavaPropertiesChecks(CheckFactory checkFactory) {
     return new JavaPropertiesChecks(checkFactory);
   }
 

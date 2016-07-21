@@ -80,7 +80,7 @@ public class JavaPropertiesSquidSensor implements Sensor {
 
     this.parser = JavaPropertiesParserBuilder.createParser(fileSystem.encoding());
 
-    this.checks = JavaPropertiesChecks.createJavaPropertiestCheck(checkFactory)
+    this.checks = JavaPropertiesChecks.createJavaPropertiesChecks(checkFactory)
       .addChecks(CheckList.REPOSITORY_KEY, CheckList.getChecks())
       .addCustomChecks(customRulesDefinition);
   }
