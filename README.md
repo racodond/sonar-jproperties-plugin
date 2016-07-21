@@ -11,6 +11,7 @@ This plugin enables code QA analysis of [Java Properties files](https://en.wikip
 
  * Computes metrics: lines of code, comments lines, etc.
  * Performs more than 20 checks
+ * Provide the ability to write your own checks
 
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
