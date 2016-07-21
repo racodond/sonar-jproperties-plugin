@@ -40,10 +40,7 @@ public abstract class CustomJavaPropertiesRulesDefinition implements RulesDefini
   @Override
   public void define(Context context) {
     NewRepository repo = context.createRepository(repositoryKey(), "jproperties").setName(repositoryName());
-
-    // Load metadata from check classes' annotations
     new AnnotationBasedRulesDefinition(repo, "jproperties").addRuleClasses(false, ImmutableList.copyOf(checkClasses()));
-
     repo.done();
   }
 
