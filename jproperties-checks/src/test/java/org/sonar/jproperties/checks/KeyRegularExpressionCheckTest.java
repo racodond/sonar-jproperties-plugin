@@ -32,14 +32,14 @@ public class KeyRegularExpressionCheckTest {
   public void should_match_some_keys_and_raise_issues() {
     check.regularExpression = "^mykey.*";
     check.message = "Find out keys starting with 'mykey'";
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpression.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyRegularExpression.properties"));
   }
 
   @Test
   public void should_not_match_any_keys_and_not_raise_issues() {
     check.regularExpression = "^blabla.*";
     check.message = "Find out keys starting with 'blabla'";
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
   }
 
   @Test
@@ -47,7 +47,7 @@ public class KeyRegularExpressionCheckTest {
     try {
       check.regularExpression = "(";
       check.message = "blabla";
-      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
+      JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyRegularExpressionNoMatch.properties"));
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:key-regular-expression (Regular expression on key): "
         + "regularExpression parameter \"(\" is not a valid regular expression.");

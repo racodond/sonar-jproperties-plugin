@@ -26,7 +26,7 @@ public class EmptyElementCheckTest {
 
   @Test
   public void should_find_some_empty_elements_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new EmptyElementCheck(), TestUtils.getTestFile("emptyElement.properties"));
+    JavaPropertiesCheckVerifier.verify(new EmptyElementCheck(), CheckTestUtils.getTestFile("emptyElement.properties"));
   }
 
 }

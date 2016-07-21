@@ -29,19 +29,19 @@ public class IndentationCheckTest {
 
   @Test
   public void should_find_some_keys_that_are_not_properly_indented_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("indentation/indentation.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("indentation/indentation.properties"));
   }
 
   @Test
   public void should_find_an_issue_on_the_first_line_on_ISO_8859_1_file() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("indentation/indentationIssueFirstLine.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("indentation/indentationIssueFirstLine.properties"));
   }
 
   @Test
   public void should_find_some_keys_that_are_not_properly_indented_and_raise_issues_on_UTF8_file_with_BOM() {
     JavaPropertiesCheckVerifier.verify(
       check,
-      TestUtils.getTestFile("indentation/indentationUTF8WithBOM.properties"),
+      CheckTestUtils.getTestFile("indentation/indentationUTF8WithBOM.properties"),
       Charsets.UTF_8);
   }
 
@@ -49,7 +49,7 @@ public class IndentationCheckTest {
   public void should_find_an_issue_on_the_first_line_on_UTF8_file_with_BOM() {
     JavaPropertiesCheckVerifier.verify(
       check,
-      TestUtils.getTestFile("indentation/indentationUTF8WithBOMIssueFirstLine.properties"),
+      CheckTestUtils.getTestFile("indentation/indentationUTF8WithBOMIssueFirstLine.properties"),
       Charsets.UTF_8);
   }
 

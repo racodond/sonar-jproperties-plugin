@@ -35,7 +35,7 @@ public class CommentRegularExpressionCheckTest {
     check.regularExpression = "(?i).*WTF.*";
     check.message = "Stop annotating lines with WTF! Detail what is wrong instead.";
 
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
       .next().atLine(1).withMessage(message)
       .next().atLine(2).withMessage(message)
       .next().atLine(3).withMessage(message)
@@ -47,7 +47,7 @@ public class CommentRegularExpressionCheckTest {
     check.regularExpression = "blabla";
     check.message = "blabla";
 
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
       .noMore();
   }
 
@@ -56,7 +56,7 @@ public class CommentRegularExpressionCheckTest {
     try {
       check.regularExpression = "(";
       check.message = "blabla";
-      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
+      JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:comment-regular-expression (Regular expression on comment): "
         + "regularExpression parameter \"(\" is not a valid regular expression.");

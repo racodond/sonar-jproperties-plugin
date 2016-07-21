@@ -26,7 +26,7 @@ public class TodoTagPresenceCheckTest {
 
   @Test
   public void test() {
-    JavaPropertiesCheckVerifier.verify(new TodoTagPresenceCheck(), TestUtils.getTestFile("todo.properties"));
+    JavaPropertiesCheckVerifier.verify(new TodoTagPresenceCheck(), CheckTestUtils.getTestFile("todo.properties"));
   }
 
 }

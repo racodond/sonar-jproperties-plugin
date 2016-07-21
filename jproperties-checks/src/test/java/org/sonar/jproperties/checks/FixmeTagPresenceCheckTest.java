@@ -26,7 +26,7 @@ public class FixmeTagPresenceCheckTest {
 
   @Test
   public void should_contain_fixme_tags_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new FixmeTagPresenceCheck(), TestUtils.getTestFile("fixme.properties"));
+    JavaPropertiesCheckVerifier.verify(new FixmeTagPresenceCheck(), CheckTestUtils.getTestFile("fixme.properties"));
   }
 
 }

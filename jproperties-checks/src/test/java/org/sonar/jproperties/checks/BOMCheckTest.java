@@ -29,7 +29,7 @@ public class BOMCheckTest {
   public void should_find_that_the_UTF8_file_starts_with_a_BOM_and_raise_an_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      TestUtils.getTestFile("bom/utf8WithBOM.properties"),
+      CheckTestUtils.getTestFile("bom/utf8WithBOM.properties"),
       Charsets.UTF_8);
   }
 
@@ -37,7 +37,7 @@ public class BOMCheckTest {
   public void should_find_that_the_UTF8_file_does_not_start_with_a_BOM_and_not_raise_any_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      TestUtils.getTestFile("bom/utf8.properties"),
+      CheckTestUtils.getTestFile("bom/utf8.properties"),
       Charsets.UTF_8);
   }
 
@@ -45,12 +45,12 @@ public class BOMCheckTest {
   public void should_find_that_the_UTF16_files_start_with_a_BOM_but_not_raise_any_issue() {
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      TestUtils.getTestFile("bom/utf16BE.properties"),
+      CheckTestUtils.getTestFile("bom/utf16BE.properties"),
       Charsets.UTF_16BE);
 
     JavaPropertiesCheckVerifier.verify(
       new BOMCheck(),
-      TestUtils.getTestFile("bom/utf16LE.properties"),
+      CheckTestUtils.getTestFile("bom/utf16LE.properties"),
       Charsets.UTF_16LE);
   }
 

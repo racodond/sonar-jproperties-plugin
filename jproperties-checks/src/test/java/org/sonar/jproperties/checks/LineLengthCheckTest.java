@@ -28,14 +28,14 @@ public class LineLengthCheckTest {
 
   @Test
   public void should_not_find_any_line_longer_than_the_default_value_120() {
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("lineLength.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("lineLength.properties"))
       .noMore();
   }
 
   @Test
   public void should_find_one_line_longer_than_50_characters_and_raise_an_issue() {
     check.setMaximumLineLength(50);
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("lineLength.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("lineLength.properties"))
       .next().atLine(3).withMessage("The line contains 51 characters which is greater than 50 authorized.")
       .next().atLine(6).withMessage("The line contains 51 characters which is greater than 50 authorized.")
       .noMore();

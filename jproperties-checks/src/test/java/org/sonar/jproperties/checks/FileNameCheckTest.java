@@ -30,13 +30,13 @@ public class FileNameCheckTest {
 
   @Test
   public void should_follow_the_default_naming_convention_and_not_raise_an_issue() {
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/fileNameOK.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("file-name/fileNameOK.properties"))
       .noMore();
   }
 
   @Test
   public void should_not_follow_the_default_naming_convention_and_raise_an_issue() {
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ko.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("file-name/file_name.ko.properties"))
       .next().withMessage("Rename this file to match the regular expression: ^[A-Za-z][-_A-Za-z0-9]*\\.properties$")
       .noMore();
   }
@@ -44,14 +44,14 @@ public class FileNameCheckTest {
   @Test
   public void should_follow_a_custom_naming_convention_and_not_raise_an_issue() {
     check.setFormat("^[a-z][._a-z]+\\.properties$");
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("file-name/file_name.ok.properties"))
       .noMore();
   }
 
   @Test
   public void should_not_follow_a_custom_naming_convention_and_raise_an_issue() {
     check.setFormat("^[a-z]+\\.properties$");
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.kocustom.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("file-name/file_name.kocustom.properties"))
       .next().withMessage("Rename this file to match the regular expression: ^[a-z]+\\.properties$")
       .noMore();
   }
@@ -60,7 +60,7 @@ public class FileNameCheckTest {
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
     try {
       check.setFormat("(");
-      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("file-name/file_name.ok.properties")).noMore();
+      JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("file-name/file_name.ok.properties")).noMore();
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:S1578 (File names should comply with a naming convention): " +
         "format parameter \"(\" is not a valid regular expression.");

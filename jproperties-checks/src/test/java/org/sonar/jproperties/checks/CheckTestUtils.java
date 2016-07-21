@@ -21,9 +21,9 @@ package org.sonar.jproperties.checks;
 
 import java.io.File;
 
-class TestUtils {
+class CheckTestUtils {
 
-  private TestUtils() {
+  private CheckTestUtils() {
   }
 
   public static File getTestFile(String relativePath) {

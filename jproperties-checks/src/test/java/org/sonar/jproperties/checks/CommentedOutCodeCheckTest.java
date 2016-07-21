@@ -29,7 +29,7 @@ public class CommentedOutCodeCheckTest {
   @Test
   public void should_find_commented_out_code_and_raise_issues() {
 
-    JavaPropertiesCheckVerifier.issues(new CommentedOutCodeCheck(), TestUtils.getTestFile("commentedOutCode.properties"))
+    JavaPropertiesCheckVerifier.issues(new CommentedOutCodeCheck(), CheckTestUtils.getTestFile("commentedOutCode.properties"))
       .next().atLine(3).withMessage(MESSAGE)
       .next().atLine(5).withMessage(MESSAGE)
       .next().atLine(7).withMessage(MESSAGE)

@@ -26,7 +26,7 @@ public class HardCodedCredentialsCheckTest {
 
   @Test
   public void should_find_some_hard_coded_credentials_and_raise_some_issues() {
-    JavaPropertiesCheckVerifier.verify(new HardCodedCredentialsCheck(), TestUtils.getTestFile("hardCodedCredentials.properties"));
+    JavaPropertiesCheckVerifier.verify(new HardCodedCredentialsCheck(), CheckTestUtils.getTestFile("hardCodedCredentials.properties"));
   }
 
 }

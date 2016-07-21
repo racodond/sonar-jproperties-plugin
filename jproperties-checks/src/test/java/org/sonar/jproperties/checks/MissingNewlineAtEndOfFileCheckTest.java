@@ -26,13 +26,13 @@ public class MissingNewlineAtEndOfFileCheckTest {
 
   @Test
   public void should_contain_an_empty_new_line_at_the_end_of_the_file_and_not_raise_issues() {
-    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), TestUtils.getTestFile("newLineEndOfFile.properties"))
+    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), CheckTestUtils.getTestFile("newLineEndOfFile.properties"))
       .noMore();
   }
 
   @Test
   public void should_not_contain_an_empty_new_line_at_the_end_of_the_file_and_raise_an_issue() {
-    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), TestUtils.getTestFile("noNewLineEndOfFile.properties"))
+    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), CheckTestUtils.getTestFile("noNewLineEndOfFile.properties"))
       .next().withMessage("Add an empty new line at the end of this file.")
       .noMore();
   }

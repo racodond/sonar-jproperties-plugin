@@ -107,7 +107,7 @@ public class EndLineCharactersCheckTest {
   public void should_throw_an_illegal_state_exception_as_the_endLineCharacters_parameter_is_not_valid() {
     try {
       check.setEndLineCharacters("abc");
-      JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("endLineCharacters.properties")).noMore();
+      JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("endLineCharacters.properties")).noMore();
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:end-line-characters (End-line characters should be consistent): "
         + "endLineCharacters parameter is not valid.\nActual: 'abc'\nExpected: 'CR' or 'CRLF' or 'LF'");
@@ -118,7 +118,7 @@ public class EndLineCharactersCheckTest {
     TemporaryFolder temporaryFolder = new TemporaryFolder();
     File testFile = temporaryFolder.newFile();
     Files.write(
-      Files.toString(TestUtils.getTestFile("endLineCharacters.properties"), Charsets.ISO_8859_1)
+      Files.toString(CheckTestUtils.getTestFile("endLineCharacters.properties"), Charsets.ISO_8859_1)
         .replaceAll("\\r\\n", "\n")
         .replaceAll("\\r", "\n")
         .replaceAll("\\n", endLineCharacter),

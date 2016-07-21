@@ -30,20 +30,20 @@ public class SeparatorConventionCheckTest {
 
   @Test
   public void should_find_separators_not_following_equals_convention_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionEquals.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("separatorConventionEquals.properties"));
   }
 
   @Test
   public void should_find_separators_not_following_colon_convention_and_raise_issues() {
     check.setSeparator(":");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("separatorConventionColon.properties"));
   }
 
   @Test
   public void should_throw_an_illegal_state_exception_as_the_separator_parameter_is_not_valid() {
     try {
       check.setSeparator("abc");
-      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("separatorConventionColon.properties"));
+      JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("separatorConventionColon.properties"));
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:separator-convention (Separators should follow a convention): "
         + "separator parameter is not valid.\nActual: \"abc\"\nExpected: '=' or ':'");

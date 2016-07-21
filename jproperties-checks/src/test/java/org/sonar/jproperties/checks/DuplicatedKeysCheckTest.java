@@ -27,14 +27,14 @@ public class DuplicatedKeysCheckTest {
 
   @Test
   public void should_find_some_duplicated_keys_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), TestUtils.getTestFile("duplicatedKeys.properties"));
+    JavaPropertiesCheckVerifier.verify(new DuplicatedKeysCheck(), CheckTestUtils.getTestFile("duplicatedKeys.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_keys_and_raise_issues_on_UTF8_with_BOM_file() {
     JavaPropertiesCheckVerifier.verify(
       new DuplicatedKeysCheck(),
-      TestUtils.getTestFile("duplicatedKeysUTF8WithBOM.properties"),
+      CheckTestUtils.getTestFile("duplicatedKeysUTF8WithBOM.properties"),
       Charsets.UTF_8);
   }
 

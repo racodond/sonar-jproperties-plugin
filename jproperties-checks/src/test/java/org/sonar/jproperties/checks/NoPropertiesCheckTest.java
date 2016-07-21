@@ -28,13 +28,13 @@ public class NoPropertiesCheckTest {
 
   @Test
   public void should_contain_some_properties_and_not_raise_any_issues() {
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("no-properties/someProperties.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("no-properties/someProperties.properties"))
       .noMore();
   }
 
   @Test
   public void should_not_contain_any_properties_and_raise_an_issues() {
-    JavaPropertiesCheckVerifier.issues(check, TestUtils.getTestFile("no-properties/noProperties.properties"))
+    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile("no-properties/noProperties.properties"))
       .next().withMessage("Remove this file that does not define any properties.")
       .noMore();
   }

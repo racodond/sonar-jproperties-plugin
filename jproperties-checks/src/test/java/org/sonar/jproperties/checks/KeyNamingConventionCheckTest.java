@@ -30,20 +30,20 @@ public class KeyNamingConventionCheckTest {
 
   @Test
   public void should_find_some_keys_that_do_not_follow_the_default_naming_convention_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConvention.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyNamingConvention.properties"));
   }
 
   @Test
   public void should_find_some_keys_that_do_not_follow_a_custom_naming_convention_and_raise_issues() {
     check.setFormat("a.*");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyNamingConventionCustom.properties"));
   }
 
   @Test
   public void should_throw_an_illegal_state_exception_as_the_format_parameter_regular_expression_is_not_valid() {
     try {
       check.setFormat("(");
-      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("keyNamingConventionCustom.properties"));
+      JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("keyNamingConventionCustom.properties"));
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:key-naming-convention (Keys should follow a naming convention): "
         + "format parameter \"(\" is not a valid regular expression.");

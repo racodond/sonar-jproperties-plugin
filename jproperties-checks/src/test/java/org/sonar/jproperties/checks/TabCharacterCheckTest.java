@@ -26,14 +26,14 @@ public class TabCharacterCheckTest {
 
   @Test
   public void should_find_tab_characters_and_raise_an_issue() {
-    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), TestUtils.getTestFile("tabCharacter.properties"))
+    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), CheckTestUtils.getTestFile("tabCharacter.properties"))
       .next().withMessage("Replace all tab characters in this file by sequences of whitespaces.")
       .noMore();
   }
 
   @Test
   public void should_not_find_tab_characters_and_not_raise_an_issue() {
-    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), TestUtils.getTestFile("noTabCharacter.properties"))
+    JavaPropertiesCheckVerifier.issues(new TabCharacterCheck(), CheckTestUtils.getTestFile("noTabCharacter.properties"))
       .noMore();
   }
 

@@ -88,9 +88,9 @@ public class JavaPropertiesSquidSensorTest {
     inputFile("myPropertiesUTF8WithBOM.properties", Charsets.UTF_8);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "comment-convention"))
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
       .activate()
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "empty-line-end-of-file"))
+      .create(RuleKey.of(CheckList.REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
       .activate()
       .build();
     checkFactory = new CheckFactory(activeRules);

@@ -30,26 +30,26 @@ public class DuplicatedValuesCheckTest {
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues() {
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValues.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("duplicatedValues.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_void_regular_expression_of_values_to_ignore() {
     check.setValuesToIgnore("");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom1.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("duplicatedValuesCustom1.properties"));
   }
 
   @Test
   public void should_find_some_duplicated_values_and_raise_issues_with_custom_regular_expression_of_values_to_ignore() {
     check.setValuesToIgnore("(?i)(BLABLA|abc|true|false)");
-    JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
+    JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("duplicatedValuesCustom2.properties"));
   }
 
   @Test
   public void should_throw_an_illegal_state_exception_as_the_values_to_ignore_regular_expression_is_not_valid() {
     try {
       check.setValuesToIgnore("(");
-      JavaPropertiesCheckVerifier.verify(check, TestUtils.getTestFile("duplicatedValuesCustom2.properties"));
+      JavaPropertiesCheckVerifier.verify(check, CheckTestUtils.getTestFile("duplicatedValuesCustom2.properties"));
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:duplicated-values (Different keys having the same value should be merged): "
         + "valuesToIgnore parameter \"(\" is not a valid regular expression.");
