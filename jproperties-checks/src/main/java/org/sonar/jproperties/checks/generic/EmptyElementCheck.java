@@ -17,29 +17,30 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties.checks.generic;
 
-import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.jproperties.checks.Tags;
+import org.sonar.plugins.jproperties.api.tree.PropertyTree;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
-import static org.fest.assertions.Assertions.assertThat;
+@Rule(
+  key = "empty-element",
+  name = "Property with empty value should be removed",
+  priority = Priority.CRITICAL,
+  tags = {Tags.PITFALL})
+@SqaleConstantRemediation("5min")
+@ActivatedByDefault
+public class EmptyElementCheck extends DoubleDispatchVisitorCheck {
 
-public class JavaPropertiesPluginTest {
-
-  @Test
-  public void should_get_the_right_version() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
-    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
-  }
-
-  @Test
-  public void should_get_the_right_number_of_extensions() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getExtensions()).hasSize(5);
+  @Override
+  public void visitProperty(PropertyTree tree) {
+    if (tree.value() == null) {
+      addPreciseIssue(tree, "Remove this property whose value is empty.");
+    }
   }
 
 }

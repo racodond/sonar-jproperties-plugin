@@ -17,29 +17,8 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+@ParametersAreNonnullByDefault
+package org.sonar.jproperties.checks.sonarscanner;
 
-import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import javax.annotation.ParametersAreNonnullByDefault;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class JavaPropertiesPluginTest {
-
-  @Test
-  public void should_get_the_right_version() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
-    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
-  }
-
-  @Test
-  public void should_get_the_right_number_of_extensions() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getExtensions()).hasSize(5);
-  }
-
-}

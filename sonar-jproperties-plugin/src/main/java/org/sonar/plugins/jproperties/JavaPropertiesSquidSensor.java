@@ -44,8 +44,7 @@ import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
-import org.sonar.jproperties.checks.CheckList;
-import org.sonar.jproperties.checks.ParsingErrorCheck;
+import org.sonar.jproperties.checks.generic.ParsingErrorCheck;
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
@@ -85,7 +84,8 @@ public class JavaPropertiesSquidSensor implements Sensor {
     this.parser = JavaPropertiesParserBuilder.createParser(fileSystem.encoding());
 
     this.checks = JavaPropertiesChecks.createJavaPropertiesChecks(checkFactory)
-      .addChecks(CheckList.REPOSITORY_KEY, CheckList.getChecks())
+      .addChecks(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, GenericJavaPropertiesRulesDefinition.getChecks())
+      .addChecks(SonarScannerJavaPropertiesRulesDefinition.SONAR_SCANNER_REPOSITORY_KEY, SonarScannerJavaPropertiesRulesDefinition.getChecks())
       .addCustomChecks(customRulesDefinition);
   }
 

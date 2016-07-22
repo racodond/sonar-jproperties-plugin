@@ -17,29 +17,21 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties.checks.generic;
 
-import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import org.sonar.check.Priority;
+import org.sonar.check.Rule;
+import org.sonar.jproperties.checks.Tags;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
+import org.sonar.squidbridge.annotations.ActivatedByDefault;
+import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class JavaPropertiesPluginTest {
-
-  @Test
-  public void should_get_the_right_version() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
-    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
-  }
-
-  @Test
-  public void should_get_the_right_number_of_extensions() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getExtensions()).hasSize(5);
-  }
-
+@Rule(
+  key = "S2260",
+  name = "Java Properties parser failure",
+  priority = Priority.CRITICAL,
+  tags = {Tags.BUG})
+@SqaleConstantRemediation("5min")
+@ActivatedByDefault
+public class ParsingErrorCheck extends DoubleDispatchVisitorCheck {
 }

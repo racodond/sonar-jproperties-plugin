@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.sonar.jproperties.checks.DuplicatedKeysAcrossFilesCheck;
-import org.sonar.jproperties.checks.FileKeyTree;
+import org.sonar.jproperties.checks.generic.DuplicatedKeysAcrossFilesCheck;
+import org.sonar.jproperties.checks.generic.FileKeyTree;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.IssueLocation;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;

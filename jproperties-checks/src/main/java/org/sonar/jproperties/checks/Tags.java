@@ -19,11 +19,12 @@
  */
 package org.sonar.jproperties.checks;
 
-final class Tags {
+public final class Tags {
 
   public static final String BRAIN_OVERLOAD = "brain-overload";
   public static final String BUG = "bug";
   public static final String CONVENTION = "convention";
+  public static final String OBSOLETE = "obsolete";
   public static final String PITFALL = "pitfall";
   public static final String UNUSED = "unused";
 
@@ -31,6 +32,8 @@ final class Tags {
   public static final String CWE = "cwe";
   public static final String OWASP_A2 = "owasp-a2";
   public static final String SANS_TOP25_POROUS = "sans-top25-porous";
+
+  public static final String SONAR_SCANNER = "sonar-scanner";
 
   private Tags() {
   }

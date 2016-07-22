@@ -1,0 +1,30 @@
+<p>The following SonarQube properties are deprecated and should no longer be used:</p>
+<ul>
+    <li><code>sonar.profile</code>: This property should be removed.</li>
+    <li><code>sonar.skipDesign</code>: This property should be removed.</li>
+    <li><code>sonar.showProfiling</code>: <code>sonar.log.level</code> should be used instead.</li>
+    <li><code>sonar.binaries</code>: <code>sonar.java.binaries</code> should be used instead.</li>
+    <li><code>sonar.libraries</code>: <code>sonar.java.libraries</code> should be used instead.</li>
+</ul>
+
+<h2>Noncompliant Code Example</h2>
+<pre>
+sonar.libraries=lib
+sonar.binaries=bin
+sonar.skipDesign=true
+sonar.profile=myprofile
+sonar.showProfiling=true
+</pre>
+
+<h2>Compliant Solution</h2>
+<pre>
+sonar.java.libraries=lib
+sonar.java.binaries=bin
+sonar.log.level=DEBUG
+</pre>
+
+<h2>See</h2>
+<ul>
+    <li><a href="http://docs.sonarqube.org/display/SONAR/Analysis+Parameters">SonarQube analysis parameters documentation</a></li>
+    <li><a href="http://docs.sonarqube.org/display/PLUG/Java+Plugin+and+Bytecode">SonarQube Java Plugin and Bytecode documentation</a></li>
+</ul>

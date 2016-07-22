@@ -23,14 +23,12 @@ import org.sonar.api.profiles.ProfileDefinition;
 import org.sonar.api.profiles.RulesProfile;
 import org.sonar.api.rules.RuleFinder;
 import org.sonar.api.utils.ValidationMessages;
-import org.sonar.jproperties.checks.CheckList;
 import org.sonar.squidbridge.annotations.AnnotationBasedProfileBuilder;
 
 public class JavaPropertiesProfile extends ProfileDefinition {
 
+  private static final String SONARQUBE_WAY_PROFILE_NAME = "SonarQube Way";
   private final RuleFinder ruleFinder;
-
-  public static final String SONARQUBE_WAY_PROFILE_NAME = "SonarQube Way";
 
   public JavaPropertiesProfile(RuleFinder ruleFinder) {
     this.ruleFinder = ruleFinder;
@@ -39,6 +37,12 @@ public class JavaPropertiesProfile extends ProfileDefinition {
   @Override
   public RulesProfile createProfile(ValidationMessages messages) {
     AnnotationBasedProfileBuilder annotationBasedProfileBuilder = new AnnotationBasedProfileBuilder(ruleFinder);
-    return annotationBasedProfileBuilder.build(JavaPropertiesLanguage.KEY, SONARQUBE_WAY_PROFILE_NAME, JavaPropertiesLanguage.KEY, CheckList.getChecks(), messages);
+    return annotationBasedProfileBuilder.build(
+      GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY,
+      SONARQUBE_WAY_PROFILE_NAME,
+      JavaPropertiesLanguage.KEY,
+      GenericJavaPropertiesRulesDefinition.getChecks(),
+      messages);
   }
+
 }

@@ -38,10 +38,9 @@ import org.sonar.api.batch.sensor.issue.Issue;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.checks.CheckList;
-import org.sonar.jproperties.checks.CommentConventionCheck;
-import org.sonar.jproperties.checks.LineLengthCheck;
-import org.sonar.jproperties.checks.MissingNewlineAtEndOfFileCheck;
+import org.sonar.jproperties.checks.generic.CommentConventionCheck;
+import org.sonar.jproperties.checks.generic.LineLengthCheck;
+import org.sonar.jproperties.checks.generic.MissingNewlineAtEndOfFileCheck;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -88,9 +87,9 @@ public class JavaPropertiesSquidSensorTest {
     inputFile("myPropertiesUTF8WithBOM.properties", Charsets.UTF_8);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
       .activate()
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
       .activate()
       .build();
     checkFactory = new CheckFactory(activeRules);
@@ -105,11 +104,11 @@ public class JavaPropertiesSquidSensorTest {
     inputFile("myProperties.properties", Charsets.ISO_8859_1);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
       .activate()
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
       .activate()
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, LineLengthCheck.class.getAnnotation(Rule.class).key()))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, LineLengthCheck.class.getAnnotation(Rule.class).key()))
       .activate()
       .build();
     checkFactory = new CheckFactory(activeRules);
@@ -125,7 +124,7 @@ public class JavaPropertiesSquidSensorTest {
     inputFile(relativePath, Charsets.ISO_8859_1);
 
     ActiveRules activeRules = (new ActiveRulesBuilder())
-      .create(RuleKey.of(CheckList.REPOSITORY_KEY, "S2260"))
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, "S2260"))
       .activate()
       .build();
 

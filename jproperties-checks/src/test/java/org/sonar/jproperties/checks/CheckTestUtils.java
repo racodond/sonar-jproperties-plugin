@@ -21,7 +21,7 @@ package org.sonar.jproperties.checks;
 
 import java.io.File;
 
-class CheckTestUtils {
+public class CheckTestUtils {
 
   private CheckTestUtils() {
   }
