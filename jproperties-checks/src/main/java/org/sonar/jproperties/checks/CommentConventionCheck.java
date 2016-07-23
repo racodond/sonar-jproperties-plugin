@@ -63,7 +63,7 @@ public class CommentConventionCheck extends DoubleDispatchVisitorCheck {
     if (pattern.matcher(trivia.text()).matches()) {
       addPreciseIssue(trivia, "Use starting comment token '" + startingCommentToken + "' instead.");
     }
-    if (trivia.text().length() > 1 && !trivia.text().substring(1,2).equals(" ")) {
+    if (trivia.text().length() > 1 && !" ".equals(trivia.text().substring(1, 2))) {
       addPreciseIssue(trivia, "Add a whitespace after the starting comment token.");
     }
   }
