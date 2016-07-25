@@ -71,6 +71,10 @@ public class JavaPropertiesSquidSensor implements Sensor {
   private IssueSaver issueSaver;
   private RuleKey parsingErrorRuleKey = null;
 
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
+    this(fileSystem, checkFactory, null);
+  }
+
   public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
     this.fileSystem = fileSystem;
 
