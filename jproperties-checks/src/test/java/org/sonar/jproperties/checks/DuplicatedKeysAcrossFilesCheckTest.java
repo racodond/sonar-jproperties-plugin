@@ -19,9 +19,6 @@
  */
 package org.sonar.jproperties.checks;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
@@ -38,9 +36,19 @@ import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+
 public class DuplicatedKeysAcrossFilesCheckTest {
 
-  private static final String TEST_DIRECTORY = "src/test/resources/checks/duplicated-keys-across-files/";
+  private static String TEST_DIRECTORY;
+
+  @BeforeClass
+  public static void setup() {
+    // Needed for these tests to pass when run on the windows platform
+    TEST_DIRECTORY = "src/test/resources/checks/duplicated-keys-across-files/".replace("/", File.separator);
+  }
+
 
   @Test
   public void analyze_one_single_file() {
@@ -168,7 +176,7 @@ public class DuplicatedKeysAcrossFilesCheckTest {
     Assert.assertEquals(4, check.getKeys().get("the.key.to.translate3").get(0).getKey().value().line());
   }
 
-  private void scanFile(JavaPropertiesCheck check, String fileName) {
+  private void scanFile(final JavaPropertiesCheck check, final String fileName) {
     PropertiesTree propertiesTree = (PropertiesTree) JavaPropertiesParserBuilder
       .createParser(Charsets.ISO_8859_1)
       .parse(new File(TEST_DIRECTORY + "keys.properties"));
