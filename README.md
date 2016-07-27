@@ -2,7 +2,7 @@ SonarQube Java Properties Plugin
 ====================
 
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg?branch=master)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://nemo.sonarqube.org/overview?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://sonarqube.com/overview?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
 Plugin versions and compatibility with SonarQube versions: [http://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix](http://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix)
 
