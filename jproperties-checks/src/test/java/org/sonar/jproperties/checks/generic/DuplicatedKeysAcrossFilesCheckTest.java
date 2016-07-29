@@ -30,8 +30,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.sonar.jproperties.checks.generic.DuplicatedKeysAcrossFilesCheck;
-import org.sonar.jproperties.checks.generic.FileKeyTree;
+import org.sonar.jproperties.checks.CheckTestUtils;
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
 import org.sonar.jproperties.tree.impl.KeyTreeImpl;
