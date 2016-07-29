@@ -40,9 +40,9 @@ public class JavaPropertiesProfileTest {
     JavaPropertiesProfile definition = new JavaPropertiesProfile(universalRuleFinder());
     RulesProfile profile = definition.createProfile(validation);
 
-    assertThat(profile.getName()).isEqualTo(JavaPropertiesProfile.SONARQUBE_WAY_PROFILE_NAME);
-    assertThat(profile.getLanguage()).isEqualTo(JavaPropertiesLanguage.KEY);
-    assertThat(profile.getActiveRulesByRepository(JavaPropertiesLanguage.KEY)).hasSize(20);
+    assertThat(profile.getName()).isEqualTo("SonarQube Way");
+    assertThat(profile.getLanguage()).isEqualTo("jproperties");
+    assertThat(profile.getActiveRulesByRepository("jproperties")).hasSize(20);
     assertThat(validation.hasErrors()).isFalse();
   }
 

@@ -20,26 +20,28 @@
 package org.sonar.plugins.jproperties;
 
 import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.check.Rule;
+import org.sonar.jproperties.checks.generic.LineLengthCheck;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class JavaPropertiesPluginTest {
+public class GenericJavaPropertiesRulesDefinitionTest {
 
   @Test
-  public void should_get_the_right_version() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
-    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
-  }
+  public void test() {
+    GenericJavaPropertiesRulesDefinition rulesDefinition = new GenericJavaPropertiesRulesDefinition();
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    rulesDefinition.define(context);
+    RulesDefinition.Repository repository = context.repository("jproperties");
 
-  @Test
-  public void should_get_the_right_number_of_extensions() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getExtensions()).hasSize(5);
+    assertThat(repository.name()).isEqualTo("SonarQube");
+    assertThat(repository.language()).isEqualTo("jproperties");
+    assertThat(repository.rules()).hasSize(24);
+
+    RulesDefinition.Rule lineLengthRule = repository.rule(LineLengthCheck.class.getAnnotation(Rule.class).key());
+    assertThat(lineLengthRule).isNotNull();
+    assertThat(lineLengthRule.name()).isEqualTo(LineLengthCheck.class.getAnnotation(Rule.class).name());
   }
 
 }

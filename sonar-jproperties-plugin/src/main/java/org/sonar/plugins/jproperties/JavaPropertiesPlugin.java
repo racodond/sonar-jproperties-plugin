@@ -29,7 +29,8 @@ public class JavaPropertiesPlugin implements Plugin {
       JavaPropertiesLanguage.class,
       JavaPropertiesSquidSensor.class,
       JavaPropertiesProfile.class,
-      JavaPropertiesRulesDefinition.class);
+      GenericJavaPropertiesRulesDefinition.class,
+      SonarScannerJavaPropertiesRulesDefinition.class);
   }
 
 }

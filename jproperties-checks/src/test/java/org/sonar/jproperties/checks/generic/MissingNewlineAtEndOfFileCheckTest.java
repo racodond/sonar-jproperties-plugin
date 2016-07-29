@@ -17,29 +17,26 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.jproperties.checks.generic;
 
 import org.junit.Test;
-import org.sonar.api.Plugin;
-import org.sonar.api.utils.Version;
+import org.sonar.jproperties.checks.CheckTestUtils;
+import org.sonar.jproperties.checks.generic.MissingNewlineAtEndOfFileCheck;
+import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
-import static org.fest.assertions.Assertions.assertThat;
-
-public class JavaPropertiesPluginTest {
+public class MissingNewlineAtEndOfFileCheckTest {
 
   @Test
-  public void should_get_the_right_version() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getSonarQubeVersion().major()).isEqualTo(5);
-    assertThat(context.getSonarQubeVersion().minor()).isEqualTo(6);
+  public void should_contain_an_empty_new_line_at_the_end_of_the_file_and_not_raise_issues() {
+    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), CheckTestUtils.getTestFile("newLineEndOfFile.properties"))
+      .noMore();
   }
 
   @Test
-  public void should_get_the_right_number_of_extensions() {
-    Plugin.Context context = new Plugin.Context(Version.create(5, 6));
-    new JavaPropertiesPlugin().define(context);
-    assertThat(context.getExtensions()).hasSize(5);
+  public void should_not_contain_an_empty_new_line_at_the_end_of_the_file_and_raise_an_issue() {
+    JavaPropertiesCheckVerifier.issues(new MissingNewlineAtEndOfFileCheck(), CheckTestUtils.getTestFile("noNewLineEndOfFile.properties"))
+      .next().withMessage("Add an empty new line at the end of this file.")
+      .noMore();
   }
 
 }
