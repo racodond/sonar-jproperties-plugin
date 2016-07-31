@@ -2,6 +2,7 @@ SonarQube Java Properties Plugin
 ====================
 
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg?branch=master)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/v2gdt7d94kq4ngcm/branch/master?svg=true)](https://ci.appveyor.com/project/racodond/sonar-jproperties-plugin/branch/master)
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://sonarqube.com/overview?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
 ## Description
