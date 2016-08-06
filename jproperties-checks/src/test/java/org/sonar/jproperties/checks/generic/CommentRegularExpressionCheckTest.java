@@ -19,16 +19,17 @@
  */
 package org.sonar.jproperties.checks.generic;
 
+import java.io.File;
+
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
-import org.sonar.jproperties.checks.generic.CommentRegularExpressionCheck;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 import static org.fest.assertions.Assertions.assertThat;
 
 public class CommentRegularExpressionCheckTest {
 
-  private final static String TEST_FILE_RELATIVE_PATH = "commentRegularExpression.properties";
+  private final static File FILE = CheckTestUtils.getTestFile("commentRegularExpression.properties");
   private CommentRegularExpressionCheck check = new CommentRegularExpressionCheck();
 
   @Test
@@ -37,7 +38,7 @@ public class CommentRegularExpressionCheckTest {
     check.regularExpression = "(?i).*WTF.*";
     check.message = "Stop annotating lines with WTF! Detail what is wrong instead.";
 
-    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+    JavaPropertiesCheckVerifier.issues(check, FILE)
       .next().atLine(1).withMessage(message)
       .next().atLine(2).withMessage(message)
       .next().atLine(3).withMessage(message)
@@ -49,7 +50,7 @@ public class CommentRegularExpressionCheckTest {
     check.regularExpression = "blabla";
     check.message = "blabla";
 
-    JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH))
+    JavaPropertiesCheckVerifier.issues(check, FILE)
       .noMore();
   }
 
@@ -58,7 +59,9 @@ public class CommentRegularExpressionCheckTest {
     try {
       check.regularExpression = "(";
       check.message = "blabla";
-      JavaPropertiesCheckVerifier.issues(check, CheckTestUtils.getTestFile(TEST_FILE_RELATIVE_PATH)).noMore();
+
+      JavaPropertiesCheckVerifier.issues(check, FILE).noMore();
+
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).isEqualTo("Check jproperties:comment-regular-expression (Regular expression on comment): "
         + "regularExpression parameter \"(\" is not a valid regular expression.");
