@@ -17,6 +17,7 @@
   <url>https://github.com/racodond/sonar-jproperties-plugin</url>
 
   <properties>
+    <sonar.pluginKey>javaProperties</sonar.pluginKey>
     <sonar.pluginName>Java Properties</sonar.pluginName>
     <sonar.pluginClass>org.sonar.plugins.jproperties.JavaPropertiesPlugin</sonar.pluginClass>
     <sonar.skipDependenciesPackaging>true</sonar.skipDependenciesPackaging>
