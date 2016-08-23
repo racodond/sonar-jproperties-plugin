@@ -86,6 +86,7 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
         }
       }
     }
+    super.visitProperty(tree);
   }
 
   @Override

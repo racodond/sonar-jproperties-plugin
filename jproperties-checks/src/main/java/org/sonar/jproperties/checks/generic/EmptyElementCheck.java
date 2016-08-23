@@ -41,6 +41,7 @@ public class EmptyElementCheck extends DoubleDispatchVisitorCheck {
     if (tree.value() == null) {
       addPreciseIssue(tree, "Remove this property whose value is empty.");
     }
+    super.visitProperty(tree);
   }
 
 }

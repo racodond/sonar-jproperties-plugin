@@ -49,6 +49,7 @@ public class MissingNewlineAtEndOfFileCheck extends DoubleDispatchVisitorCheck {
       throw new IllegalStateException("Check jproperties:" + this.getClass().getAnnotation(Rule.class).key()
         + ": Error while reading " + getContext().getFile().getName(), e);
     }
+    super.visitProperties(tree);
   }
 
   private static boolean endsWithNewline(RandomAccessFile randomAccessFile) throws IOException {

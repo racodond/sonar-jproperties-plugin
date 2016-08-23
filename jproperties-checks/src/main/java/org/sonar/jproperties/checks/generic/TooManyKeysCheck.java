@@ -58,6 +58,7 @@ public class TooManyKeysCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void visitKey(KeyTree tree) {
     keyTrees.add(tree);
+    super.visitKey(tree);
   }
 
   @Override

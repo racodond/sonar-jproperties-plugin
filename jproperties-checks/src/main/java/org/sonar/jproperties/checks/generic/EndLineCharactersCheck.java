@@ -59,6 +59,7 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
     if (fileContainsIllegalEndLineCharacters()) {
       addFileIssue("Set all end-line characters to '" + endLineCharacters + "' in this file.");
     }
+    super.visitProperties(tree);
   }
 
   @Override

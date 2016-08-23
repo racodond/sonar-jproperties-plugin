@@ -57,6 +57,7 @@ public class KeyRegularExpressionCheck extends DoubleDispatchVisitorCheck {
     if (tree.text().matches(regularExpression)) {
       addPreciseIssue(tree, message);
     }
+    super.visitKey(tree);
   }
 
   @Override

@@ -51,6 +51,7 @@ public class NoPropertiesCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void visitProperty(PropertyTree tree) {
     counter++;
+    super.visitProperty(tree);
   }
 
 }

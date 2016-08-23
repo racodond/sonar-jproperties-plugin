@@ -49,6 +49,7 @@ public class HardCodedCredentialsCheck extends DoubleDispatchVisitorCheck {
     if (HARD_CODED_PASSWORD.matcher(tree.text()).matches()) {
       addPreciseIssue(tree, "Remove this hard-coded password.");
     }
+    super.visitKey(tree);
   }
 
 }

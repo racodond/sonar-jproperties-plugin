@@ -56,6 +56,7 @@ public class SeparatorConventionCheck extends DoubleDispatchVisitorCheck {
     if (!tree.text().equals(separator)) {
       addPreciseIssue(tree, "Use '" + separator + "' as separator instead.");
     }
+    super.visitSeparator(tree);
   }
 
   @Override

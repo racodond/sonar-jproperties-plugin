@@ -50,6 +50,7 @@ public class IndentationCheck extends DoubleDispatchVisitorCheck {
     if (tree.column() != 0) {
       addPreciseIssue(tree, "Remove the whitespaces before the comments.");
     }
+    super.visitComment(tree);
   }
 
 }

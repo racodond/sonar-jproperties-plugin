@@ -68,6 +68,7 @@ public class DuplicatedKeysAcrossFilesCheck extends DoubleDispatchVisitorCheck {
         keys.put(tree.text(), Lists.newArrayList(new FileKeyTree(getContext().getFile(), tree)));
       }
     }
+    super.visitKey(tree);
   }
 
   public Map<String, List<FileKeyTree>> getKeys() {

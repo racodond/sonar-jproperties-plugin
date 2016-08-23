@@ -56,6 +56,7 @@ public class KeyNamingConventionCheck extends DoubleDispatchVisitorCheck {
     if (!tree.text().matches(format)) {
       addPreciseIssue(tree, "Rename key \"" + tree.text() + "\" to match the regular expression: " + format);
     }
+    super.visitKey(tree);
   }
 
   @Override

@@ -68,6 +68,7 @@ public class CommentConventionCheck extends DoubleDispatchVisitorCheck {
     if (trivia.text().length() > 1 && !" ".equals(trivia.text().substring(1, 2))) {
       addPreciseIssue(trivia, "Add a whitespace after the starting comment token.");
     }
+    super.visitComment(trivia);
   }
 
   @Override

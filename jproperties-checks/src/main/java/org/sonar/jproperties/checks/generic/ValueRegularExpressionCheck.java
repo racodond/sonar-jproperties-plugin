@@ -57,6 +57,7 @@ public class ValueRegularExpressionCheck extends DoubleDispatchVisitorCheck {
     if (tree.text().matches(regularExpression)) {
       addPreciseIssue(tree, message);
     }
+    super.visitValue(tree);
   }
 
   @Override

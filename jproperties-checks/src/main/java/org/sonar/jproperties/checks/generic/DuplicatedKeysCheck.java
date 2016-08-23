@@ -63,6 +63,7 @@ public class DuplicatedKeysCheck extends DoubleDispatchVisitorCheck {
     } else {
       keys.put(tree.text(), Lists.newArrayList(tree));
     }
+    super.visitKey(tree);
   }
 
   private void createIssue(List<KeyTree> duplicatedKeys) {

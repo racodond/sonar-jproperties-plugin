@@ -56,6 +56,7 @@ public class FileNameCheck extends DoubleDispatchVisitorCheck {
     if (!getContext().getFile().getName().matches(format)) {
       addFileIssue("Rename this file to match the regular expression: " + format);
     }
+    super.visitProperties(tree);
   }
 
   @Override
