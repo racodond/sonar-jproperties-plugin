@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<profile>
+  <name>jproperties-custom-rules-profile</name>
+  <language>jproperties</language>
+  <rules>
+    <rule>
+      <repositoryKey>custom-jproperties</repositoryKey>
+      <key>forbidden-keys</key>
+      <priority>MAJOR</priority>
+      <parameters/>
+    </rule>
+    <rule>
+      <repositoryKey>custom-jproperties</repositoryKey>
+      <key>forbidden-string</key>
+      <priority>CRITICAL</priority>
+      <parameters/>
+    </rule>
+  </rules>
+</profile>
