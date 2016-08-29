@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.jproperties;
+package org.sonar.jproperties.its;
 
 import com.sonar.orchestrator.Orchestrator;
 import com.sonar.orchestrator.build.SonarScanner;
@@ -41,9 +41,9 @@ public class Tests {
   public static final Orchestrator ORCHESTRATOR = Orchestrator.builderEnv()
     .addPlugin(FileLocation.byWildcardFilename(new File("../../../sonar-jproperties-plugin/target"), "sonar-jproperties-plugin-*-SNAPSHOT.jar"))
     .addPlugin(FileLocation.byWildcardFilename(new File("../plugins/jproperties-custom-rules-plugin/target"), "jproperties-custom-rules-plugin-*-SNAPSHOT.jar"))
-    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/profiles/hard-coded-credentials-only-profile.xml"))
-    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/profiles/empty-profile.xml"))
-    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/profiles/jproperties-custom-rules-profile.xml"))
+    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/its/profiles/hard-coded-credentials-only-profile.xml"))
+    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/its/profiles/empty-profile.xml"))
+    .restoreProfileAtStartup(FileLocation.ofClasspath("/org/sonar/jproperties/its/profiles/jproperties-custom-rules-profile.xml"))
     .build();
 
   public static SonarScanner createSonarScannerBuild() {

@@ -35,7 +35,7 @@
         <version>1.15</version>
         <extensions>true</extensions>
         <configuration>
-          <pluginClass>org.sonar.jproperties.MyJavaPropertiesCustomRulesPlugin</pluginClass>
+          <pluginClass>org.sonar.jproperties.its.MyJavaPropertiesCustomRulesPlugin</pluginClass>
           <basePlugin>javaProperties</basePlugin>
         </configuration>
       </plugin>

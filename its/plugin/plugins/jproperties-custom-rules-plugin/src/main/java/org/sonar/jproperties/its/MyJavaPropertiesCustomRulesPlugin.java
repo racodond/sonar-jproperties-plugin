@@ -17,41 +17,21 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.jproperties;
+package org.sonar.jproperties.its;
 
-import org.sonar.jproperties.checks.ForbiddenKeysCheck;
-import org.sonar.jproperties.checks.ForbiddenStringCheck;
-import org.sonar.plugins.jproperties.api.CustomJavaPropertiesRulesDefinition;
+import com.google.common.collect.ImmutableList;
+import org.sonar.api.Plugin;
 
 /**
- * Extension point to define a Java Properties rule repository.
+ * Extension point to define a SonarQube plugin.
  */
-public class MyJavaPropertiesCustomRulesDefinition extends CustomJavaPropertiesRulesDefinition {
+public class MyJavaPropertiesCustomRulesPlugin implements Plugin {
 
-  /**
-   * Provide the repository name.
-   */
   @Override
-  public String repositoryName() {
-    return "My Java Properties Custom Repository";
+  public void define(Context context) {
+    context.addExtensions(
+      ImmutableList.of(
+        MyJavaPropertiesCustomRulesDefinition.class));
   }
 
-  /**
-   * Provide the repository key.
-   */
-  @Override
-  public String repositoryKey() {
-    return "custom-jproperties";
-  }
-
-  /**
-   * Provide the list of classes implementing rules.
-   */
-  @Override
-  public Class[] checkClasses() {
-    return new Class[] {
-      ForbiddenKeysCheck.class,
-      ForbiddenStringCheck.class
-    };
-  }
 }
