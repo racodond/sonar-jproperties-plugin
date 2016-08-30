@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.plugins.jproperties.issuesaver;
 
 import com.google.common.base.Preconditions;
 import org.sonar.api.batch.fs.FileSystem;
@@ -27,6 +27,7 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
+import org.sonar.plugins.jproperties.JavaPropertiesChecks;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.*;
 

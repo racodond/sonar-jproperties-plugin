@@ -56,6 +56,8 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitor;
 import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
+import org.sonar.plugins.jproperties.issuesaver.CrossFileChecks;
+import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
 import org.sonar.squidbridge.ProgressReport;
 import org.sonar.squidbridge.api.AnalysisException;
 
