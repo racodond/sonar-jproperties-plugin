@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties;
+package org.sonar.plugins.jproperties.issuesaver;
 
 import java.util.List;
 import java.util.Map;
@@ -30,19 +30,12 @@ import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.IssueLocation;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 
-class CrossFileChecks {
+public class DuplicatedKeysAcrossFilesIssueSaver {
 
-  private final IssueSaver issueSaver;
-
-  public CrossFileChecks(IssueSaver issueSaver) {
-    this.issueSaver = issueSaver;
+  private DuplicatedKeysAcrossFilesIssueSaver() {
   }
 
-  public void saveCrossFileIssues() {
-    checkDuplicatedKeysAcrossFiles();
-  }
-
-  private void checkDuplicatedKeysAcrossFiles() {
+  public static void saveIssues(IssueSaver issueSaver) {
     DuplicatedKeysAcrossFilesCheck check = null;
 
     Optional<JavaPropertiesCheck> searchedCheck = issueSaver.getChecks().all()
@@ -55,24 +48,24 @@ class CrossFileChecks {
     }
 
     if (check != null) {
-      saveDuplicatedKeysAcrossFilesIssues(check);
-    }
-  }
-
-  private void saveDuplicatedKeysAcrossFilesIssues(DuplicatedKeysAcrossFilesCheck check) {
-    for (Map.Entry<String, List<FileKeyTree>> entry : check.getKeys().entrySet()) {
-      if (entry.getValue().size() > 1) {
-        issueSaver.saveIssue(
-          new PreciseIssue(
-            check,
-            new IssueLocation(entry.getValue().get(0).getFile(),
-              entry.getValue().get(0).getKey(),
-              buildDuplicatedKeysAcrossFilesIssueMessage(entry))));
+      for (Map.Entry<String, List<FileKeyTree>> entry : check.getKeys().entrySet()) {
+        if (isKeyDuplicatedAcrossFiles(entry.getValue())) {
+          saveIssue(issueSaver, check, entry);
+        }
       }
     }
   }
 
-  private String buildDuplicatedKeysAcrossFilesIssueMessage(Map.Entry<String, List<FileKeyTree>> duplicatedKey) {
+  private static void saveIssue(IssueSaver issueSaver, DuplicatedKeysAcrossFilesCheck check, Map.Entry<String, List<FileKeyTree>> entry) {
+    issueSaver.saveIssue(
+      new PreciseIssue(
+        check,
+        new IssueLocation(entry.getValue().get(0).getFile(),
+          entry.getValue().get(0).getKey(),
+          buildIssueMessage(entry))));
+  }
+
+  private static String buildIssueMessage(Map.Entry<String, List<FileKeyTree>> duplicatedKey) {
     return "Remove this cross-file duplicated key."
       + " \""
       + duplicatedKey.getKey()
@@ -83,6 +76,13 @@ class CrossFileChecks {
         .distinct()
         .sorted()
         .collect(Collectors.joining(", "));
+  }
+
+  private static boolean isKeyDuplicatedAcrossFiles(List<FileKeyTree> fileKeyTrees) {
+    return fileKeyTrees.stream()
+      .map(f -> f.getFile().getAbsolutePath())
+      .distinct()
+      .count() > 1;
   }
 
 }

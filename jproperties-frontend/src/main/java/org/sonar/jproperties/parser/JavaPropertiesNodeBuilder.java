@@ -19,11 +19,11 @@
  */
 package org.sonar.jproperties.parser;
 
-import com.google.common.collect.Lists;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.api.typed.Input;
 import com.sonar.sslr.api.typed.NodeBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.sonar.jproperties.tree.impl.InternalSyntaxSpacing;
@@ -62,7 +62,7 @@ public class JavaPropertiesNodeBuilder implements NodeBuilder {
   }
 
   private static List<SyntaxTrivia> createTrivias(List<Trivia> trivias, boolean hasByteOrderMark) {
-    List<SyntaxTrivia> result = Lists.newArrayList();
+    List<SyntaxTrivia> result = new ArrayList<>();
     for (Trivia trivia : trivias) {
       Token trivialToken = trivia.getToken();
       int column = column(hasByteOrderMark, trivialToken.getLine(), trivialToken.getColumn());
