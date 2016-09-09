@@ -32,6 +32,9 @@ import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 
 public class DuplicatedKeysAcrossFilesIssueSaver {
 
+  private DuplicatedKeysAcrossFilesIssueSaver() {
+  }
+
   public static void saveIssues(IssueSaver issueSaver) {
     DuplicatedKeysAcrossFilesCheck check = null;
 
