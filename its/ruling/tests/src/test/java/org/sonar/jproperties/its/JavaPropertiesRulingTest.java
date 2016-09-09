@@ -38,7 +38,7 @@ public class JavaPropertiesRulingTest {
   @ClassRule
   public static Orchestrator orchestrator = Orchestrator.builderEnv()
     .addPlugin(FileLocation.byWildcardMavenFilename(new File("../../../sonar-jproperties-plugin/target"), "sonar-jproperties-plugin-*-SNAPSHOT.jar"))
-    .setOrchestratorProperty("litsVersion", "0.5")
+    .setOrchestratorProperty("litsVersion", "0.6")
     .addPlugin("lits")
     .build();
 
