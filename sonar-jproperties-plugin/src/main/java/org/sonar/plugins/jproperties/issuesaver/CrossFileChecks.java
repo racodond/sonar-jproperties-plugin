@@ -29,6 +29,7 @@ public class CrossFileChecks {
 
   public void saveCrossFileIssues() {
     DuplicatedKeysAcrossFilesIssueSaver.saveIssues(issueSaver);
+    MissingTranslationsIssueSaver.saveIssues(issueSaver);
   }
 
 }

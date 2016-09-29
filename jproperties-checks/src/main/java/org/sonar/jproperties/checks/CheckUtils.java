@@ -19,11 +19,21 @@
  */
 package org.sonar.jproperties.checks;
 
+import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.sonar.check.Rule;
 
 public class CheckUtils {
 
   public static final String LINK_TO_JAVA_REGEX_PATTERN_DOC = "http://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html";
+
+  public static final Set<String> LOCALES = Arrays.stream(DateFormat.getAvailableLocales())
+    .filter(l -> !l.toString().isEmpty())
+    .map(Object::toString)
+    .collect(Collectors.toSet());
 
   private CheckUtils() {
   }

@@ -16,6 +16,12 @@
 'project:custom/lineLength.properties':[
 1,
 ],
+'project:custom/missing-translations/message.properties':[
+3,
+],
+'project:custom/missing-translations/message_en.properties':[
+3,
+],
 'project:custom/separatorConventionColon.properties':[
 9,
 20,
