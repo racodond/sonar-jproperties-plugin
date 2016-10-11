@@ -19,16 +19,14 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.checks.CheckUtils;
 import org.sonar.jproperties.checks.Tags;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
@@ -37,43 +35,30 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
-  key = "duplicated-keys-across-files",
-  name = "Duplicated keys across files should be removed",
-  priority = Priority.CRITICAL,
+  key = "missing-translations",
+  name = "Missing translations should be added",
+  priority = Priority.MAJOR,
   tags = {Tags.BUG})
-@SqaleConstantRemediation("5min")
+@SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class DuplicatedKeysAcrossFilesCheck extends DoubleDispatchVisitorCheck {
+public class MissingTranslationsCheck extends DoubleDispatchVisitorCheck {
 
-  private boolean fileToCheck = false;
-  private Map<String, List<FileKeyTree>> keys = new HashMap<>();
+  private Map<File, Set<String>> fileKeys = new HashMap<>();
 
   @Override
   public void visitProperties(PropertiesTree tree) {
-    String fileName = getContext().getFile().getName();
-    fileToCheck = CheckUtils.LOCALES.stream().noneMatch(l -> fileName.endsWith("_" + l + ".properties"));
+    fileKeys.put(getContext().getFile(), new HashSet<>());
     super.visitProperties(tree);
   }
 
   @Override
   public void visitKey(KeyTree tree) {
-    if (fileToCheck) {
-      if (keys.containsKey(tree.text())) {
-        keys.get(tree.text()).add(new FileKeyTree(getContext().getFile(), tree));
-      } else {
-        keys.put(tree.text(), Lists.newArrayList(new FileKeyTree(getContext().getFile(), tree)));
-      }
-    }
+    fileKeys.get(getContext().getFile()).add(tree.text());
     super.visitKey(tree);
   }
 
-  public Map<String, List<FileKeyTree>> getKeys() {
-    return keys;
-  }
-
-  @VisibleForTesting
-  void setKeys(Map<String, List<FileKeyTree>> keys) {
-    this.keys = keys;
+  public Map<File, Set<String>> getFileKeys() {
+    return fileKeys;
   }
 
 }

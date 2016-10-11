@@ -73,7 +73,6 @@ public class CustomJavaPropertiesRulesDefinitionTest {
 
     @Override
     public String repositoryName() {
-      System.out.println(REPOSITORY_NAME);
       return REPOSITORY_NAME;
     }
 

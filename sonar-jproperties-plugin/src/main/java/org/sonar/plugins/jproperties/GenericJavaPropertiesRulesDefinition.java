@@ -62,6 +62,7 @@ public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
       KeyRegularExpressionCheck.class,
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
+      MissingTranslationsCheck.class,
       NoPropertiesCheck.class,
       ParsingErrorCheck.class,
       SeparatorConventionCheck.class,
