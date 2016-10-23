@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.sonar.jproperties.checks.CheckUtils;
+import org.sonar.jproperties.checks.LocaleUtils;
 import org.sonar.jproperties.checks.Tags;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
@@ -51,7 +51,7 @@ public class DuplicatedKeysAcrossFilesCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void visitProperties(PropertiesTree tree) {
     String fileName = getContext().getFile().getName();
-    fileToCheck = CheckUtils.LOCALES.stream().noneMatch(l -> fileName.endsWith("_" + l + ".properties"));
+    fileToCheck = LocaleUtils.LOCALES.stream().noneMatch(l -> fileName.endsWith("_" + l + ".properties"));
     super.visitProperties(tree);
   }
 

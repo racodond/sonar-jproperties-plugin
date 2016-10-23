@@ -1,20 +1,21 @@
 <p>
-    This rule raises an issue each time a translation key is missing in a resource bundle.
+    This rule raises an issue each time a translation key is defined in a locale resource bundle but not in the default
+    resource bundle.
 </p>
 
 <h2>Noncompliant Code Example</h2>
 
 <i>messages.properties</i>
 <pre>
+# Noncompliant: "farewell" property is missing
 greetings: Hello
-farewell: Goodbye
 inquiry: How are you?
 </pre>
 
 <i>message_fr_FR.properties</i>
 <pre>
-# Noncompliant: "farewell" property is missing
 greetings: Bonjour
+farewell: Au revoir
 inquiry: Comment allez-vous ?
 </pre>
 
@@ -36,5 +37,5 @@ inquiry: Comment allez-vous ?
 
 <h2>See also</h2>
 <ul>
-    <li>Related rule {rule:jproperties:missing-translations-in-default}</li>
+    <li>Related rule {rule:jproperties:missing-translations}</li>
 </ul>

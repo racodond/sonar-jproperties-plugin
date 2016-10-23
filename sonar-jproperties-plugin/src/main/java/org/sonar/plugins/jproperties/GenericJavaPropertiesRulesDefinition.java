@@ -44,7 +44,7 @@ public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
 
   @SuppressWarnings("rawtypes")
   public static Collection<Class> getChecks() {
-    return ImmutableList.<Class>of(
+    return ImmutableList.of(
       BOMCheck.class,
       CommentConventionCheck.class,
       CommentedOutCodeCheck.class,
@@ -63,6 +63,7 @@ public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
       MissingTranslationsCheck.class,
+      MissingTranslationsInDefaultCheck.class,
       NoPropertiesCheck.class,
       ParsingErrorCheck.class,
       SeparatorConventionCheck.class,
