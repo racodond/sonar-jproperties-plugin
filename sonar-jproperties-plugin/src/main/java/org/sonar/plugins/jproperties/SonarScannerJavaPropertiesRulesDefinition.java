@@ -44,7 +44,7 @@ public class SonarScannerJavaPropertiesRulesDefinition implements RulesDefinitio
 
   @SuppressWarnings("rawtypes")
   public static Collection<Class> getChecks() {
-    return ImmutableList.<Class>of(
+    return ImmutableList.of(
       SonarScannerDeprecatedPropertiesCheck.class);
   }
 

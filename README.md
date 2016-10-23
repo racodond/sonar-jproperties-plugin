@@ -9,7 +9,7 @@ SonarQube Java Properties Plugin
 This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
  * Computes metrics: lines of code, comments lines, etc.
- * Performs more than [20 checks](#available-checks)
+ * Performs more than [25 checks](#available-checks)
  * Provide the ability to write your own checks
 
 ## Usage
@@ -53,6 +53,8 @@ at com.sonar.sslr.impl.ast.AstWalker.visitNode(AstWalker.java:114)
  * Files should contain an empty new line at the end
  * Keys should follow a naming convention
  * Lines should not be too long
+ * Missing translations should be added to default resource bundle
+ * Missing translations should be added to locale resource bundles
  * Number of keys should be reduced
  * Property with empty value should be removed
  * Sections of code should not be commented out

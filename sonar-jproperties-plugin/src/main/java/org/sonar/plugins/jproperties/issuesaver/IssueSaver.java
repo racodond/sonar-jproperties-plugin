@@ -20,6 +20,9 @@
 package org.sonar.plugins.jproperties.issuesaver;
 
 import com.google.common.base.Preconditions;
+
+import java.util.Optional;
+
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.TextRange;
@@ -43,8 +46,12 @@ public class IssueSaver {
     this.checks = checks;
   }
 
-  public JavaPropertiesChecks getChecks() {
-    return checks;
+  public <T> Optional<T> getCheck(Class<T> type) {
+    return checks.all()
+      .stream()
+      .filter(r -> type.isAssignableFrom(r.getClass()))
+      .map(type::cast)
+      .findFirst();
   }
 
   public void saveIssue(Issue issue) {

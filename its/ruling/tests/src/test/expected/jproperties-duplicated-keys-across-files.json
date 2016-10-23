@@ -59,8 +59,9 @@
 7,
 8,
 ],
-'project:custom/missing-translations/abc.properties':[
+'project:custom/missing-translations-in-default/message.properties':[
 1,
+2,
 ],
 'project:custom/separatorConventionColon.properties':[
 1,

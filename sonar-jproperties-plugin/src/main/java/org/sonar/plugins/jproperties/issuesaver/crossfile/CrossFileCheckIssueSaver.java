@@ -17,19 +17,22 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.jproperties.issuesaver;
+package org.sonar.plugins.jproperties.issuesaver.crossfile;
 
-public class CrossFileChecks {
+import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
 
-  private final IssueSaver issueSaver;
+public abstract class CrossFileCheckIssueSaver {
 
-  public CrossFileChecks(IssueSaver issueSaver) {
+  private IssueSaver issueSaver;
+
+  public CrossFileCheckIssueSaver(IssueSaver issueSaver) {
     this.issueSaver = issueSaver;
   }
 
-  public void saveCrossFileIssues() {
-    DuplicatedKeysAcrossFilesIssueSaver.saveIssues(issueSaver);
-    MissingTranslationsIssueSaver.saveIssues(issueSaver);
+  public IssueSaver getIssueSaver() {
+    return issueSaver;
   }
+
+  public abstract void saveIssues();
 
 }

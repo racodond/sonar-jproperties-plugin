@@ -35,13 +35,13 @@ import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 
 @Rule(
-  key = "missing-translations",
-  name = "Missing translations should be added to locale resource bundles",
+  key = "missing-translations-in-default",
+  name = "Missing translations should be added to default resource bundle",
   priority = Priority.MAJOR,
   tags = {Tags.BUG})
 @SqaleConstantRemediation("10min")
 @ActivatedByDefault
-public class MissingTranslationsCheck extends DoubleDispatchVisitorCheck {
+public class MissingTranslationsInDefaultCheck extends DoubleDispatchVisitorCheck {
 
   private Map<File, Set<String>> fileKeys = new HashMap<>();
 
