@@ -62,7 +62,7 @@ public class JavaPropertiesCheckVerifier extends SubscriptionVisitorCheck {
    *
    * Example:
    * <pre>
-   * JavaPropertiesCheckVerifier.issues(new MyCheck(), myFile, Charsets.UTF_8))
+   * JavaPropertiesCheckVerifier.issues(new MyCheck(), myFile)
    *    .next().atLine(2).withMessage("This is message for line 2.")
    *    .next().atLine(3).withMessage("This is message for line 3.").withCost(2.)
    *    .next().atLine(8)
