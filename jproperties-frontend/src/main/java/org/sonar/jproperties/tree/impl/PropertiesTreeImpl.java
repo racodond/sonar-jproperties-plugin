@@ -20,17 +20,16 @@
 package org.sonar.jproperties.tree.impl;
 
 import com.google.common.collect.Iterators;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import javax.annotation.Nullable;
-
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.tree.PropertyTree;
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitor;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class PropertiesTreeImpl extends JavaPropertiesTree implements PropertiesTree {
 
@@ -56,8 +55,9 @@ public class PropertiesTreeImpl extends JavaPropertiesTree implements Properties
   @Override
   public Iterator<Tree> childrenIterator() {
     return Iterators.concat(
-      Iterators.forArray(byteOrderMark, eof),
-      properties().iterator());
+      Iterators.singletonIterator(byteOrderMark),
+      properties.iterator(),
+      Iterators.singletonIterator(eof));
   }
 
   @Override
