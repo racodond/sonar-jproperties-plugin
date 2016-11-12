@@ -19,17 +19,16 @@
  */
 package org.sonar.plugins.jproperties.api.visitors;
 
-import java.io.File;
-import java.util.Collections;
-
 import org.junit.Test;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
-import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.IssueLocation;
 import org.sonar.plugins.jproperties.api.visitors.issue.LineIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
+
+import java.io.File;
+import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -39,7 +38,7 @@ public class IssueTest {
   private static final JavaPropertiesCheck CHECK = new DoubleDispatchVisitorCheck() {
   };
   private static final String MESSAGE = "message";
-  private static final InternalSyntaxToken TOKEN = new InternalSyntaxToken(5, 1, "value", Collections.<SyntaxTrivia>emptyList(), false, false);
+  private static final InternalSyntaxToken TOKEN = new InternalSyntaxToken(5, 1, "value", Collections.emptyList(), false, false);
   private static final File FILE = mock(File.class);
 
   @Test
