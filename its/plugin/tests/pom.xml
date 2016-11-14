@@ -43,7 +43,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <includes>
-              <include>org/sonar/jproperties/Tests.java</include>
+              <include>org/sonar/jproperties/its/Tests.java</include>
             </includes>
           </configuration>
         </plugin>
