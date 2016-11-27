@@ -20,6 +20,7 @@
 package org.sonar.jproperties.checks;
 
 import org.sonar.check.Rule;
+import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 
 public class CheckUtils {
 
@@ -29,9 +30,9 @@ public class CheckUtils {
   private CheckUtils() {
   }
 
-  public static String paramsErrorMessage(Class clazz, String message) {
-    return "Check jproperties:" + ((Rule) clazz.getAnnotation(Rule.class)).key()
-      + " (" + ((Rule) clazz.getAnnotation(Rule.class)).name() + "): "
+  public static String paramsErrorMessage(Class<? extends JavaPropertiesCheck> clazz, String message) {
+    return "Check jproperties:" + clazz.getAnnotation(Rule.class).key()
+      + " (" + clazz.getAnnotation(Rule.class).name() + "): "
       + message;
   }
 
