@@ -9,8 +9,12 @@ SonarQube Java Properties Plugin
 This plugin enables code QA analysis of [Java Properties files](https://en.wikipedia.org/wiki/.properties) within [SonarQube](http://www.sonarqube.org):
 
  * Computes metrics: lines of code, comments lines, etc.
- * Performs more than [25 checks](#available-checks)
+ * Performs more than [25 checks](http://sonarqube.racodond.com/coding_rules#languages=jproperties)
  * Provide the ability to write your own checks
+
+## Demo
+
+ * [Demo project](http://sonarqube.racodond.com/dashboard/index?id=jproperties-sample-project)
 
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
