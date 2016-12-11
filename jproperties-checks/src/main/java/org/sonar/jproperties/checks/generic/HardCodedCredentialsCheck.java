@@ -19,15 +19,19 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import java.util.regex.Pattern;
-
+import com.google.common.annotations.VisibleForTesting;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
+import org.sonar.check.RuleProperty;
+import org.sonar.jproperties.checks.CheckUtils;
 import org.sonar.jproperties.checks.Tags;
-import org.sonar.plugins.jproperties.api.tree.KeyTree;
+import org.sonar.plugins.jproperties.api.tree.PropertyTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @Rule(
   key = "S2068",
@@ -38,18 +42,56 @@ import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 @ActivatedByDefault
 public class HardCodedCredentialsCheck extends DoubleDispatchVisitorCheck {
 
+  private static final String DEFAULT_ENCRYPTED_CREDENTIALS_TO_IGNORE = "";
+
   private static final Pattern HARD_CODED_USERNAME = Pattern.compile(".*(login|username).*", Pattern.CASE_INSENSITIVE);
   private static final Pattern HARD_CODED_PASSWORD = Pattern.compile(".*(password|passwd|pwd).*", Pattern.CASE_INSENSITIVE);
 
+  @RuleProperty(
+    key = "encryptedCredentialsToIgnore",
+    description = "Regular expression of encrypted credentials to ignore. "
+      + "See " + CheckUtils.LINK_TO_JAVA_REGEX_PATTERN_DOC + " for detailed regular expression syntax. "
+      + "For example, to ignore encrypted credentials starting with 'ENC(' and 'OBF:', set the parameter to '^(ENC\\(|OBF:).+$'. "
+      + "Leave empty if encrypted credentials should not be ignored.",
+    defaultValue = DEFAULT_ENCRYPTED_CREDENTIALS_TO_IGNORE)
+  private String encryptedCredentialsToIgnore = DEFAULT_ENCRYPTED_CREDENTIALS_TO_IGNORE;
+
   @Override
-  public void visitKey(KeyTree tree) {
-    if (HARD_CODED_USERNAME.matcher(tree.text()).matches()) {
-      addPreciseIssue(tree, "Remove this hard-coded username.");
+  public void visitProperty(PropertyTree tree) {
+    if (tree.value() == null) {
+      return;
     }
-    if (HARD_CODED_PASSWORD.matcher(tree.text()).matches()) {
+
+    if (HARD_CODED_USERNAME.matcher(tree.key().text()).matches()
+      && ("".equals(encryptedCredentialsToIgnore) || (!"".equals(encryptedCredentialsToIgnore) && !tree.value().text().matches(encryptedCredentialsToIgnore)))) {
+      addPreciseIssue(tree, "Remove this hard-coded username.");
+
+    } else if (HARD_CODED_PASSWORD.matcher(tree.key().text()).matches()
+      && ("".equals(encryptedCredentialsToIgnore) || (!"".equals(encryptedCredentialsToIgnore) && !tree.value().text().matches(encryptedCredentialsToIgnore)))) {
       addPreciseIssue(tree, "Remove this hard-coded password.");
     }
-    super.visitKey(tree);
+    super.visitProperty(tree);
+
+  }
+
+  @Override
+  public void validateParameters() {
+    try {
+      Pattern.compile(encryptedCredentialsToIgnore);
+    } catch (PatternSyntaxException exception) {
+      throw new IllegalStateException(paramErrorMessage(), exception);
+    }
+  }
+
+  @VisibleForTesting
+  void setEncryptedCredentialsToIgnore(String encryptedCredentialsToIgnore) {
+    this.encryptedCredentialsToIgnore = encryptedCredentialsToIgnore;
+  }
+
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
+      this.getClass(),
+      "encryptedCredentialsToIgnore parameter \"" + encryptedCredentialsToIgnore + "\" is not a valid regular expression.");
   }
 
 }

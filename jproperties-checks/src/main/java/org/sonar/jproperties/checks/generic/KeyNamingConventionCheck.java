@@ -64,7 +64,7 @@ public class KeyNamingConventionCheck extends DoubleDispatchVisitorCheck {
     try {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException(paramsErrorMessage(), exception);
+      throw new IllegalStateException(paramErrorMessage(), exception);
     }
   }
 
@@ -73,8 +73,8 @@ public class KeyNamingConventionCheck extends DoubleDispatchVisitorCheck {
     this.format = format;
   }
 
-  private String paramsErrorMessage() {
-    return CheckUtils.paramsErrorMessage(
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
       this.getClass(),
       "format parameter \"" + format + "\" is not a valid regular expression.");
   }

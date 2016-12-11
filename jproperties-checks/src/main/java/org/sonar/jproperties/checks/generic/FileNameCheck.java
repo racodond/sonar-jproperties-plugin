@@ -65,7 +65,7 @@ public class FileNameCheck extends DoubleDispatchVisitorCheck {
       Pattern.compile(format);
     } catch (PatternSyntaxException exception) {
       throw new IllegalStateException(
-        CheckUtils.paramsErrorMessage(this.getClass(), "format parameter \"" + format + "\" is not a valid regular expression."),
+        CheckUtils.paramErrorMessage(this.getClass(), "format parameter \"" + format + "\" is not a valid regular expression."),
         exception);
     }
   }

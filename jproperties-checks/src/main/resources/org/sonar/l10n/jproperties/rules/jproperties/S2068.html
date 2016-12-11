@@ -8,6 +8,11 @@
     This rule flags instances of hard-coded credentials. It checks for keys containing <code>login</code>,
     <code>username</code>, <code>password</code>, <code>passwd</code> or <code>pwd</code>.
 </p>
+<p>
+    Even if it is not very secure, encrypted credentials can be set in Java .properties files. By default, issues are
+    raised on those encrypted credentials. But, if you don't want issues to be raised on encrypted credentials, you can
+    set the <code>encryptedCredentialsToIgnore</code> parameter.
+</p>
 
 <h2>Noncompliant Code Example</h2>
 <pre>
