@@ -74,7 +74,7 @@ public class CommentConventionCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void validateParameters() {
     if (!Arrays.asList("#", "!").contains(startingCommentToken)) {
-      throw new IllegalStateException(paramsErrorMessage());
+      throw new IllegalStateException(paramErrorMessage());
     }
   }
 
@@ -83,8 +83,8 @@ public class CommentConventionCheck extends DoubleDispatchVisitorCheck {
     this.startingCommentToken = startingCommentToken;
   }
 
-  private String paramsErrorMessage() {
-    return CheckUtils.paramsErrorMessage(
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
       this.getClass(),
       "startingCommentToken parameter is not valid.\nActual: '" + startingCommentToken + "'\n" + "Expected: '#' or '!'");
   }

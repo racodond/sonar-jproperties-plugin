@@ -94,7 +94,7 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
     try {
       Pattern.compile(valuesToIgnore);
     } catch (PatternSyntaxException exception) {
-      throw new IllegalStateException(paramsErrorMessage(), exception);
+      throw new IllegalStateException(paramErrorMessage(), exception);
     }
   }
 
@@ -127,8 +127,8 @@ public class DuplicatedValuesCheck extends DoubleDispatchVisitorCheck {
     return value.replaceAll("\\\\\\n\\s*", "");
   }
 
-  private String paramsErrorMessage() {
-    return CheckUtils.paramsErrorMessage(
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
       this.getClass(),
       "valuesToIgnore parameter \"" + valuesToIgnore + "\" is not a valid regular expression.");
   }

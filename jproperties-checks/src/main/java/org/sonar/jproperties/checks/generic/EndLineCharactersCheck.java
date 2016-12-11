@@ -65,7 +65,7 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
   @Override
   public void validateParameters() {
     if (!Arrays.asList("CRLF", "CR", "LF").contains(endLineCharacters)) {
-      throw new IllegalStateException(paramsErrorMessage());
+      throw new IllegalStateException(paramErrorMessage());
     }
   }
 
@@ -90,8 +90,8 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
     }
   }
 
-  private String paramsErrorMessage() {
-    return CheckUtils.paramsErrorMessage(
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
         this.getClass(),
         "endLineCharacters parameter is not valid.\nActual: '" + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
   }

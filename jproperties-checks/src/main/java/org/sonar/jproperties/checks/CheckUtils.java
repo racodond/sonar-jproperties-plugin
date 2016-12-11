@@ -30,7 +30,7 @@ public class CheckUtils {
   private CheckUtils() {
   }
 
-  public static String paramsErrorMessage(Class<? extends JavaPropertiesCheck> clazz, String message) {
+  public static String paramErrorMessage(Class<? extends JavaPropertiesCheck> clazz, String message) {
     return "Check jproperties:" + clazz.getAnnotation(Rule.class).key()
       + " (" + clazz.getAnnotation(Rule.class).name() + "): "
       + message;

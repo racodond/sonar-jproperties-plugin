@@ -89,7 +89,7 @@ public class SeparatorConventionCheck extends DoubleDispatchVisitorCheck {
   @Override
   public void validateParameters() {
     if (!Arrays.asList("=", ":").contains(separator)) {
-      throw new IllegalStateException(paramsErrorMessage());
+      throw new IllegalStateException(paramErrorMessage());
     }
   }
 
@@ -98,8 +98,8 @@ public class SeparatorConventionCheck extends DoubleDispatchVisitorCheck {
     this.separator = separator;
   }
 
-  private String paramsErrorMessage() {
-    return CheckUtils.paramsErrorMessage(
+  private String paramErrorMessage() {
+    return CheckUtils.paramErrorMessage(
       this.getClass(),
       "separator parameter is not valid.\nActual: \"" + separator + "\"\nExpected: '=' or ':'");
   }

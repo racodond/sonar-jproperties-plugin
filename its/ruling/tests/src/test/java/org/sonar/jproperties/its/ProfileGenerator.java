@@ -40,6 +40,7 @@ public class ProfileGenerator {
 
   private static Multimap<String, Parameter> parameters = ImmutableListMultimap.<String, Parameter>builder()
     .put("maximum-number-keys", new Parameter("numberKeys", "40"))
+    .put("S2068", new Parameter("encryptedCredentialsToIgnore", "^(ENC\\(|OBF:).+$"))
     .build();
 
   public static void generateProfile(Orchestrator orchestrator) {
