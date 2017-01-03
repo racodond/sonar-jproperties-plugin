@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jproperties-checks</artifactId>
-  <name>SonarQube Java Properties Plugin :: Checks</name>
+  <name>SonarQube Java Properties Analyzer :: Checks</name>
 
   <dependencies>
     <dependency>

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>jproperties-its-ruling</artifactId>
-  <name>SonarQube Java Properties Plugin :: Integration Tests :: Ruling</name>
+  <name>SonarQube Java Properties Analyzer :: Integration Tests :: Ruling</name>
   <packaging>pom</packaging>
 
   <modules>

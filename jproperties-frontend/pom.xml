@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jproperties-frontend</artifactId>
-  <name>SonarQube Java Properties Plugin :: Frontend</name>
+  <name>SonarQube Java Properties Analyzer :: Frontend</name>
 
   <dependencies>
     <dependency>

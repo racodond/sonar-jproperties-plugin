@@ -12,7 +12,7 @@
   <artifactId>jproperties-custom-rules-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
 
-  <name>SonarQube Java Properties Plugin :: Integration Tests :: Plugin :: Plugins :: Custom Rules</name>
+  <name>SonarQube Java Properties Analyzer :: Integration Tests :: Plugin :: Plugins :: Custom Rules</name>
 
   <dependencies>
     <dependency>

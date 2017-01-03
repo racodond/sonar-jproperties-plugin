@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>jproperties-its-plugin</artifactId>
-  <name>SonarQube Java Properties Plugin :: Integration Tests :: Plugin</name>
+  <name>SonarQube Java Properties Analyzer :: Integration Tests :: Plugin</name>
   <packaging>pom</packaging>
 
   <modules>

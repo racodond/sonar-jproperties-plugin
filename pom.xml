@@ -14,7 +14,7 @@
   <version>2.5-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>SonarQube Java Properties Plugin</name>
+  <name>SonarQube Java Properties Analyzer</name>
   <description>Enables analysis of Java Properties files in SonarQube</description>
   <url>https://github.com/racodond/sonar-jproperties-plugin</url>
   <inceptionYear>2015</inceptionYear>
@@ -62,7 +62,7 @@
   </ciManagement>
 
   <properties>
-    <license.title>SonarQube Java Properties Plugin</license.title>
+    <license.title>SonarQube Java Properties Analyzer</license.title>
     <license.owner>David RACODON</license.owner>
     <license.mailto>david.racodon@gmail.com</license.mailto>
     <sonar.version>5.6</sonar.version>

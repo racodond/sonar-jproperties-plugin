@@ -1,5 +1,5 @@
 /*
- * SonarQube Java Properties Plugin
+ * SonarQube Java Properties Analyzer
  * Copyright (C) 2015-2016 David RACODON
  * david.racodon@gmail.com
  *

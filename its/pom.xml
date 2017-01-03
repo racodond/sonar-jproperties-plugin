@@ -10,10 +10,10 @@
   </parent>
 
   <artifactId>jproperties-its</artifactId>
-  <name>SonarQube Java Properties Plugin :: Integration Tests</name>
+  <name>SonarQube Java Properties Analyzer :: Integration Tests</name>
   <packaging>pom</packaging>
 
-  <description>Integration tests of the SonarQube Java Properties plugin</description>
+  <description>Integration tests of the SonarQube Java Properties Analyzer</description>
   <inceptionYear>2015</inceptionYear>
   <organization>
     <name>David RACODON</name>
