@@ -21,6 +21,7 @@ package org.sonar.jproperties.visitors;
 
 import java.nio.charset.Charset;
 
+@FunctionalInterface
 public interface CharsetAwareVisitor {
 
   void setCharset(Charset charset);
