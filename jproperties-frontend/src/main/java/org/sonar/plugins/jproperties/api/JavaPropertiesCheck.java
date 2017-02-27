@@ -19,8 +19,7 @@
  */
 package org.sonar.plugins.jproperties.api;
 
-import java.util.List;
-
+import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitorContext;
 import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
@@ -28,9 +27,13 @@ import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
 import org.sonar.plugins.jproperties.api.visitors.issue.LineIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 
+import java.util.List;
+
 public interface JavaPropertiesCheck {
 
   PreciseIssue addPreciseIssue(Tree tree, String message);
+
+  PreciseIssue addPreciseIssue(SyntaxToken toke, int startOffset, int endOffset, String message);
 
   FileIssue addFileIssue(String message);
 

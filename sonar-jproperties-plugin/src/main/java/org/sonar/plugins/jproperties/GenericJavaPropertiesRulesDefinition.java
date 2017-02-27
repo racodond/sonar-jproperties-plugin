@@ -60,6 +60,7 @@ public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
       IndentationCheck.class,
       KeyNamingConventionCheck.class,
       KeyRegularExpressionCheck.class,
+      Java9DefaultEncodingSwitchCheck.class,
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
       MissingTranslationsCheck.class,

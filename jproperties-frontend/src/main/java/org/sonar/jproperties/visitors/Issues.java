@@ -19,13 +19,14 @@
  */
 package org.sonar.jproperties.visitors;
 
+import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
+import org.sonar.plugins.jproperties.api.tree.Tree;
+import org.sonar.plugins.jproperties.api.visitors.issue.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
-import org.sonar.plugins.jproperties.api.tree.Tree;
-import org.sonar.plugins.jproperties.api.visitors.issue.*;
 
 public class Issues {
 
@@ -39,6 +40,12 @@ public class Issues {
 
   public PreciseIssue addPreciseIssue(File file, Tree tree, String message) {
     PreciseIssue issue = new PreciseIssue(check, new IssueLocation(file, tree, message));
+    issueList.add(issue);
+    return issue;
+  }
+
+  public PreciseIssue addPreciseIssue(File file, SyntaxToken token, int startOffset, int endOffset, String message) {
+    PreciseIssue issue = new PreciseIssue(check, new IssueLocation(file, token, startOffset, endOffset, message));
     issueList.add(issue);
     return issue;
   }

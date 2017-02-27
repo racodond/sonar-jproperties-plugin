@@ -19,15 +19,16 @@
  */
 package org.sonar.plugins.jproperties.api.visitors;
 
-import java.util.List;
-
 import org.sonar.jproperties.visitors.Issues;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
 import org.sonar.plugins.jproperties.api.visitors.issue.LineIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
+
+import java.util.List;
 
 public abstract class SubscriptionVisitorCheck extends SubscriptionVisitor implements JavaPropertiesCheck {
 
@@ -44,6 +45,11 @@ public abstract class SubscriptionVisitorCheck extends SubscriptionVisitor imple
   @Override
   public PreciseIssue addPreciseIssue(Tree tree, String message) {
     return issues.addPreciseIssue(getContext().getFile(), tree, message);
+  }
+
+  @Override
+  public PreciseIssue addPreciseIssue(SyntaxToken token, int startOffset, int endOffset, String message) {
+    return issues.addPreciseIssue(getContext().getFile(), token, startOffset, endOffset, message);
   }
 
   @Override

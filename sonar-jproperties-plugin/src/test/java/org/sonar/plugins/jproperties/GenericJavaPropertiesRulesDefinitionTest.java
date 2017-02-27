@@ -37,7 +37,7 @@ public class GenericJavaPropertiesRulesDefinitionTest {
 
     assertThat(repository.name()).isEqualTo("SonarQube");
     assertThat(repository.language()).isEqualTo("jproperties");
-    assertThat(repository.rules()).hasSize(26);
+    assertThat(repository.rules()).hasSize(27);
 
     RulesDefinition.Rule lineLengthRule = repository.rule(LineLengthCheck.class.getAnnotation(Rule.class).key());
     assertThat(lineLengthRule).isNotNull();

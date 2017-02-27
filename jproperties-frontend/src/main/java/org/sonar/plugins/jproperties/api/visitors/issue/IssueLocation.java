@@ -19,29 +19,45 @@
  */
 package org.sonar.plugins.jproperties.api.visitors.issue;
 
-import java.io.File;
-import javax.annotation.Nullable;
-
 import org.sonar.jproperties.tree.impl.JavaPropertiesTree;
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 
+import javax.annotation.Nullable;
+import java.io.File;
+
 public class IssueLocation {
 
   private final File file;
-  private final SyntaxToken firstToken;
-  private final SyntaxToken lastToken;
   private final String message;
+  private int startLine;
+  private int startLineOffset;
+  private int endLine;
+  private int endLineOffset;
 
   public IssueLocation(File file, Tree tree, @Nullable String message) {
     this(file, tree, tree, message);
   }
 
+  public IssueLocation(File file, SyntaxToken token, int offsetStart, int offsetEnd, @Nullable String message) {
+    this.file = file;
+    this.message = message;
+    this.startLine = token.line();
+    this.endLine = token.line();
+    this.startLineOffset = token.column() + offsetStart;
+    this.endLineOffset = token.column() + offsetEnd;
+  }
+
   public IssueLocation(File file, Tree firstTree, Tree lastTree, @Nullable String message) {
     this.file = file;
-    this.firstToken = ((JavaPropertiesTree) firstTree).getFirstToken();
-    this.lastToken = ((JavaPropertiesTree) lastTree).getLastToken();
     this.message = message;
+
+    SyntaxToken firstToken = ((JavaPropertiesTree) firstTree).getFirstToken();
+    SyntaxToken lastToken = ((JavaPropertiesTree) lastTree).getLastToken();
+    this.startLine = firstToken.line();
+    this.startLineOffset = firstToken.column();
+    this.endLine = lastToken.endLine();
+    this.endLineOffset = lastToken.endColumn();
   }
 
   public File file() {
@@ -54,19 +70,19 @@ public class IssueLocation {
   }
 
   public int startLine() {
-    return firstToken.line();
+    return startLine;
   }
 
   public int startLineOffset() {
-    return firstToken.column();
+    return startLineOffset;
   }
 
   public int endLine() {
-    return lastToken.endLine();
+    return endLine;
   }
 
   public int endLineOffset() {
-    return lastToken.endColumn();
+    return endLineOffset;
   }
 
 }
