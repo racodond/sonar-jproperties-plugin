@@ -23,14 +23,6 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.RecognitionException;
 import com.sonar.sslr.api.typed.ActionParser;
-
-import java.io.File;
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.annotation.Nullable;
-
 import org.sonar.api.batch.fs.FilePredicate;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
@@ -41,6 +33,7 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
+import org.sonar.api.config.Settings;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -61,29 +54,40 @@ import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
 import org.sonar.squidbridge.ProgressReport;
 import org.sonar.squidbridge.api.AnalysisException;
 
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.InterruptedIOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class JavaPropertiesSquidSensor implements Sensor {
 
   private static final Logger LOG = Loggers.get(JavaPropertiesSquidSensor.class);
 
   private final FileSystem fileSystem;
+  private final Charset charset;
   private final JavaPropertiesChecks checks;
   private final ActionParser<Tree> parser;
   private final FilePredicate mainFilePredicate;
   private IssueSaver issueSaver;
   private RuleKey parsingErrorRuleKey = null;
 
-  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
-    this(fileSystem, checkFactory, null);
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, Settings settings) {
+    this(fileSystem, checkFactory, settings, null);
   }
 
-  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, Settings settings, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
     this.fileSystem = fileSystem;
+
+    this.charset = Charset.forName(settings.getString(JavaPropertiesPlugin.JAVA_PROPERTIES_SOURCE_ENCODING_KEY));
 
     this.mainFilePredicate = fileSystem.predicates().and(
       fileSystem.predicates().hasType(InputFile.Type.MAIN),
       fileSystem.predicates().hasLanguage(JavaPropertiesLanguage.KEY));
 
-    this.parser = JavaPropertiesParserBuilder.createParser(fileSystem.encoding());
+    this.parser = JavaPropertiesParserBuilder.createParser(charset);
 
     this.checks = JavaPropertiesChecks.createJavaPropertiesChecks(checkFactory)
       .addChecks(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, GenericJavaPropertiesRulesDefinition.getChecks())
@@ -151,7 +155,7 @@ public class JavaPropertiesSquidSensor implements Sensor {
     List<Issue> issues = new ArrayList<>();
     for (TreeVisitor visitor : visitors) {
       if (visitor instanceof CharsetAwareVisitor) {
-        ((CharsetAwareVisitor) visitor).setCharset(fileSystem.encoding());
+        ((CharsetAwareVisitor) visitor).setCharset(charset);
       }
       if (visitor instanceof JavaPropertiesCheck) {
         issues.addAll(((JavaPropertiesCheck) visitor).scanFile(context));

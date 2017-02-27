@@ -64,7 +64,8 @@ public class JavaPropertiesRulingTest {
       .setProperty("dump.old", FileLocation.of("src/test/expected").getFile().getAbsolutePath())
       .setProperty("dump.new", FileLocation.of("target/actual").getFile().getAbsolutePath())
       .setProperty("lits.differences", litsDifferencesFile.getAbsolutePath())
-      .setProperty("sonar.cpd.skip", "true");
+      .setProperty("sonar.cpd.skip", "true")
+      .setProperty("sonar.jproperties.sourceEncoding", "UTF-8");
     orchestrator.executeBuild(build);
 
     assertThat(Files.toString(litsDifferencesFile, StandardCharsets.UTF_8)).isEmpty();
