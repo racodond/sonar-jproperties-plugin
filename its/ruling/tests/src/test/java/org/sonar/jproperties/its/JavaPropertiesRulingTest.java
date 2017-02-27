@@ -23,13 +23,12 @@ import com.google.common.io.Files;
 import com.sonar.orchestrator.Orchestrator;
 import com.sonar.orchestrator.build.SonarScanner;
 import com.sonar.orchestrator.locator.FileLocation;
-
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -48,27 +47,39 @@ public class JavaPropertiesRulingTest {
   }
 
   @Test
-  public void test() throws Exception {
-    File litsDifferencesFile = FileLocation.of("target/differences").getFile();
-    orchestrator.getServer().provisionProject("project", "project");
-    orchestrator.getServer().associateProjectToQualityProfile("project", "jproperties", "rules");
-    SonarScanner build = SonarScanner.create(FileLocation.of("../projects").getFile())
-      .setProjectKey("project")
-      .setProjectName("project")
+  public void test_iso8859() throws Exception {
+    testProject("iso8859", "ISO-8859-1");
+  }
+
+  @Test
+  public void test_ut8() throws Exception {
+    testProject("utf8", "UTF-8");
+  }
+
+  private void testProject(String projectKey, String encoding) throws Exception {
+    orchestrator.getServer().provisionProject(projectKey, projectKey);
+    orchestrator.getServer().associateProjectToQualityProfile(projectKey, "jproperties", "rules");
+
+    SonarScanner build = createScanner(projectKey, encoding);
+    orchestrator.executeBuild(build);
+
+    assertThat(Files.toString(FileLocation.of("target/differences-" + projectKey).getFile(), StandardCharsets.UTF_8)).isEmpty();
+  }
+
+  private SonarScanner createScanner(String projectKey, String encoding) {
+    return SonarScanner.create(FileLocation.of("../projects/" + projectKey).getFile())
+      .setProjectKey(projectKey)
+      .setProjectName(projectKey)
       .setProjectVersion("1.0")
       .setLanguage("jproperties")
       .setSourceDirs("./")
-      .setSourceEncoding("UTF-8")
+      .setSourceEncoding(encoding)
       .setProperty("sonar.analysis.mode", "preview")
       .setProperty("sonar.issuesReport.html.enable", "true")
-      .setProperty("dump.old", FileLocation.of("src/test/expected").getFile().getAbsolutePath())
-      .setProperty("dump.new", FileLocation.of("target/actual").getFile().getAbsolutePath())
-      .setProperty("lits.differences", litsDifferencesFile.getAbsolutePath())
+      .setProperty("dump.old", FileLocation.of("src/test/expected/" + projectKey).getFile().getAbsolutePath())
+      .setProperty("dump.new", FileLocation.of("target/actual-" + projectKey).getFile().getAbsolutePath())
+      .setProperty("lits.differences", FileLocation.of("target/differences-" + projectKey).getFile().getAbsolutePath())
       .setProperty("sonar.cpd.skip", "true")
-      .setProperty("sonar.jproperties.sourceEncoding", "UTF-8");
-    orchestrator.executeBuild(build);
-
-    assertThat(Files.toString(litsDifferencesFile, StandardCharsets.UTF_8)).isEmpty();
+      .setProperty("sonar.jproperties.sourceEncoding", encoding);
   }
-
 }
