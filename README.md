@@ -2,6 +2,7 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/v2gdt7d94kq4ngcm/branch/master?svg=true)](https://ci.appveyor.com/project/racodond/sonar-jproperties-plugin/branch/master)
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://sonarqube.com/dashboard?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
+
 # SonarQube Java Properties Analyzer
 
 ## Description
