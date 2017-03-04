@@ -17,7 +17,7 @@ A live example is available [here](http://sonarqube.racodond.com/dashboard/index
 
 ## Usage
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
-1. Install the Java Properties plugin either by a [direct download](https://github.com/racodond/sonar-jproperties-plugin/releases) or through the [Update Center](http://docs.sonarqube.org/display/SONAR/Update+Center). See [plugin compatibility with SonarQube versions](http://docs.sonarqube.org/display/PLUG/Plugin+Version+Matrix).
+1. [Download](https://github.com/racodond/sonar-jproperties-plugin/releases) and install the Java Properties plugin. The latest version is compatible with SonarQube 5.6+
 1. Install your [favorite scanner](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Scanner, Maven, Ant, etc.)
 1. [Analyze your code](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis). By default, files are expected to be encoded in ISO-8859-1. If it is not the case, set the `sonar.jproperties.sourceEncoding` property to the right encoding. See the [full list of supported encodings](http://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (Canonical Name for java.nio API column).
 
