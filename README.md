@@ -1,6 +1,5 @@
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg?branch=master)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/v2gdt7d94kq4ngcm/branch/master?svg=true)](https://ci.appveyor.com/project/racodond/sonar-jproperties-plugin/branch/master)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties:jproperties)](https://sonarqube.com/dashboard?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
 
 # SonarQube Java Properties Analyzer
@@ -11,8 +10,6 @@ This [SonarQube](https://www.sonarqube.org/) plugin analyzes [Java Properties fi
 * Computes metrics: lines of code, comments lines, etc.
 * Checks various guidelines to find out potential bugs, vulnerabilities and code smells through more than [30 checks](http://sonarqube.racodond.com/coding_rules#languages=jproperties)
 * Provides the ability to write your own checks
-
-A live example is available [here](http://sonarqube.racodond.com/dashboard/index?id=jproperties-sample-project).
 
 
 ## Usage
@@ -36,3 +33,33 @@ Any contribution is more than welcome!
 You feel like:
 * Adding a new check? Just [open an issue](https://github.com/racodond/sonar-jproperties-plugin/issues/new) to discuss the value of your check. Once validated, code, don't forget to add a lot of unit tests and open a PR.
 * Fixing some bugs or improving existing checks? Just open a PR.
+
+
+## Available Rules
+
+* "FIXME" tags should be handled
+* "TODO" tags should be handled
+* All comments should be formatted consistently
+* All properties and comments should start at column 1
+* Byte Order Mark (BOM) should not be used for UTF-8 files
+* Credentials should not be hard-coded
+* Different keys having the same value should be merged
+* Duplicated keys across files should be removed
+* Duplicated keys should be removed
+* End-line characters should be consistent
+* File names should comply with a naming convention
+* Files not defining any properties should be removed
+* Files should contain an empty new line at the end
+* ISO-8859-1 characters not compatible with UTF-8 should be escaped to keep compatibility with Java 9 default encoding switch
+* Keys should follow a naming convention
+* Lines should not be too long
+* Missing translations should be added to default resource bundle
+* Missing translations should be added to locale resource bundles
+* Number of keys should be reduced
+* Property with empty value should be removed
+* Regular expression on comment
+* Regular expression on key
+* Regular expression on value
+* Sections of code should not be commented out
+* Separators should follow a convention
+* Tabulation characters should not be used
