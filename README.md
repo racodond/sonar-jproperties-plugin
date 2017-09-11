@@ -8,7 +8,7 @@
 This [SonarQube](https://www.sonarqube.org/) plugin analyzes [Java Properties files](https://en.wikipedia.org/wiki/.properties) and:
 
 * Computes metrics: lines of code, comments lines, etc.
-* Checks various guidelines to find out potential bugs, vulnerabilities and code smells through more than [30 checks](http://sonarqube.racodond.com/coding_rules#languages=jproperties)
+* Checks various guidelines to find out potential bugs, vulnerabilities and code smells through more than [30 checks](#available-rules)
 * Provides the ability to write your own checks
 
 
