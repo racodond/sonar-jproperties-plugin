@@ -19,8 +19,8 @@
  */
 package org.sonar.jproperties.its;
 
-import org.sonar.jproperties.its.checks.ForbiddenStringCheck;
 import org.sonar.jproperties.its.checks.ForbiddenKeysCheck;
+import org.sonar.jproperties.its.checks.ForbiddenStringCheck;
 import org.sonar.plugins.jproperties.api.CustomJavaPropertiesRulesDefinition;
 
 /**

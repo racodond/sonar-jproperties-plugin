@@ -20,7 +20,6 @@
 package org.sonar.jproperties.its;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -28,15 +27,14 @@ import com.google.common.collect.Multimap;
 import com.google.common.io.Files;
 import com.sonar.orchestrator.Orchestrator;
 import com.sonar.orchestrator.locator.FileLocation;
+import org.sonar.wsclient.internal.HttpRequestFactory;
+import org.sonar.wsclient.jsonsimple.JSONValue;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import org.sonar.wsclient.internal.HttpRequestFactory;
-import org.sonar.wsclient.jsonsimple.JSONValue;
-
-public class ProfileGenerator {
+class ProfileGenerator {
 
   private static Multimap<String, Parameter> parameters = ImmutableListMultimap.<String, Parameter>builder()
     .put("maximum-number-keys", new Parameter("numberKeys", "40"))
@@ -82,18 +80,18 @@ public class ProfileGenerator {
         .append("</profile>");
 
       File file = File.createTempFile("profile", ".xml");
-      Files.write(sb, file, Charsets.UTF_8);
+      Files.asCharSink(file, Charsets.UTF_8).write(sb);
       orchestrator.getServer().restoreProfile(FileLocation.of(file));
       file.delete();
     } catch (IOException e) {
-      throw Throwables.propagate(e);
+      throw new RuntimeException(e);
     }
   }
 
   private static Set<String> getRuleKeysFromRepository(String repository, Orchestrator orchestrator) {
     Set<String> ruleKeys = new HashSet<>();
     String json = new HttpRequestFactory(orchestrator.getServer().getUrl())
-      .get("/api/rules/search", ImmutableMap.<String, Object>of("languages", "jproperties", "repositories", repository, "ps", "1000"));
+      .get("/api/rules/search", ImmutableMap.of("languages", "jproperties", "repositories", repository, "ps", "1000"));
     @SuppressWarnings("unchecked")
     List<Map> jsonRules = (List<Map>) ((Map) JSONValue.parse(json)).get("rules");
     for (Map jsonRule : jsonRules) {
@@ -107,7 +105,7 @@ public class ProfileGenerator {
     String parameterKey;
     String parameterValue;
 
-    public Parameter(String parameterKey, String parameterValue) {
+    Parameter(String parameterKey, String parameterValue) {
       this.parameterKey = parameterKey;
       this.parameterValue = parameterValue;
     }

@@ -19,12 +19,6 @@
  */
 package org.sonar.jproperties.checks.verifier;
 
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
@@ -34,6 +28,12 @@ import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
 import org.sonar.plugins.jproperties.api.visitors.issue.LineIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 import org.sonar.squidbridge.api.CheckMessage;
+
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 class TreeCheckTest {
 

@@ -20,13 +20,11 @@
 package org.sonar.jproperties.tree.impl;
 
 import com.google.common.collect.Iterators;
-
-import java.util.Iterator;
-
-import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitor;
 import org.sonar.plugins.jproperties.api.tree.*;
+import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitor;
 
 import javax.annotation.Nullable;
+import java.util.Iterator;
 
 public class PropertyTreeImpl extends JavaPropertiesTree implements PropertyTree {
 

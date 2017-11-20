@@ -19,10 +19,6 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -31,6 +27,10 @@ import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Rule(
   key = "commented-out-code",

@@ -22,7 +22,6 @@ package org.sonar.jproperties.checks.generic;
 import com.google.common.base.Charsets;
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
-import org.sonar.jproperties.checks.generic.DuplicatedKeysCheck;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class DuplicatedKeysCheckTest {

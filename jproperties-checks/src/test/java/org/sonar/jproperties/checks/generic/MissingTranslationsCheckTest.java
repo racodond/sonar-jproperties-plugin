@@ -20,9 +20,6 @@
 package org.sonar.jproperties.checks.generic;
 
 import com.google.common.base.Charsets;
-
-import java.io.File;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
@@ -30,6 +27,8 @@ import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+
+import java.io.File;
 
 public class MissingTranslationsCheckTest {
 

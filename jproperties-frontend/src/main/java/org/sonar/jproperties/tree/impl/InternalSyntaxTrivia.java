@@ -19,14 +19,14 @@
  */
 package org.sonar.jproperties.tree.impl;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitor;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class InternalSyntaxTrivia extends JavaPropertiesTree implements SyntaxTrivia {
 

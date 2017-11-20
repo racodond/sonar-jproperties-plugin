@@ -20,11 +20,10 @@
 package org.sonar.jproperties.visitors.metrics;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitor;
+
+import java.util.List;
 
 public class StatementsVisitor extends SubscriptionVisitor {
 

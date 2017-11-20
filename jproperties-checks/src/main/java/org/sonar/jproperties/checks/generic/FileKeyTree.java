@@ -19,9 +19,9 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import java.io.File;
-
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
+
+import java.io.File;
 
 public class FileKeyTree {
 

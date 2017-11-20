@@ -19,9 +19,9 @@
  */
 package org.sonar.plugins.jproperties.api.visitors.issue;
 
-import javax.annotation.Nullable;
-
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
+
+import javax.annotation.Nullable;
 
 public interface Issue {
 

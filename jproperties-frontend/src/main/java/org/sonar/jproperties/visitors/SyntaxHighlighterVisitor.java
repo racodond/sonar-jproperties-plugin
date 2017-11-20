@@ -20,9 +20,6 @@
 package org.sonar.jproperties.visitors;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.highlighting.NewHighlighting;
@@ -30,6 +27,8 @@ import org.sonar.api.batch.sensor.highlighting.TypeOfText;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.*;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitor;
+
+import java.util.List;
 
 public class SyntaxHighlighterVisitor extends SubscriptionVisitor {
 

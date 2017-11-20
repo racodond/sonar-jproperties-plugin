@@ -21,7 +21,6 @@ package org.sonar.jproperties.checks.generic;
 
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
-import org.sonar.jproperties.checks.generic.TabCharacterCheck;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class TabCharacterCheckTest {

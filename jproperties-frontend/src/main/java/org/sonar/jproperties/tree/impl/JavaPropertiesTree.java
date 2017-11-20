@@ -19,10 +19,10 @@
  */
 package org.sonar.jproperties.tree.impl;
 
-import java.util.Iterator;
-
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
+
+import java.util.Iterator;
 
 public abstract class JavaPropertiesTree implements Tree {
 

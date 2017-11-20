@@ -20,9 +20,6 @@
 package org.sonar.jproperties.visitors.metrics;
 
 import com.google.common.base.Charsets;
-
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
@@ -31,6 +28,8 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitorContext;
+
+import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

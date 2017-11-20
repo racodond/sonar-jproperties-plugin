@@ -20,11 +20,10 @@
 package org.sonar.jproperties.parser;
 
 import com.sonar.sslr.api.typed.Optional;
-
-import java.util.List;
-
 import org.sonar.jproperties.tree.impl.*;
 import org.sonar.plugins.jproperties.api.tree.*;
+
+import java.util.List;
 
 public class TreeFactory {
 

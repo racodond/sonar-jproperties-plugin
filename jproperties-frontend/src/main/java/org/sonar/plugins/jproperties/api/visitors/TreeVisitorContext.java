@@ -19,9 +19,9 @@
  */
 package org.sonar.plugins.jproperties.api.visitors;
 
-import java.io.File;
-
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+
+import java.io.File;
 
 public interface TreeVisitorContext {
 

@@ -21,13 +21,6 @@ package org.sonar.jproperties.checks.generic;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
@@ -38,6 +31,12 @@ import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DuplicatedKeysAcrossFilesCheckTest {
 

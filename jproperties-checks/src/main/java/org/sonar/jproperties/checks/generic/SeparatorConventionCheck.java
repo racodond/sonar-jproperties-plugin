@@ -20,9 +20,6 @@
 package org.sonar.jproperties.checks.generic;
 
 import com.google.common.annotations.VisibleForTesting;
-
-import java.util.Arrays;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -33,6 +30,8 @@ import org.sonar.plugins.jproperties.api.tree.SeparatorTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.util.Arrays;
 
 @Rule(
   key = "separator-convention",

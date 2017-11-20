@@ -19,11 +19,11 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
+
+import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 

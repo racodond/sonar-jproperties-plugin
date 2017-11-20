@@ -20,13 +20,12 @@
 package org.sonar.jproperties.visitors.metrics;
 
 import com.google.common.base.Charsets;
-
-import java.io.File;
-
 import org.junit.Test;
 import org.sonar.jproperties.parser.JavaPropertiesLexicalGrammar;
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.plugins.jproperties.api.tree.Tree;
+
+import java.io.File;
 
 import static org.fest.assertions.Assertions.assertThat;
 

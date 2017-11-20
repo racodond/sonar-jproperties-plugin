@@ -20,13 +20,12 @@
 package org.sonar.jproperties.visitors.metrics;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitor;
+
+import java.util.List;
 
 public class CommentLinesVisitor extends SubscriptionVisitor {
 

@@ -20,9 +20,6 @@
 package org.sonar.jproperties.checks.generic;
 
 import com.google.common.base.Charsets;
-
-import java.nio.charset.Charset;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -31,6 +28,8 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.nio.charset.Charset;
 
 @Rule(
   key = "bom-utf8-files",

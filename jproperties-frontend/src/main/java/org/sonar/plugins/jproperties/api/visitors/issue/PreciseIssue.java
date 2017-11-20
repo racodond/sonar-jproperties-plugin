@@ -19,13 +19,13 @@
  */
 package org.sonar.plugins.jproperties.api.visitors.issue;
 
+import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
+import org.sonar.plugins.jproperties.api.tree.Tree;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
-
-import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
-import org.sonar.plugins.jproperties.api.tree.Tree;
 
 public class PreciseIssue implements Issue {
 

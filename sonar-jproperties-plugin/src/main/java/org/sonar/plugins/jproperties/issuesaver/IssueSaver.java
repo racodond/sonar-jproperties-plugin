@@ -20,9 +20,6 @@
 package org.sonar.plugins.jproperties.issuesaver;
 
 import com.google.common.base.Preconditions;
-
-import java.util.Optional;
-
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.TextRange;
@@ -33,6 +30,8 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.jproperties.JavaPropertiesChecks;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.*;
+
+import java.util.Optional;
 
 public class IssueSaver {
 

@@ -24,15 +24,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
-
-import java.io.File;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
-
 import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.jproperties.visitors.CharsetAwareVisitor;
 import org.sonar.jproperties.visitors.JavaPropertiesVisitorContext;
@@ -44,6 +35,14 @@ import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitorCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.*;
 import org.sonar.squidbridge.checks.CheckMessagesVerifier;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.junit.Assert.fail;

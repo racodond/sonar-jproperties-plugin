@@ -51,11 +51,6 @@ public class JavaPropertiesRulingTest {
     testProject("iso8859", "ISO-8859-1");
   }
 
-  @Test
-  public void test_ut8() throws Exception {
-    testProject("utf8", "UTF-8");
-  }
-
   private void testProject(String projectKey, String encoding) throws Exception {
     orchestrator.getServer().provisionProject(projectKey, projectKey);
     orchestrator.getServer().associateProjectToQualityProfile(projectKey, "jproperties", "rules");
@@ -63,7 +58,7 @@ public class JavaPropertiesRulingTest {
     SonarScanner build = createScanner(projectKey, encoding);
     orchestrator.executeBuild(build);
 
-    assertThat(Files.toString(FileLocation.of("target/differences-" + projectKey).getFile(), StandardCharsets.UTF_8)).isEmpty();
+    assertThat(Files.asCharSource(FileLocation.of("target/differences-" + projectKey).getFile(), StandardCharsets.UTF_8).read()).isEmpty();
   }
 
   private SonarScanner createScanner(String projectKey, String encoding) {

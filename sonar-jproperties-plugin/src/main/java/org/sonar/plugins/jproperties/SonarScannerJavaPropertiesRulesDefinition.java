@@ -20,12 +20,11 @@
 package org.sonar.plugins.jproperties;
 
 import com.google.common.collect.ImmutableList;
-
-import java.util.Collection;
-
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.jproperties.checks.sonarscanner.SonarScannerDeprecatedPropertiesCheck;
 import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
+
+import java.util.Collection;
 
 public class SonarScannerJavaPropertiesRulesDefinition implements RulesDefinition {
 

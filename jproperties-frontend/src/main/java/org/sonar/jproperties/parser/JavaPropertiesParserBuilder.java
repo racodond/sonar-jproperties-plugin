@@ -21,11 +21,10 @@ package org.sonar.jproperties.parser;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.sonar.sslr.api.typed.ActionParser;
-
-import java.nio.charset.Charset;
-
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.sslr.grammar.GrammarRuleKey;
+
+import java.nio.charset.Charset;
 
 public class JavaPropertiesParserBuilder {
 

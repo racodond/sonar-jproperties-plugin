@@ -19,12 +19,6 @@
  */
 package org.sonar.jproperties.checks.generic;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -33,6 +27,12 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Rule(
   key = "missing-translations",
