@@ -1,6 +1,6 @@
 /*
  * SonarQube Java Properties Analyzer
- * Copyright (C) 2015-2016 David RACODON
+ * Copyright (C) 2015-2017 David RACODON
  * david.racodon@gmail.com
  *
  * This program is free software; you can redistribute it and/or
@@ -21,12 +21,6 @@ package org.sonar.jproperties.checks.generic;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.regex.Pattern;
-
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -36,6 +30,11 @@ import org.sonar.jproperties.visitors.CharsetAwareVisitor;
 import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 @Rule(
   key = "end-line-characters",
@@ -81,7 +80,7 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
 
   private boolean fileContainsIllegalEndLineCharacters() {
     try {
-      String fileContent = Files.toString(getContext().getFile(), charset);
+      String fileContent = Files.asCharSource(getContext().getFile(), charset).read();
       return "CR".equals(endLineCharacters) && Pattern.compile("(?s)\n").matcher(fileContent).find()
         || "LF".equals(endLineCharacters) && Pattern.compile("(?s)\r").matcher(fileContent).find()
         || "CRLF".equals(endLineCharacters) && Pattern.compile("(?s)(\r(?!\n)|(?<!\r)\n)").matcher(fileContent).find();
@@ -92,8 +91,8 @@ public class EndLineCharactersCheck extends DoubleDispatchVisitorCheck implement
 
   private String paramErrorMessage() {
     return CheckUtils.paramErrorMessage(
-        this.getClass(),
-        "endLineCharacters parameter is not valid.\nActual: '" + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
+      this.getClass(),
+      "endLineCharacters parameter is not valid.\nActual: '" + endLineCharacters + "'\nExpected: 'CR' or 'CRLF' or 'LF'");
   }
 
 }

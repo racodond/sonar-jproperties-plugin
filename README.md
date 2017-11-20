@@ -1,5 +1,7 @@
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg?branch=master)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/v2gdt7d94kq4ngcm/branch/master?svg=true)](https://ci.appveyor.com/project/racodond/sonar-jproperties-plugin/branch/master)
+[![Quality Gate status](https://sonarcloud.io/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties%3Ajproperties)](https://sonarcloud.io/dashboard/index/org.codehaus.sonar-plugins.jproperties%3Ajproperties)
+[![Release](https://img.shields.io/github/release/racodond/sonar-jproperties-plugin.svg)](https://github.com/racodond/sonar-jproperties-plugin/releases/latest)
 
 
 # SonarQube Java Properties Analyzer
@@ -25,14 +27,6 @@ A sample plugin with detailed explanations is available [here](https://github.co
 If your custom rules may benefit the community, feel free to create a pull request in order to make the rule available in the Java Properties plugin.
 
 You're thinking of new rules that may benefit the community but don't have the time or the skills to write them? Feel free to create an [issue](https://github.com/racodond/sonar-jproperties-plugin/issues) for your rules to be taken under consideration.
-
-
-## Contributing
-Any contribution is more than welcome!
- 
-You feel like:
-* Adding a new check? Just [open an issue](https://github.com/racodond/sonar-jproperties-plugin/issues/new) to discuss the value of your check. Once validated, code, don't forget to add a lot of unit tests and open a PR.
-* Fixing some bugs or improving existing checks? Just open a PR.
 
 
 ## Available Rules

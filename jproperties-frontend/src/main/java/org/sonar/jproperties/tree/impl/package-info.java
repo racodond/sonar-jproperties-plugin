@@ -1,6 +1,6 @@
 /*
  * SonarQube Java Properties Analyzer
- * Copyright (C) 2015-2016 David RACODON
+ * Copyright (C) 2015-2017 David RACODON
  * david.racodon@gmail.com
  *
  * This program is free software; you can redistribute it and/or

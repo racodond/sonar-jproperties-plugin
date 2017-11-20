@@ -59,6 +59,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -95,8 +96,8 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>2000000</maxsize>
-                  <minsize>1800000</minsize>
+                  <maxsize>2200000</maxsize>
+                  <minsize>2100000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>
                   </files>
