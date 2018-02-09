@@ -1,7 +1,10 @@
+[![Release](https://img.shields.io/github/release/racodond/sonar-jproperties-plugin.svg)](https://github.com/racodond/sonar-jproperties-plugin/releases/latest)
 [![Build Status](https://api.travis-ci.org/racodond/sonar-jproperties-plugin.svg?branch=master)](https://travis-ci.org/racodond/sonar-jproperties-plugin)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/v2gdt7d94kq4ngcm/branch/master?svg=true)](https://ci.appveyor.com/project/racodond/sonar-jproperties-plugin/branch/master)
-[![Quality Gate status](https://sonarcloud.io/api/badges/gate?key=org.codehaus.sonar-plugins.jproperties%3Ajproperties)](https://sonarcloud.io/dashboard/index/org.codehaus.sonar-plugins.jproperties%3Ajproperties)
-[![Release](https://img.shields.io/github/release/racodond/sonar-jproperties-plugin.svg)](https://github.com/racodond/sonar-jproperties-plugin/releases/latest)
+
+[![Quality Gate status](https://sonarcloud.io/api/project_badges/measure?project=org.codehaus.sonar-plugins.jproperties%3Ajproperties&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
+[![Lines of code](https://sonarcloud.io/api/project_badges/measure?project=org.codehaus.sonar-plugins.jproperties%3Ajproperties&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.codehaus.sonar-plugins.jproperties%3Ajproperties&metric=coverage)](https://sonarcloud.io/dashboard?id=org.codehaus.sonar-plugins.jproperties%3Ajproperties)
 
 
 # SonarQube Java Properties Analyzer
