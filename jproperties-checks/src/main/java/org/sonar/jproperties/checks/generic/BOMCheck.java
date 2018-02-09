@@ -46,6 +46,7 @@ public class BOMCheck extends DoubleDispatchVisitorCheck implements CharsetAware
   public void visitProperties(PropertiesTree tree) {
     if (Charsets.UTF_8.equals(charset) && tree.hasByteOrderMark()) {
       addFileIssue("Remove the Byte Order Mark (BOM).");
+      System.out.println("slkfj");
     }
     super.visitProperties(tree);
   }
