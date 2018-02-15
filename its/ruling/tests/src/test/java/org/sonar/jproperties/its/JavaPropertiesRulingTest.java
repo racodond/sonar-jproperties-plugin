@@ -26,9 +26,12 @@ import com.sonar.orchestrator.locator.FileLocation;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.sonarsource.analyzer.commons.ProfileGenerator;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -42,8 +45,11 @@ public class JavaPropertiesRulingTest {
     .build();
 
   @Before
-  public void setUp() throws Exception {
-    ProfileGenerator.generateProfile(orchestrator);
+  public void setUp() {
+    ProfileGenerator.RulesConfiguration rulesConfiguration = new ProfileGenerator.RulesConfiguration();
+    Set<String> excludedRules = Collections.emptySet();
+    File profile = ProfileGenerator.generateProfile(orchestrator.getServer().getUrl(), "jproperties", "jproperties", rulesConfiguration, excludedRules);
+    orchestrator.getServer().restoreProfile(FileLocation.of(profile));
   }
 
   @Test
@@ -64,8 +70,6 @@ public class JavaPropertiesRulingTest {
   private SonarScanner createScanner(String projectKey, String encoding) {
     return SonarScanner.create(FileLocation.of("../projects/" + projectKey).getFile())
       .setProjectKey(projectKey)
-      .setProjectName(projectKey)
-      .setProjectVersion("1.0")
       .setLanguage("jproperties")
       .setSourceDirs("./")
       .setSourceEncoding(encoding)
