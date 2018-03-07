@@ -23,7 +23,6 @@ import com.google.common.io.Files;
 import com.sonar.orchestrator.Orchestrator;
 import com.sonar.orchestrator.build.SonarScanner;
 import com.sonar.orchestrator.locator.FileLocation;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.sonarsource.analyzer.commons.ProfileGenerator;
@@ -44,17 +43,27 @@ public class JavaPropertiesRulingTest {
     .addPlugin("lits")
     .build();
 
-  @Before
-  public void setUp() {
-    ProfileGenerator.RulesConfiguration rulesConfiguration = new ProfileGenerator.RulesConfiguration();
+  @Test
+  public void test_iso8859_jproperties_repository() throws Exception {
+    ProfileGenerator.RulesConfiguration rulesConfiguration = new ProfileGenerator.RulesConfiguration()
+      .add("S2068", "encryptedCredentialsToIgnore", "^(ENC\\(|OBF:).+$")
+      .add("maximum-number-keys", "numberKeys", "40");
+
     Set<String> excludedRules = Collections.emptySet();
     File profile = ProfileGenerator.generateProfile(orchestrator.getServer().getUrl(), "jproperties", "jproperties", rulesConfiguration, excludedRules);
     orchestrator.getServer().restoreProfile(FileLocation.of(profile));
+
+    testProject("iso8859-jproperties", "ISO-8859-1");
   }
 
   @Test
-  public void test_iso8859() throws Exception {
-    testProject("iso8859", "ISO-8859-1");
+  public void test_iso8859_sonarscanner_repository() throws Exception {
+    ProfileGenerator.RulesConfiguration rulesConfiguration = new ProfileGenerator.RulesConfiguration();
+    Set<String> excludedRules = Collections.emptySet();
+    File profile = ProfileGenerator.generateProfile(orchestrator.getServer().getUrl(), "jproperties", "sonarscanner", rulesConfiguration, excludedRules);
+    orchestrator.getServer().restoreProfile(FileLocation.of(profile));
+
+    testProject("iso8859-sonarscanner", "ISO-8859-1");
   }
 
   private void testProject(String projectKey, String encoding) throws Exception {
