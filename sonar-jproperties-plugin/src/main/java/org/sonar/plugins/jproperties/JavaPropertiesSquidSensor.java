@@ -80,7 +80,7 @@ public class JavaPropertiesSquidSensor implements Sensor {
   public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
     this.fileSystem = fileSystem;
 
-    this.charset = Charset.forName("ISO-8859-1");
+    this.charset = fileSystem.encoding();
 
     this.mainFilePredicate = fileSystem.predicates().and(
       fileSystem.predicates().hasType(InputFile.Type.MAIN),
