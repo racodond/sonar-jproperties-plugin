@@ -20,6 +20,11 @@
 package org.sonar.jproperties.checks.generic;
 
 import com.google.common.collect.Lists;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -29,10 +34,6 @@ import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Rule(
   key = "duplicated-keys",

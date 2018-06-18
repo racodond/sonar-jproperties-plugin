@@ -20,13 +20,14 @@
 package org.sonar.plugins.jproperties.issuesaver;
 
 import com.google.common.collect.ImmutableList;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+
 import org.sonar.plugins.jproperties.issuesaver.crossfile.CrossFileCheckIssueSaver;
 import org.sonar.plugins.jproperties.issuesaver.crossfile.DuplicatedKeysAcrossFilesCheckIssueSaver;
 import org.sonar.plugins.jproperties.issuesaver.crossfile.MissingTranslationsCheckIssueSaver;
 import org.sonar.plugins.jproperties.issuesaver.crossfile.MissingTranslationsInDefaultCheckIssueSaver;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
 
 public class CrossFileChecksIssueSaver {
 

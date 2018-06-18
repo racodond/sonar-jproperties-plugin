@@ -21,6 +21,7 @@ package org.sonar.jproperties.checks.generic;
 
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
+import org.sonar.jproperties.checks.generic.LineLengthCheck;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 public class LineLengthCheckTest {

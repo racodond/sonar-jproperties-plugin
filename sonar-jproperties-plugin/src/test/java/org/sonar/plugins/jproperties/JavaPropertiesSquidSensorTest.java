@@ -30,6 +30,7 @@ import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
 import org.sonar.api.batch.sensor.internal.DefaultSensorDescriptor;
 import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import org.sonar.api.batch.sensor.issue.Issue;
+import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.check.Rule;
@@ -50,10 +51,13 @@ public class JavaPropertiesSquidSensorTest {
   private final SensorContextTester context = SensorContextTester.create(baseDir);
   private CheckFactory checkFactory = new CheckFactory(mock(ActiveRules.class));
 
+  private static final String DEFAULT_ENCODING = "ISO-8859-1";
+  private static final String UTF8_ENCODING = "UTF-8";
+
   @Test
   public void should_create_a_valid_sensor_descriptor() {
     DefaultSensorDescriptor descriptor = new DefaultSensorDescriptor();
-    createJavaPropertiesSquidSensor().describe(descriptor);
+    createJavaPropertiesSquidSensor(DEFAULT_ENCODING).describe(descriptor);
     assertThat(descriptor.name()).isEqualTo("Java Properties Squid Sensor");
     assertThat(descriptor.languages()).containsOnly("jproperties");
     assertThat(descriptor.type()).isEqualTo(InputFile.Type.MAIN);
@@ -63,7 +67,15 @@ public class JavaPropertiesSquidSensorTest {
   public void should_execute_and_compute_valid_measures_on_ISO_8859_1_file() {
     String relativePath = "myProperties.properties";
     inputFile(relativePath, Charsets.ISO_8859_1);
-    createJavaPropertiesSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor(DEFAULT_ENCODING).execute(context);
+    assertMeasure("moduleKey:" + relativePath);
+  }
+
+  @Test
+  public void should_execute_and_compute_valid_measures_on_UTF8_with_BOM_file() {
+    String relativePath = "myPropertiesUTF8WithBOM.properties";
+    inputFile(relativePath, Charsets.UTF_8);
+    createJavaPropertiesSquidSensor(UTF8_ENCODING).execute(context);
     assertMeasure("moduleKey:" + relativePath);
   }
 
@@ -71,6 +83,23 @@ public class JavaPropertiesSquidSensorTest {
     assertThat(context.measure(key, CoreMetrics.NCLOC).value()).isEqualTo(7);
     assertThat(context.measure(key, CoreMetrics.STATEMENTS).value()).isEqualTo(7);
     assertThat(context.measure(key, CoreMetrics.COMMENT_LINES).value()).isEqualTo(3);
+  }
+
+  @Test
+  public void should_execute_and_save_issues_on_UTF8_with_BOM_file() {
+    inputFile("myPropertiesUTF8WithBOM.properties", Charsets.UTF_8);
+
+    ActiveRules activeRules = (new ActiveRulesBuilder())
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, CommentConventionCheck.class.getAnnotation(Rule.class).key()))
+      .activate()
+      .create(RuleKey.of(GenericJavaPropertiesRulesDefinition.GENERIC_REPOSITORY_KEY, MissingNewlineAtEndOfFileCheck.class.getAnnotation(Rule.class).key()))
+      .activate()
+      .build();
+    checkFactory = new CheckFactory(activeRules);
+
+    createJavaPropertiesSquidSensor(UTF8_ENCODING).execute(context);
+
+    assertThat(context.allIssues()).hasSize(3);
   }
 
   @Test
@@ -87,7 +116,7 @@ public class JavaPropertiesSquidSensorTest {
       .build();
     checkFactory = new CheckFactory(activeRules);
 
-    createJavaPropertiesSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor(DEFAULT_ENCODING).execute(context);
 
     assertThat(context.allIssues()).hasSize(4);
   }
@@ -105,7 +134,7 @@ public class JavaPropertiesSquidSensorTest {
     checkFactory = new CheckFactory(activeRules);
 
     context.setActiveRules(activeRules);
-    createJavaPropertiesSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor(UTF8_ENCODING).execute(context);
     Collection<Issue> issues = context.allIssues();
     assertThat(issues).hasSize(1);
     Issue issue = issues.iterator().next();
@@ -121,13 +150,15 @@ public class JavaPropertiesSquidSensorTest {
     checkFactory = new CheckFactory(activeRules);
 
     context.setActiveRules(activeRules);
-    createJavaPropertiesSquidSensor().execute(context);
+    createJavaPropertiesSquidSensor(UTF8_ENCODING).execute(context);
     Collection<Issue> issues = context.allIssues();
     assertThat(issues).hasSize(0);
   }
 
-  private JavaPropertiesSquidSensor createJavaPropertiesSquidSensor() {
-    return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory);
+  private JavaPropertiesSquidSensor createJavaPropertiesSquidSensor(String charset) {
+    Settings settings = new Settings();
+    settings.setProperty(JavaPropertiesPlugin.JAVA_PROPERTIES_SOURCE_ENCODING_KEY, charset);
+    return new JavaPropertiesSquidSensor(context.fileSystem(), checkFactory, settings);
   }
 
   private void inputFile(String relativePath, Charset charset) {

@@ -20,14 +20,15 @@
 package org.sonar.jproperties.checks.sonarscanner;
 
 import com.google.common.collect.ImmutableMap;
+
+import java.util.Map;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.util.Map;
 
 @Rule(
   key = "sonar-scanner-deprecated-properties",

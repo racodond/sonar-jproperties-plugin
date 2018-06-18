@@ -21,10 +21,13 @@ package org.sonar.jproperties.parser;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import org.junit.Test;
-import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 
 import java.io.File;
+
+import org.junit.Test;
+import org.sonar.jproperties.parser.JavaPropertiesLexicalGrammar;
+import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
+import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 
 import static org.fest.assertions.Assertions.assertThat;
 

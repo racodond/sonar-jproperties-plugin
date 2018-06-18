@@ -20,14 +20,15 @@
 package org.sonar.jproperties.its.checks;
 
 import com.google.common.collect.ImmutableList;
+
+import java.util.List;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.plugins.jproperties.api.tree.LiteralTree;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitorCheck;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.util.List;
 
 @Rule(
   key = "forbidden-string",

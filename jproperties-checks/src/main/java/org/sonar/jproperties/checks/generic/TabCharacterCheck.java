@@ -20,6 +20,11 @@
 package org.sonar.jproperties.checks.generic;
 
 import com.google.common.io.Files;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -28,10 +33,6 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
 
 @Rule(
   key = "tab-character",

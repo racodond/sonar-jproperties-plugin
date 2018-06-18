@@ -21,7 +21,7 @@ This [SonarQube](https://www.sonarqube.org/) plugin analyzes [Java Properties fi
 1. [Download and install](http://docs.sonarqube.org/display/SONAR/Setup+and+Upgrade) SonarQube
 1. [Download](https://github.com/racodond/sonar-jproperties-plugin/releases) and install the Java Properties plugin. The latest version is compatible with SonarQube 6.7+
 1. Install your [favorite scanner](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis) (SonarQube Scanner, Maven, Ant, etc.)
-1. [Analyze your code](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis).
+1. [Analyze your code](http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code#AnalyzingSourceCode-RunningAnalysis). By default, files are expected to be encoded in ISO-8859-1. If it is not the case, set the `sonar.jproperties.sourceEncoding` property to the right encoding. See the [full list of supported encodings](http://docs.oracle.com/javase/8/docs/technotes/guides/intl/encoding.doc.html) (Canonical Name for java.nio API column).
 
 
 ## Custom Checks
@@ -47,6 +47,7 @@ You're thinking of new rules that may benefit the community but don't have the t
 * File names should comply with a naming convention
 * Files not defining any properties should be removed
 * Files should contain an empty new line at the end
+* ISO-8859-1 characters not compatible with UTF-8 should be escaped to keep compatibility with Java 9 default encoding switch
 * Keys should follow a naming convention
 * Lines should not be too long
 * Missing translations should be added to default resource bundle

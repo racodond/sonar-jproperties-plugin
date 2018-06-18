@@ -21,17 +21,18 @@ package org.sonar.plugins.jproperties;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.Nullable;
+
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.jproperties.api.CustomJavaPropertiesRulesDefinition;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.visitors.TreeVisitor;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class JavaPropertiesChecks {
 

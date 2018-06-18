@@ -21,6 +21,8 @@ package org.sonar.jproperties.parser;
 
 import com.google.common.base.Charsets;
 import org.junit.Test;
+import org.sonar.jproperties.parser.JavaPropertiesLexicalGrammar;
+import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 import org.sonar.plugins.jproperties.api.tree.ValueTree;
 
 import static org.fest.assertions.Assertions.assertThat;

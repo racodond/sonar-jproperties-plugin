@@ -19,17 +19,17 @@
  */
 package org.sonar.plugins.jproperties.issuesaver.crossfile;
 
-import org.sonar.jproperties.checks.LocaleUtils;
-import org.sonar.jproperties.checks.generic.MissingTranslationsCheck;
-import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
-import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.sonar.jproperties.checks.LocaleUtils;
+import org.sonar.jproperties.checks.generic.MissingTranslationsCheck;
+import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
+import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
 
 public class MissingTranslationsCheckIssueSaver extends CrossFileCheckIssueSaver {
 

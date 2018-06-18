@@ -66,9 +66,9 @@ public class Tests {
   }
 
   @CheckForNull
-  private static WsMeasures.Measure getMeasure(String componentKey, String metricKey) {
+  static WsMeasures.Measure getMeasure(String componentKey, String metricKey) {
     WsMeasures.ComponentWsResponse response = newWsClient().measures().component(new ComponentWsRequest()
-      .setComponent(componentKey)
+      .setComponentKey(componentKey)
       .setMetricKeys(Collections.singletonList(metricKey)));
     List<WsMeasures.Measure> measures = response.getComponent().getMeasuresList();
     return measures.size() == 1 ? measures.get(0) : null;
@@ -80,7 +80,7 @@ public class Tests {
     return (measure == null) ? null : Double.parseDouble(measure.getValue());
   }
 
-  private static WsClient newWsClient() {
+  static WsClient newWsClient() {
     return WsClientFactories.getDefault().newClient(HttpConnector.newBuilder()
       .url(ORCHESTRATOR.getServer().getUrl())
       .build());

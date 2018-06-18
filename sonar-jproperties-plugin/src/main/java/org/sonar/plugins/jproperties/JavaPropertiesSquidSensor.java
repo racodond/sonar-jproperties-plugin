@@ -33,6 +33,7 @@ import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
 import org.sonar.api.batch.sensor.issue.NewIssue;
 import org.sonar.api.batch.sensor.issue.NewIssueLocation;
+import org.sonar.api.config.Settings;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
@@ -73,14 +74,14 @@ public class JavaPropertiesSquidSensor implements Sensor {
   private IssueSaver issueSaver;
   private RuleKey parsingErrorRuleKey = null;
 
-  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory) {
-    this(fileSystem, checkFactory, null);
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, Settings settings) {
+    this(fileSystem, checkFactory, settings, null);
   }
 
-  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
+  public JavaPropertiesSquidSensor(FileSystem fileSystem, CheckFactory checkFactory, Settings settings, @Nullable CustomJavaPropertiesRulesDefinition[] customRulesDefinition) {
     this.fileSystem = fileSystem;
 
-    this.charset = Charset.forName("ISO-8859-1");
+    this.charset = Charset.forName(settings.getString(JavaPropertiesPlugin.JAVA_PROPERTIES_SOURCE_ENCODING_KEY));
 
     this.mainFilePredicate = fileSystem.predicates().and(
       fileSystem.predicates().hasType(InputFile.Type.MAIN),

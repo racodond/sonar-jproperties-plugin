@@ -19,14 +19,14 @@
  */
 package org.sonar.plugins.jproperties.api.visitors;
 
+import java.io.File;
+import java.util.Collections;
+
 import org.junit.Test;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.issue.IssueLocation;
-
-import java.io.File;
-import java.util.Collections;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

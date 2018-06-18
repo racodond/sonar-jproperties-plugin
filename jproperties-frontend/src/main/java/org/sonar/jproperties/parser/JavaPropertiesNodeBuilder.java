@@ -22,14 +22,15 @@ package org.sonar.jproperties.parser;
 import com.sonar.sslr.api.*;
 import com.sonar.sslr.api.typed.Input;
 import com.sonar.sslr.api.typed.NodeBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.sonar.jproperties.tree.impl.InternalSyntaxSpacing;
 import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
 import org.sonar.jproperties.tree.impl.InternalSyntaxTrivia;
 import org.sonar.plugins.jproperties.api.tree.SyntaxTrivia;
 import org.sonar.sslr.grammar.GrammarRuleKey;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class JavaPropertiesNodeBuilder implements NodeBuilder {
 

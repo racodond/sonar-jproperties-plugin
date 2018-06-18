@@ -20,10 +20,11 @@
 package org.sonar.plugins.jproperties.api.visitors.issue;
 
 import com.google.common.base.Preconditions;
-import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 
-import javax.annotation.Nullable;
 import java.io.File;
+import javax.annotation.Nullable;
+
+import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 
 public class LineIssue implements Issue {
 

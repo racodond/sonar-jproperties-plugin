@@ -20,12 +20,13 @@
 package org.sonar.plugins.jproperties.api.visitors;
 
 import com.google.common.base.Preconditions;
-import org.sonar.jproperties.tree.impl.JavaPropertiesTree;
-import org.sonar.plugins.jproperties.api.tree.Tree;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.sonar.jproperties.tree.impl.JavaPropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.Tree;
 
 public abstract class SubscriptionVisitor implements TreeVisitor {
 

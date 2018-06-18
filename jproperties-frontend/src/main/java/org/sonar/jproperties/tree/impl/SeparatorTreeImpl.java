@@ -20,12 +20,13 @@
 package org.sonar.jproperties.tree.impl;
 
 import com.google.common.collect.Iterators;
+
+import java.util.Iterator;
+
 import org.sonar.plugins.jproperties.api.tree.SeparatorTree;
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
 import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitor;
-
-import java.util.Iterator;
 
 public class SeparatorTreeImpl extends JavaPropertiesTree implements SeparatorTree {
 

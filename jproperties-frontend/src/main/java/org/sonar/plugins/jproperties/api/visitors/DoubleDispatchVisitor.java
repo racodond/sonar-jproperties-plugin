@@ -20,12 +20,13 @@
 package org.sonar.plugins.jproperties.api.visitors;
 
 import com.google.common.base.Preconditions;
-import org.sonar.jproperties.tree.impl.JavaPropertiesTree;
-import org.sonar.plugins.jproperties.api.tree.*;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Nullable;
+
+import org.sonar.jproperties.tree.impl.JavaPropertiesTree;
+import org.sonar.plugins.jproperties.api.tree.*;
 
 public abstract class DoubleDispatchVisitor implements TreeVisitor {
 

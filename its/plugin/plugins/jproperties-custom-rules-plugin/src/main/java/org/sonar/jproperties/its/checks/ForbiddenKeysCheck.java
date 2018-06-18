@@ -20,13 +20,14 @@
 package org.sonar.jproperties.its.checks;
 
 import com.google.common.collect.ImmutableSet;
+
+import java.util.Set;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.util.Set;
 
 @Rule(
   key = "forbidden-keys",

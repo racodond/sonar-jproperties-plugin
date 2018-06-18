@@ -19,16 +19,16 @@
  */
 package org.sonar.plugins.jproperties.issuesaver.crossfile;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.sonar.jproperties.checks.generic.DuplicatedKeysAcrossFilesCheck;
 import org.sonar.jproperties.checks.generic.FileKeyTree;
 import org.sonar.plugins.jproperties.api.visitors.issue.IssueLocation;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
 import org.sonar.plugins.jproperties.issuesaver.IssueSaver;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class DuplicatedKeysAcrossFilesCheckIssueSaver extends CrossFileCheckIssueSaver {
 

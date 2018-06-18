@@ -22,6 +22,8 @@ package org.sonar.jproperties.parser;
 import com.google.common.base.Charsets;
 import com.sonar.sslr.api.RecognitionException;
 import org.junit.Test;
+import org.sonar.jproperties.parser.JavaPropertiesLexicalGrammar;
+import org.sonar.jproperties.parser.JavaPropertiesParserBuilder;
 
 public class JavaPropertiesGrammarTest {
 

@@ -19,6 +19,9 @@
  */
 package org.sonar.jproperties.checks.generic;
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.jproperties.checks.Tags;
@@ -26,9 +29,6 @@ import org.sonar.plugins.jproperties.api.tree.PropertiesTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 @Rule(
   key = "empty-line-end-of-file",

@@ -21,12 +21,13 @@ package org.sonar.jproperties.visitors.metrics;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
-import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
-import org.sonar.plugins.jproperties.api.tree.Tree;
-import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitor;
 
 import java.util.List;
 import java.util.Set;
+
+import org.sonar.jproperties.tree.impl.InternalSyntaxToken;
+import org.sonar.plugins.jproperties.api.tree.Tree;
+import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitor;
 
 public class LinesOfCodeVisitor extends SubscriptionVisitor {
 

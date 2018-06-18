@@ -19,6 +19,8 @@
  */
 package org.sonar.plugins.jproperties.api.visitors;
 
+import java.util.List;
+
 import org.sonar.jproperties.visitors.Issues;
 import org.sonar.plugins.jproperties.api.JavaPropertiesCheck;
 import org.sonar.plugins.jproperties.api.tree.SyntaxToken;
@@ -27,8 +29,6 @@ import org.sonar.plugins.jproperties.api.visitors.issue.FileIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.Issue;
 import org.sonar.plugins.jproperties.api.visitors.issue.LineIssue;
 import org.sonar.plugins.jproperties.api.visitors.issue.PreciseIssue;
-
-import java.util.List;
 
 public abstract class DoubleDispatchVisitorCheck extends DoubleDispatchVisitor implements JavaPropertiesCheck {
 

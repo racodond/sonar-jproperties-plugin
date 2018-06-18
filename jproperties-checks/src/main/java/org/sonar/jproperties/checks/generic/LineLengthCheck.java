@@ -22,6 +22,12 @@ package org.sonar.jproperties.checks.generic;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.text.MessageFormat;
+import java.util.List;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -31,11 +37,6 @@ import org.sonar.plugins.jproperties.api.tree.Tree;
 import org.sonar.plugins.jproperties.api.visitors.SubscriptionVisitorCheck;
 import org.sonar.squidbridge.annotations.ActivatedByDefault;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.MessageFormat;
-import java.util.List;
 
 @Rule(
   key = "line-length",

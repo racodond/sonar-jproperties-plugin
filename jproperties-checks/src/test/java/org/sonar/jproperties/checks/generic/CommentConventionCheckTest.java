@@ -21,6 +21,7 @@ package org.sonar.jproperties.checks.generic;
 
 import org.junit.Test;
 import org.sonar.jproperties.checks.CheckTestUtils;
+import org.sonar.jproperties.checks.generic.CommentConventionCheck;
 import org.sonar.jproperties.checks.verifier.JavaPropertiesCheckVerifier;
 
 import static org.fest.assertions.Assertions.assertThat;

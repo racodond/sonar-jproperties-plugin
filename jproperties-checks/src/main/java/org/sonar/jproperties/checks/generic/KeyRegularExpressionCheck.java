@@ -19,6 +19,9 @@
  */
 package org.sonar.jproperties.checks.generic;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.check.RuleProperty;
@@ -26,9 +29,6 @@ import org.sonar.jproperties.checks.CheckUtils;
 import org.sonar.plugins.jproperties.api.tree.KeyTree;
 import org.sonar.plugins.jproperties.api.visitors.DoubleDispatchVisitorCheck;
 import org.sonar.squidbridge.annotations.RuleTemplate;
-
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 @Rule(
   key = "key-regular-expression",

@@ -20,11 +20,12 @@
 package org.sonar.plugins.jproperties;
 
 import com.google.common.collect.ImmutableList;
+
+import java.util.Collection;
+
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.jproperties.checks.generic.*;
 import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
-
-import java.util.Collection;
 
 public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
 
@@ -59,6 +60,7 @@ public class GenericJavaPropertiesRulesDefinition implements RulesDefinition {
       IndentationCheck.class,
       KeyNamingConventionCheck.class,
       KeyRegularExpressionCheck.class,
+      Java9DefaultEncodingSwitchCheck.class,
       LineLengthCheck.class,
       MissingNewlineAtEndOfFileCheck.class,
       MissingTranslationsCheck.class,
