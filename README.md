@@ -9,6 +9,10 @@
 
 # SonarQube Java Properties Analyzer
 
+## Disclaimer
+I don't want to keep maintaining this plugin. Feel free to ping me if you want to take over.
+
+
 ## Description
 This [SonarQube](https://www.sonarqube.org/) plugin analyzes [Java Properties files](https://en.wikipedia.org/wiki/.properties) and:
 
